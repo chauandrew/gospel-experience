@@ -19,6 +19,7 @@ export function renderSections(scroller, progress, slides, onDone) {
     if (s.bg) {
       const bg = el('div', 'bg')
       bg.style.backgroundImage = `url(${s.bg})`
+      if (s.dim) bg.style.setProperty('--dim', s.dim)
       sec.append(bg)
     }
     if (s.frames) {

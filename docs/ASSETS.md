@@ -33,9 +33,18 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 - Fonts are not borrowed: `@fontsource/poppins`, `@fontsource/roboto` from npm (OFL)
 - Total audio about 6.4 MB precached
 
-## Used
+## Used (artwork, Course 101 chapters 1, 2; copied into `public/img/`)
+- `genesis-garden.svg` (ch_genesis_1-02): slide 1, bright garden at sunrise ("very good")
+- `genesis-dusk.svg` (1-03), `genesis-fall.svg` (1-04), `broken-world.svg` (ch2_broken_world-new): slide 2, crossfade in step with Pain / Brokenness / Silence
+- `night-sky.jpg` (ch1_night-sky-100vh): slide 3, darkness before the light swell
+- `hills.jpg` (ch2_intro_v4): slide 4, hopeful landscape for "rescue"
+- `arch.svg` (wall-w-o-arch): finale, "step inside"
+- Considered and rejected: Bethlehem and cave PNGs (477px, too small for full bleed), hell-door and sin-room art (too dark/heavy), picture-frame SVGs (replaced by the full-bleed set), sky.png (too bright behind white text).
+- Perf watch: `broken-world.svg` is 611 KB and is scaled by an animation. If the iPad stutters, rasterize it to WebP at 2048px wide.
+
+## Used (other)
 Downloaded in Phase 3 into `public/` (Course 101, with permission):
 - `audio/Silent_Place.mp3`, `audio/BGM_Downward_Spiral.mp3`, `audio/BGM_Ending.mp3` (USED, wired in `src/slides.js` `tracks`)
-- `svg/frame-normal.svg`, `svg/frame-damaged.svg`, `svg/frame-broken.svg` (USED: slide 2 decay)
+- `svg/frame-normal.svg`, `svg/frame-damaged.svg`, `svg/frame-broken.svg` (removed from repo; replaced by full-bleed art)
 - `lottie/clickcircle.json` (NOT used: full-screen off-center comp)
 - `img/sky.png` (used as slide 4 bg, very dim), `img/shooting-star.png`, `img/leaves.png` (unused so far)

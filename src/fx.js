@@ -20,20 +20,26 @@ function splitWords(p) {
   })
 }
 
+const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
+
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
-function buildTimeline(sec, slide) {
+// Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
+function buildTimeline(sec) {
   const eyebrow = sec.querySelector('.eyebrow')
   const words = q(sec, '.headline').flatMap(splitWords)
   const reveal = q(sec, '.reveal .word')
   const cta = sec.querySelector('.cta')
   const btn = sec.querySelector('.btn')
   const bg = sec.querySelector('.bg')
+  const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames img')
   const glow = sec.querySelector('.glow')
+  const hint = sec.querySelector('.hint')
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
   if (glow) gsap.set(glow, { opacity: 0, scale: 0.3 })
+  if (hint) gsap.set(hint, { opacity: 0 })
   gsap.set(frames, { opacity: 0 })
 
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
@@ -43,17 +49,22 @@ function buildTimeline(sec, slide) {
     t = 0.9 // let the light swell before the words land
   }
   if (bg) {
-    tl.to(bg, { opacity: 0.6, duration: 1.5 }, 0)
+    tl.to(bg, { opacity: ART, duration: 1.5 }, 0)
     tl.to(bg, { scale: 1.1, duration: 14, ease: 'none' }, 0)
+  }
+  if (framesBox) {
+    gsap.set(framesBox, { scale: 1 })
+    tl.to(framesBox, { scale: 1.08, duration: 10, ease: 'none' }, 0)
   }
   if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, t)
   if (words.length) tl.to(words, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, t + 0.2)
 
   // end of headline words
   let end = t + 0.2 + 0.9 + 0.12 * words.length
-  if (frames.length) tl.to(frames[0], { opacity: 0.35, duration: 1.2 }, t)
+  if (frames.length) tl.to(frames[0], { opacity: ART, duration: 1.2 }, t)
 
-  // "Pain. Brokenness. Silence." appear one at a time, each fading to dim as the next arrives.
+  // "Pain. Brokenness. Silence." appear one at a time, each fading to dim as the next arrives;
+  // the artwork crossfades in step with them.
   if (reveal.length) {
     end += 0.4
     reveal.forEach((w, i) => {
@@ -61,29 +72,70 @@ function buildTimeline(sec, slide) {
       tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: 0.7 }, at)
       if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: 0.7 }, at + 1.1)
       if (frames[i + 1]) {
-        tl.to(frames[i + 1], { opacity: 0.35, duration: 1.1 }, at)
+        tl.to(frames[i + 1], { opacity: ART, duration: 1.1 }, at)
         tl.to(frames[i], { opacity: 0, duration: 1.1 }, at)
       }
     })
     end += reveal.length * 1.1
   }
-  if (cta) tl.to(cta, { opacity: 1, y: 0, duration: 1 }, end + 0.2)
-  if (btn) tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, end + (cta ? 1.2 : 0.2))
-  return tl
+  let textEnd = end
+  if (cta) {
+    tl.to(cta, { opacity: 1, y: 0, duration: 1 }, end + 0.2)
+    textEnd = end + 1.2
+  }
+  if (btn) {
+    const at = end + (cta ? 1.2 : 0.2)
+    tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
+    textEnd = at + 0.8
+  }
+  const unlockAt = textEnd + 0.3
+  if (hint) tl.to(hint, { opacity: 1, duration: 0.8 }, unlockAt)
+  return { tl, unlockAt }
 }
 
 export function initFx(scroller, slides, onBeat = () => {}) {
+  const beats = [...scroller.querySelectorAll('.beat')]
+  const last = beats.length - 1
   const timelines = []
-  scroller.querySelectorAll('.beat').forEach((sec, i) => {
-    const tl = buildTimeline(sec, slides[i])
+  const seen = new Set() // beats whose text has fully landed this run
+  let settleTimer
+
+  // Forward scrolling is blocked until a beat's text has landed (overflow hidden stops wheel and touch).
+  const lock = (on) => (scroller.style.overflowY = on ? 'hidden' : '')
+  const unlock = (i) => {
+    seen.add(i)
+    lock(false)
+  }
+  // Lock only once the snap has settled, so we never freeze the scroller between two beats.
+  const lockWhenSettled = (i) => {
+    clearInterval(settleTimer)
+    if (i === last || seen.has(i)) return lock(false)
+    settleTimer = setInterval(() => {
+      if (seen.has(i)) return clearInterval(settleTimer)
+      if (Math.abs(scroller.scrollTop - beats[i].offsetTop) < 2) {
+        lock(true)
+        clearInterval(settleTimer)
+      }
+    }, 60)
+  }
+  const enter = (i) => {
+    if (seen.has(i)) timelines[i].progress(1) // already read: show it complete, no replay
+    else timelines[i].restart()
+    lockWhenSettled(i)
+    onBeat(i)
+  }
+
+  beats.forEach((sec, i) => {
+    const { tl, unlockAt } = buildTimeline(sec)
+    tl.call(() => unlock(i), null, unlockAt)
     timelines.push(tl)
     ScrollTrigger.create({
       scroller,
       trigger: sec,
       start: 'top 55%',
       end: 'bottom 45%',
-      onEnter: () => (tl.restart(), onBeat(i)),
-      onEnterBack: () => (tl.restart(), onBeat(i)),
+      onEnter: () => enter(i),
+      onEnterBack: () => enter(i),
     })
     // Reset only when the beat is completely off screen so text never pops mid-transition.
     ScrollTrigger.create({
@@ -96,21 +148,26 @@ export function initFx(scroller, slides, onBeat = () => {}) {
     })
   })
 
+  const clear = () => {
+    clearInterval(settleTimer)
+    seen.clear()
+    lock(false)
+    timelines.forEach((tl) => tl.pause(0))
+  }
+
   return {
     // Call after the scroller is shown (it is hidden at init, so measurements need a refresh).
     start() {
+      clear()
       ScrollTrigger.refresh()
-      timelines.forEach((tl) => tl.pause(0))
-      timelines[0].restart()
-      onBeat(0)
+      enter(0)
     },
-    reset() {
-      timelines.forEach((tl) => tl.pause(0))
-    },
+    reset: clear,
     // Dev/QA: jump beat i's timeline to time t (seconds) without needing rAF.
     seek(i, t) {
-      timelines[i].pause(t)
+      timelines[i].pause().time(t, false) // false: still fire the unlock callback
     },
     durations: () => timelines.map((tl) => tl.duration()),
+    isLocked: () => scroller.style.overflowY === 'hidden',
   }
 }

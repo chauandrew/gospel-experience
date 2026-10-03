@@ -19,13 +19,17 @@ export const slides = [
     text: ['In the beginning, God created everything… and it was good. Very good.'],
     fx: 'pinReveal',
     music: 'ambient',
+    bg: '/img/genesis-garden.svg',
+    dim: 0.75, // brighter: this is the "very good" beat
     hint: 'Scroll',
   },
   {
     id: 'tension',
     text: ["But look around. It doesn't always feel that way, does it?"],
     reveal: ['Pain.', 'Brokenness.', 'Silence.'],
-    frames: ['/svg/frame-normal.svg', '/svg/frame-damaged.svg', '/svg/frame-broken.svg'],
+    // artwork crossfades in step with the three words above
+    frames: ['/img/genesis-dusk.svg', '/img/genesis-fall.svg', '/img/broken-world.svg'],
+    hint: 'Scroll',
     fx: 'fadeWords',
     music: 'tense',
   },
@@ -34,18 +38,23 @@ export const slides = [
     text: ['Into that darkness… light stepped in.'],
     fx: 'glow',
     music: 'swell',
+    bg: '/img/night-sky.jpg',
+    hint: 'Scroll',
   },
   {
     id: 'invite',
     text: ["The Gospel isn't just an ancient book. It's the story of how God came to rescue us."],
     fx: 'pinReveal',
-    bg: '/img/sky.png',
+    bg: '/img/hills.jpg',
+    dim: 0.55,
+    hint: 'Scroll',
   },
   {
     id: 'finale',
     text: ["You've read the preview. Now step inside."],
     cta: 'Take off your headphones and ask for your pass at the counter.',
     button: 'Done',
+    bg: '/img/arch.svg',
     idle: 10,
   },
 ]

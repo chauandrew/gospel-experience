@@ -28,6 +28,7 @@ Phase 8 iPad checklist:
 Phase 10 (particles) intentionally not built: it only makes sense after seeing real iPad frame rate, and the motion is already rich. Add only if the human asks.
 
 ## Known issues / device test results
+- Scroll lock + hint added (see DECISIONS). Verify on iPad that the lock engages after snap and that a hard flick cannot skip a beat. Total forced reading time before the finale is about 15s (2.7 + 6 + 3 + 4.3).
 - Fonts: fontsource latin subsets only; no Devanagari etc. Keep it that way for precache size.
 - Done button currently just returns to the gate (full reset/idle/audio fade is Phase 6).
 - Verified in desktop Chrome at 1180x820 only; not yet on a real iPad.
