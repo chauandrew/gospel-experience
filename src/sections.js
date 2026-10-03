@@ -24,8 +24,8 @@ export function renderSections(scroller, progress, slides, onDone) {
     }
     if (s.frames) {
       const f = el('div', 'frames')
-      s.frames.forEach((f) => {
-        const { src, dim } = typeof f === 'string' ? { src: f } : f
+      s.frames.forEach((art) => {
+        const { src, dim } = typeof art === 'string' ? { src: art } : art
         const img = el('img')
         img.src = src
         if (dim) img.style.filter = `brightness(${dim}) saturate(0.9)`
