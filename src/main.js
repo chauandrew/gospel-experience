@@ -17,20 +17,33 @@ const scroller = $('scroller')
 const progress = $('progress')
 
 let counted = false
+let starting // timer for the short lead-in between the tap and the first beat
 
+// iOS only plays audio started from a tap, so the music starts the moment Begin is tapped; the gate
+// fades out over it, then the first beat starts.
 function begin() {
+  if (starting) return
   counted = false
-  idle.start()
-  audio.start() // must run inside the tap: iOS only allows playback started from a user gesture
-  gateEl.hidden = true
-  scroller.hidden = false
-  progress.hidden = false
-  scroller.scrollTop = 0
-  fx.start()
+  audio.start()
+  audio.cue('ambient', 1.2)
+  gateEl.classList.add('leaving')
+  starting = setTimeout(() => {
+    starting = undefined
+    gateEl.hidden = true
+    gateEl.classList.remove('leaving')
+    scroller.hidden = false
+    progress.hidden = false
+    scroller.scrollTop = 0
+    idle.start()
+    fx.start()
+  }, 1400)
 }
 
 function reset() {
   idle.stop()
+  clearTimeout(starting)
+  starting = undefined
+  gateEl.classList.remove('leaving')
   scroller.hidden = true
   progress.hidden = true
   gateEl.hidden = false

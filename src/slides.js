@@ -1,4 +1,5 @@
 // All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
+// frames entries may be a path or { src, dim } (dim = brightness, default 0.5).
 // fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
 // Music files are Course 101 tracks (see docs/ASSETS.md).
 export const tracks = {
@@ -16,22 +17,22 @@ export const slides = [
   {
     id: 'genesis',
     eyebrow: 'Genesis 1',
-    text: ['In the beginning, God created everything… and it was good. Very good.'],
+    // Each line lands as its own stage; the artwork changes with it (people arrive at "Very good.")
+    text: ['In the beginning, God created everything…', 'And it was good.', 'Very good.'],
+    frames: ['/img/genesis-dawn.svg', '/img/genesis-garden.svg', { src: '/img/creation-people.jpg', dim: 0.65 }],
     fx: 'pinReveal',
     music: 'ambient',
-    bg: '/img/genesis-garden.svg',
-    dim: 0.75, // brighter: this is the "very good" beat
     hint: 'Scroll',
   },
   {
     id: 'tension',
-    text: ["But look around. It doesn't always feel that way, does it?"],
-    reveal: ['Pain.', 'Brokenness.', 'Silence.'],
-    // artwork crossfades in step with the three words above
-    frames: ['/img/genesis-dusk.svg', '/img/genesis-fall.svg', '/img/broken-world.svg'],
-    hint: 'Scroll',
+    text: ['So why does the world feel so fractured?'],
+    reveal: ['Gossip.', 'Betrayal.', 'Loneliness.'],
+    // first image sits behind the question, then one per word above
+    frames: ['/img/genesis-dusk.svg', '/img/whisper.svg', '/img/cracked-photo.svg', { src: '/img/alone.svg', dim: 1 }],
     fx: 'fadeWords',
     music: 'tense',
+    hint: 'Scroll',
   },
   {
     id: 'pivot',

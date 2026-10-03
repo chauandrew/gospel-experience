@@ -34,14 +34,14 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 - Total audio about 6.4 MB precached
 
 ## Used (artwork, Course 101 chapters 1, 2; copied into `public/img/`)
-- `genesis-garden.svg` (ch_genesis_1-02): slide 1, bright garden at sunrise ("very good")
-- `genesis-dusk.svg` (1-03), `genesis-fall.svg` (1-04), `broken-world.svg` (ch2_broken_world-new): slide 2, crossfade in step with Pain / Brokenness / Silence
+- Slide 1 (creation, one image per stage): `genesis-dawn.svg` (ch_genesis_1-01, "In the beginning"), `genesis-garden.svg` (1-02, "And it was good"), `creation-people.jpg` (heaven-family.jpg from the ch7 heaven set, people with arms open in a golden field, "Very good")
+- Slide 2 (relational brokenness): `genesis-dusk.svg` (1-03, behind the question), `whisper.svg` (friendship_2, Gossip), `cracked-photo.svg` (marriage_2, Betrayal), `alone.svg` (ch05_alone, Loneliness)
 - `night-sky.jpg` (ch1_night-sky-100vh): slide 3, darkness before the light swell
 - `hills.jpg` (ch2_intro_v4): slide 4, hopeful landscape for "rescue"
 - `sunrise.svg` (ch5a-sunny-desert_3): finale, warm sunrise for "step inside" (replaced `arch.svg`)
 - Other finale/slide-3 candidates found (ch3-7, not downloaded into repo; fetch from the cdn host): `man-kneel-before-god.png` (rays of light on a kneeling figure), `God_appears.png` / `god_appears_w_one_person.png` (sun burst over a dark city: would suit slide 3), `c06-s02-gift_offer.svg` (an offered hand/gift), `king-maiden-intro.svg`, `c05-s05_wreckage_light.svg`, ch7 night-sky van photo. Note several PNGs are small (about 480px).
 - Considered and rejected: Bethlehem and cave PNGs (477px, too small for full bleed), hell-door and sin-room art (too dark/heavy), picture-frame SVGs (replaced by the full-bleed set), sky.png (too bright behind white text).
-- Perf watch: `broken-world.svg` is 611 KB and is scaled by an animation. If the iPad stutters, rasterize it to WebP at 2048px wide.
+- Perf watch: large SVGs and JPGs are scaled by a slow zoom animation. If the iPad stutters, rasterize to WebP at about 2048px wide. (`broken-world.svg`, 611 KB, and `genesis-fall.svg` were removed from the repo when slide 2 became relational.)
 
 ## Used (other)
 Downloaded in Phase 3 into `public/` (Course 101, with permission):

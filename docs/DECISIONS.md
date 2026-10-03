@@ -59,3 +59,10 @@ Format: date, decision, why, alternatives rejected.
 
 - **Finale art is now a warm sunrise** (`sunrise.svg`) instead of the pale arch hall: warmer and more inviting after the green hills. Alternatives are listed in `docs/ASSETS.md`.
 - **Glow swell slowed from 2.8s to 5.5s** (sine in/out), words land after 2.4s (was 0.9s). Adds about 1.5s to the forced wait on that beat.
+
+## 2026-10-03 (staged creation, relational slide, audio lead-in)
+
+- **Slide 1 lands as three stages**: "In the beginning, God created everything…", "And it was good.", "Very good." Each headline in `slides.js` is its own stage (1s pause between); artwork crossfades per stage and people arrive at "Very good." Lines stack so the full verse is visible at the end.
+- **Slide 2 is about relational sin**, in language teens relate to: "So why does the world feel so fractured?" then Gossip. Betrayal. Loneliness., with matching art (whispering, cracked photo, lone figure). Wording and images are plain data in `slides.js`; swap freely.
+- **Audio starts the instant Begin is tapped** (1.2s fade-in, no 2s wait), and the gate fades out over it during a 1.4s lead-in before the first beat. Audio cannot start before the first tap on iOS, so the Begin tap is the earliest possible moment. If sound is wanted on the "put on your headphones" screen itself, add a tap-to-start screen before it (two taps).
+- **`frames` entries may be `{ src, dim }`** to set per-image brightness; tall (portrait) art is shown whole instead of cropped.

@@ -26,7 +26,8 @@ const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 // Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
 function buildTimeline(sec) {
   const eyebrow = sec.querySelector('.eyebrow')
-  const words = q(sec, '.headline').flatMap(splitWords)
+  const heads = q(sec, '.headline').map(splitWords) // one word-array per headline = one stage each
+  const words = heads.flat()
   const reveal = q(sec, '.reveal .word')
   const cta = sec.querySelector('.cta')
   const btn = sec.querySelector('.btn')
@@ -57,27 +58,37 @@ function buildTimeline(sec) {
     tl.to(framesBox, { scale: 1.08, duration: 10, ease: 'none' }, 0)
   }
   if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, t)
-  if (words.length) tl.to(words, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, t + 0.2)
+  // Each headline is its own stage, with a pause before the next one lands.
+  let cursor = t + 0.2
+  const headStarts = []
+  heads.forEach((ws, k) => {
+    headStarts.push(cursor)
+    tl.to(ws, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, cursor)
+    cursor += 0.9 + 0.12 * ws.length + (k < heads.length - 1 ? 1 : 0)
+  })
+  let end = cursor
 
-  // end of headline words
-  let end = t + 0.2 + 0.9 + 0.12 * words.length
-  if (frames.length) tl.to(frames[0], { opacity: ART, duration: 1.2 }, t)
-
-  // "Pain. Brokenness. Silence." appear one at a time, each fading to dim as the next arrives;
-  // the artwork crossfades in step with them.
+  // "Gossip. Betrayal. Loneliness." appear one at a time, each fading to dim as the next arrives.
+  const revealStarts = []
   if (reveal.length) {
     end += 0.4
     reveal.forEach((w, i) => {
       const at = end + i * 1.1
+      revealStarts.push(at)
       tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: 0.7 }, at)
       if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: 0.7 }, at + 1.1)
-      if (frames[i + 1]) {
-        tl.to(frames[i + 1], { opacity: ART, duration: 1.1 }, at)
-        tl.to(frames[i], { opacity: 0, duration: 1.1 }, at)
-      }
     })
     end += reveal.length * 1.1
   }
+
+  // Artwork crossfades in step: with the reveal words if there are any (first image sits behind the
+  // headline), otherwise with each headline stage.
+  const starts = reveal.length ? [headStarts[0], ...revealStarts] : headStarts
+  frames.forEach((f, i) => {
+    const at = starts[i] ?? starts[starts.length - 1]
+    tl.to(f, { opacity: ART, duration: 1.2 }, at)
+    if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: 1.2 }, at)
+  })
   let textEnd = end
   if (cta) {
     tl.to(cta, { opacity: 1, y: 0, duration: 1 }, end + 0.2)
