@@ -19,5 +19,19 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 | Lottie | `c101-online-chapter-4a-lotties/en/DownwardSpiral.json` | ? | tension |
 | SVG | ch2 picture frames: `pictureframe_normal_v3`, `slightlydamaged_v5`, `heavydamaged_v9` (cdn) | small | Slide 2 decay |
 
+## Background-image candidates (found Phase 2 revision; all on the cdn host, view before choosing)
+- ch1: `5eceaf863b049e33d3e3e18b_ch1_shooting-star-compressor.png` (Genesis/night sky), `5ed0258aaca3286299a6859d_ch1_sky-img-foreground.png` (+ `-p-1600` resized variants), `5ecefab09d8fbe2bf9dd85ae_ch1_leaves-compressor.png`, `5ed116c4592a1f170cb60c52_ch1_rock-underwater-compressor.png`, `5ed30f684fe81a47e9a1678e_ch1_man_image-of-god-compressor.png`
+- ch2 scenes (starfield, Garden of Eden, ruined city) and ch4 painterly backgrounds (lone tree at dusk) are loaded as CSS/Lottie backgrounds, not plain `<img>` tags; Phase 3 agent should inspect network requests in Chrome to find the files.
+- Prefer the `-p-1600` resized PNGs (smaller) for iPad; convert to WebP if size matters.
+
+## Chosen for v1 (Phase 2 decision, download in Phase 3)
+- Ambient (gate to Slide 2): `Silent_Place.mp3`
+- Tension (Slide 2): `BGM_Downward_Spiral.mp3` (optionally layer `SFX_Heartbeat_Loop.mp3`)
+- Pivot and finale (Slide 3 on): `BGM_Ending.mp3` (crossfade in at Slide 3)
+- SVG: the three ch2 picture frames (normal, slightly damaged, heavy damaged) for the Slide 2 decay
+- Lottie: `clickcircle_v5.json` as the scroll/tap hint; `ch1-soul.json` and `DownwardSpiral.json` are previews-to-judge, drop if they clash with dark theme or stutter
+- Fonts are not borrowed: `@fontsource/poppins`, `@fontsource/roboto` from npm (OFL)
+- Total audio about 6.4 MB precached
+
 ## Used
-None yet.
+None yet (nothing downloaded until Phase 3).
