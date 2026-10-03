@@ -27,9 +27,9 @@ export const slides = [
   {
     id: 'tension',
     text: ['So why does the world feel so fractured?'],
-    reveal: ['Gossip.', 'Betrayal.', 'Loneliness.'],
+    reveal: ['Comparison.', 'Isolation.', 'Betrayal.'],
     // first image sits behind the question, then one per word above
-    frames: ['/img/genesis-dusk.svg', '/img/whisper.svg', '/img/cracked-photo.svg', { src: '/img/alone.svg', dim: 1 }],
+    frames: ['/img/genesis-dusk.svg', '/img/photo-wall.svg', { src: '/img/alone-room.svg', dim: 0.8 }, '/img/whisper.svg'],
     fx: 'fadeWords',
     music: 'tense',
     hint: 'Scroll',

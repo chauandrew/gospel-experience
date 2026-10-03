@@ -35,7 +35,7 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 
 ## Used (artwork, Course 101 chapters 1, 2; copied into `public/img/`)
 - Slide 1 (creation, one image per stage): `genesis-dawn.svg` (ch_genesis_1-01, "In the beginning"), `genesis-garden.svg` (1-02, "And it was good"), `creation-people.jpg` (heaven-family.jpg from the ch7 heaven set, people with arms open in a golden field, "Very good")
-- Slide 2 (relational brokenness): `genesis-dusk.svg` (1-03, behind the question), `whisper.svg` (friendship_2, Gossip), `cracked-photo.svg` (marriage_2, Betrayal), `alone.svg` (ch05_alone, Loneliness)
+- Slide 2 (relational brokenness): `genesis-dusk.svg` (1-03, behind the question), `photo-wall.svg` (c02-s04-FamilyPhotos2, a wall of happy photos: Comparison), `alone-room.svg` (2a_Prodigal_Bedroom3, someone alone in a dark room: Isolation), `whisper.svg` (friendship_2, a whispered secret: Betrayal). Removed: `alone.svg` (lone figure on a hill, too dark/tiny), `cracked-photo.svg` (couple-focused).
 - `night-sky.jpg` (ch1_night-sky-100vh): slide 3, darkness before the light swell
 - `hills.jpg` (ch2_intro_v4): slide 4, hopeful landscape for "rescue"
 - `sunrise.svg` (ch5a-sunny-desert_3): finale, warm sunrise for "step inside" (replaced `arch.svg`)

@@ -71,3 +71,7 @@ Format: date, decision, why, alternatives rejected.
 
 - **Scroll is refused outright until the SCROLL hint has fully appeared.** The lock now engages the moment a beat is entered (not after the snap settles): wheel, touch drags and scroll keys are cancelled with `preventDefault`, and overflow hidden is added once the snap settles. Release happens at the end of the hint's fade-in (about 0.6s after the text finishes), not when the text finishes.
 - **Reset is complete on Done or idle timeout:** scroller scroll position and progress dashes go back to the first beat, all timelines rewind (words, hints, art, glow, buttons hidden), lock/seen cleared, audio fades out and restarts from 0 on the next Begin. Verified by running a full pass, resetting, and starting again.
+
+## 2026-10-03 (slide 2 words)
+
+- **Slide 2 words are now Comparison. Isolation. Betrayal.** (user's choice; they escalate from social-media envy to withdrawal to being hurt by someone close). Art matches: photo wall of everyone else's happy moments, someone alone in a dark room, a whispered secret. Swap freely in `slides.js` (`reveal` + `frames`; frames[0] sits behind the question, then one per word).
