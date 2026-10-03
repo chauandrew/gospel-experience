@@ -18,7 +18,7 @@
 ## Starting Guided Access
 1. Open the app from the Home Screen.
 2. Triple-click the side or home button, tap Guided Access, then Start.
-3. Options: disable Touch off? No: keep Touch ON. Turn off Motion if you like. Leave Keyboards off.
+3. Tap Options. Keep Touch on (students scroll). Optionally turn off Motion and Keyboards, and turn off the volume buttons if you want volume locked.
 4. To exit: triple-click again and enter the passcode.
 
 ## Updating the app
