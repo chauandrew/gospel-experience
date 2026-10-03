@@ -66,3 +66,8 @@ Format: date, decision, why, alternatives rejected.
 - **Slide 2 is about relational sin**, in language teens relate to: "So why does the world feel so fractured?" then Gossip. Betrayal. Loneliness., with matching art (whispering, cracked photo, lone figure). Wording and images are plain data in `slides.js`; swap freely.
 - **Audio starts the instant Begin is tapped** (1.2s fade-in, no 2s wait), and the gate fades out over it during a 1.4s lead-in before the first beat. Audio cannot start before the first tap on iOS, so the Begin tap is the earliest possible moment. If sound is wanted on the "put on your headphones" screen itself, add a tap-to-start screen before it (two taps).
 - **`frames` entries may be `{ src, dim }`** to set per-image brightness; tall (portrait) art is shown whole instead of cropped.
+
+## 2026-10-03 (hard scroll lock, full reset)
+
+- **Scroll is refused outright until the SCROLL hint has fully appeared.** The lock now engages the moment a beat is entered (not after the snap settles): wheel, touch drags and scroll keys are cancelled with `preventDefault`, and overflow hidden is added once the snap settles. Release happens at the end of the hint's fade-in (about 0.6s after the text finishes), not when the text finishes.
+- **Reset is complete on Done or idle timeout:** scroller scroll position and progress dashes go back to the first beat, all timelines rewind (words, hints, art, glow, buttons hidden), lock/seen cleared, audio fades out and restarts from 0 on the next Begin. Verified by running a full pass, resetting, and starting again.

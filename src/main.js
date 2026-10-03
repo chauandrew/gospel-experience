@@ -5,7 +5,7 @@ import '@fontsource/roboto/latin-700.css'
 import '@fontsource/trirong/latin-400-italic.css'
 import './style.css'
 import { gate, slides, tracks } from './slides.js'
-import { renderGate, renderSections } from './sections.js'
+import { renderGate, renderSections, resetProgress } from './sections.js'
 import { initFx } from './fx.js'
 import { createAudio } from './audio.js'
 import { createIdle } from './idle.js'
@@ -34,6 +34,7 @@ function begin() {
     scroller.hidden = false
     progress.hidden = false
     scroller.scrollTop = 0
+    resetProgress(progress)
     idle.start()
     fx.start()
   }, 1400)
@@ -45,8 +46,10 @@ function reset() {
   starting = undefined
   gateEl.classList.remove('leaving')
   scroller.hidden = true
+  scroller.scrollTop = 0
   progress.hidden = true
   gateEl.hidden = false
+  resetProgress(progress)
   fx.reset()
   audio.stop()
 }

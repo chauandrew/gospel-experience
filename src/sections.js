@@ -73,3 +73,8 @@ export function renderSections(scroller, progress, slides, onDone) {
   )
   scroller.querySelectorAll('.beat').forEach((s) => io.observe(s))
 }
+
+// Back to the first beat's dash (the observer will not fire if the scroller was hidden meanwhile).
+export function resetProgress(progress) {
+  ;[...progress.children].forEach((d, i) => d.classList.toggle('active', i === 0))
+}

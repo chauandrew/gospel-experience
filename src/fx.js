@@ -99,9 +99,10 @@ function buildTimeline(sec) {
     tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
     textEnd = at + 0.8
   }
-  const unlockAt = textEnd + 0.3
-  if (hint) tl.to(hint, { opacity: 1, duration: 0.8 }, unlockAt)
-  return { tl, unlockAt }
+  // Scrolling is released only once the SCROLL hint has fully appeared.
+  const hintAt = textEnd + 0.3
+  if (hint) tl.to(hint, { opacity: 1, duration: 0.6 }, hintAt)
+  return { tl, unlockAt: hintAt + (hint ? 0.6 : 0) }
 }
 
 export function initFx(scroller, slides, onBeat = () => {}) {
@@ -111,20 +112,33 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   const seen = new Set() // beats whose text has fully landed this run
   let settleTimer
 
-  // Forward scrolling is blocked until a beat's text has landed (overflow hidden stops wheel and touch).
-  const lock = (on) => (scroller.style.overflowY = on ? 'hidden' : '')
+  // While locked, all scrolling input is refused: wheel, touch drags and scroll keys are cancelled
+  // immediately, and once the snap has settled the scroller also gets overflow hidden.
+  let locked = false
+  const stop = (e) => locked && e.cancelable && e.preventDefault()
+  scroller.addEventListener('wheel', stop, { passive: false })
+  scroller.addEventListener('touchmove', stop, { passive: false })
+  addEventListener('keydown', (e) => {
+    if (locked && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', 'Home'].includes(e.key)) e.preventDefault()
+  })
+  const setLocked = (on) => {
+    locked = on
+    if (!on) scroller.style.overflowY = ''
+  }
   const unlock = (i) => {
     seen.add(i)
-    lock(false)
+    setLocked(false)
   }
-  // Lock only once the snap has settled, so we never freeze the scroller between two beats.
+  // Lock right away; add overflow hidden once the snap has settled, so we never freeze the scroller
+  // between two beats while momentum is still carrying it.
   const lockWhenSettled = (i) => {
     clearInterval(settleTimer)
-    if (i === last || seen.has(i)) return lock(false)
+    if (i === last || seen.has(i)) return setLocked(false)
+    setLocked(true)
     settleTimer = setInterval(() => {
       if (seen.has(i)) return clearInterval(settleTimer)
       if (Math.abs(scroller.scrollTop - beats[i].offsetTop) < 2) {
-        lock(true)
+        scroller.style.overflowY = 'hidden'
         clearInterval(settleTimer)
       }
     }, 60)
@@ -162,7 +176,7 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   const clear = () => {
     clearInterval(settleTimer)
     seen.clear()
-    lock(false)
+    setLocked(false)
     timelines.forEach((tl) => tl.pause(0))
   }
 
@@ -179,6 +193,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
       timelines[i].pause().time(t, false) // false: still fire the unlock callback
     },
     durations: () => timelines.map((tl) => tl.duration()),
-    isLocked: () => scroller.style.overflowY === 'hidden',
+    isLocked: () => locked,
   }
 }
