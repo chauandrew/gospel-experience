@@ -21,6 +21,9 @@ function splitWords(p) {
 }
 
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
+const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
+const REVEAL_GAP = 2.2 // seconds between revealed words (Comparison. Isolation. Betrayal.)
+const ART_FADE = 1.6 // artwork crossfade
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
 // Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
@@ -71,14 +74,14 @@ function buildTimeline(sec) {
   // "Gossip. Betrayal. Loneliness." appear one at a time, each fading to dim as the next arrives.
   const revealStarts = []
   if (reveal.length) {
-    end += 0.4
+    end += REVEAL_LEAD
     reveal.forEach((w, i) => {
-      const at = end + i * 1.1
+      const at = end + i * REVEAL_GAP
       revealStarts.push(at)
       tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: 0.7 }, at)
-      if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: 0.7 }, at + 1.1)
+      if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: 0.7 }, at + REVEAL_GAP)
     })
-    end += reveal.length * 1.1
+    end += reveal.length * REVEAL_GAP
   }
 
   // Artwork crossfades in step: with the reveal words if there are any (first image sits behind the
@@ -86,8 +89,8 @@ function buildTimeline(sec) {
   const starts = reveal.length ? [headStarts[0], ...revealStarts] : headStarts
   frames.forEach((f, i) => {
     const at = starts[i] ?? starts[starts.length - 1]
-    tl.to(f, { opacity: ART, duration: 1.2 }, at)
-    if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: 1.2 }, at)
+    tl.to(f, { opacity: ART, duration: ART_FADE }, at)
+    if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: ART_FADE }, at)
   })
   let textEnd = end
   if (cta) {

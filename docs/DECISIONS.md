@@ -75,3 +75,9 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-03 (slide 2 words)
 
 - **Slide 2 words are now Comparison. Isolation. Betrayal.** (user's choice; they escalate from social-media envy to withdrawal to being hurt by someone close). Art matches: photo wall of everyone else's happy moments, someone alone in a dark room, a whispered secret. Swap freely in `slides.js` (`reveal` + `frames`; frames[0] sits behind the question, then one per word).
+
+## 2026-10-03 (slide 1 green, slide 2 pacing and framing)
+
+- **Slide 1 opens on the green garden** (the sunset-hills art looked like a dead world), then a bright coast, then people. Removed `genesis-dawn.svg`.
+- **Slide 2 pacing slowed**: 1.3s before the first word (was 0.4), 2.2s between words (was 1.1), art crossfade 1.6s. Tunable constants at the top of `src/fx.js`.
+- **Real cause of "only a portion of the image" fixed**: frame images lived in a CSS grid cell, and the portrait whisper art inflated the cell to about 1500px tall, so every other image was cropped from a stretched box. Frames are now absolutely positioned. Slide 2 also uses `fit: 'contain'` (whole image, soft edges); other slides still fill with `cover`.

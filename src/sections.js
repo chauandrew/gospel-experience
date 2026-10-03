@@ -23,7 +23,7 @@ export function renderSections(scroller, progress, slides, onDone) {
       sec.append(bg)
     }
     if (s.frames) {
-      const f = el('div', 'frames')
+      const f = el('div', s.fit === 'contain' ? 'frames contain' : 'frames')
       s.frames.forEach((art) => {
         const { src, dim } = typeof art === 'string' ? { src: art } : art
         const img = el('img')
