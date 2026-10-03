@@ -12,11 +12,13 @@ export const slides = [
     text: ['In the beginning, God created everything… and it was good. Very good.'],
     fx: 'pinReveal',
     music: 'ambient',
+    hint: 'Scroll',
   },
   {
     id: 'tension',
     text: ["But look around. It doesn't always feel that way, does it?"],
     reveal: ['Pain.', 'Brokenness.', 'Silence.'],
+    frames: ['/svg/frame-normal.svg', '/svg/frame-damaged.svg', '/svg/frame-broken.svg'],
     fx: 'fadeWords',
     music: 'tense',
   },

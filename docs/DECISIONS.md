@@ -28,3 +28,10 @@ Format: date, decision, why, alternatives rejected.
 
 - **Re-reviewed Course 101 with images on.** First pass was done with an image-blocking extension, so the taupe/white read was wrong. Real look: full-bleed flat illustrated scenes (ch1 green, ch2 teal framed, ch4 black cinematic). Ch4 is the nearest match to our dark brief.
 - **Add a full-bleed dim background layer per beat** (image or Lottie, slow loop, film grain) behind pinned text, plus a Trirong italic serif for the one key line per beat, plus left-edge dash progress. Why: this is what makes Course 101 feel cinematic. Supersedes the plain black scenes and bottom dots in the first style draft.
+
+## 2026-10-03 (Phase 4)
+
+- **Timeline-per-beat instead of scroll-scrubbed reveals.** With `scroll-snap: mandatory` each beat is only ever at rest at its snap point, so there is no scroll range inside a beat to scrub. Each beat has a paused GSAP timeline that plays when the beat becomes active and resets when fully off screen (so text never pops mid-transition). Scroll still drives progression and snap.
+- **Word gaps via CSS margin on `.w`, not text nodes.** Appended space text nodes lost the gap between the last two words in the live DOM (root cause not found), so `.w { margin-right: .35em }` replaces them.
+- **Scroll hint is CSS, not the ClickCircle Lottie** (see PROGRESS notes).
+- **Frames decay on slide 2:** three picture-frame SVGs crossfade in step with "Pain. Brokenness. Silence." Glow swell on slide 3 is a scaled radial gradient. Slide 4 gets a slow zoom on a dimmed background image.

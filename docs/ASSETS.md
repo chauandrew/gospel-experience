@@ -36,6 +36,6 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 ## Used
 Downloaded in Phase 3 into `public/` (Course 101, with permission):
 - `audio/Silent_Place.mp3`, `audio/BGM_Downward_Spiral.mp3`, `audio/BGM_Ending.mp3` (not yet wired, Phase 5)
-- `svg/frame-normal.svg`, `svg/frame-damaged.svg`, `svg/frame-broken.svg` (Phase 4)
-- `lottie/clickcircle.json` (Phase 4)
+- `svg/frame-normal.svg`, `svg/frame-damaged.svg`, `svg/frame-broken.svg` (USED: slide 2 decay)
+- `lottie/clickcircle.json` (NOT used: full-screen off-center comp)
 - `img/sky.png` (used as slide 4 bg, very dim), `img/shooting-star.png`, `img/leaves.png` (unused so far)
