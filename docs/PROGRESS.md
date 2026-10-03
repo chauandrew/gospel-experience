@@ -10,19 +10,22 @@ See `docs/PLAN.md` for phase details and recommended model per phase.
 - [x] Phase 5: Audio
 - [x] Phase 6: Idle, reset, finale, counter
 - [x] Phase 7: PWA + offline
-- [ ] Phase 8: Device QA + polish
-- [ ] Phase 9: Kiosk deploy (manual)
-- [ ] Phase 10 (optional): Particles
+- [ ] Phase 8 (human, iPad): Device QA + polish
+- [ ] Phase 9 (human, see docs/KIOSK.md): Kiosk deploy (manual)
+- [ ] Phase 10 (optional): Particles (not built, see notes)
 
 ## Next agent start here
-Phase 8: device QA + polish (human on a real iPad, then Sonnet/Opus for fixes). Phases 5-7 shipped together: audio (`src/audio.js`), idle reset + finale + counter (`src/idle.js`, `src/counter.js`, wiring in `src/main.js`), PWA (`vite.config.js`, `src/sw.js`, `public/icons/`). Checklist for the iPad:
+Waiting on the human: Phase 8 device QA (checklist below) and Phase 9 (`docs/KIOSK.md`). Nothing else is blocked on code. When the human reports iPad findings, fix them in a small PR (Sonnet 5.5; Opus 5.5 only for hard scroll-snap/audio bugs).
+
+Phase 8 iPad checklist:
 1. Open the Vercel URL in Safari, Add to Home Screen, launch from the icon (standalone).
-2. Tap Begin with headphones on: music must start. Scroll: tracks should crossfade (ambient to tense on beat 2, to swell on beat 3).
-3. Airplane mode, fully close the app, reopen: must load and play audio (precache + Range 206 handling).
+2. Tap Begin with headphones on: music must start. Scroll: tracks crossfade (ambient, tense on beat 2, swell on beat 3).
+3. Airplane mode, fully close the app, reopen: must load and play audio.
 4. Walk away mid-experience: reset to gate after 20s (10s on finale), audio fades out. Tap Done: same.
-5. Check pacing (beat durations), scroll-snap feel, no rubber-band/zoom/selection, Lottie not used.
-6. Read the count: Safari Web Inspector from a Mac (Settings > Safari > Advanced > Web Inspector on iPad) then `localStorage.getItem('gx-completions')`.
-Updates: new versions wait until the app is fully closed and reopened (registerType 'prompt', no reload prompt UI). To force an update on an iPad: swipe the app away, reopen while online, close again, reopen.
+5. Check pacing, scroll-snap feel, no rubber-band/zoom/selection, slide 4 backdrop legibility, glow beat.
+6. Tune `MASTER` in `src/audio.js` after hearing it.
+
+Phase 10 (particles) intentionally not built: it only makes sense after seeing real iPad frame rate, and the motion is already rich. Add only if the human asks.
 
 ## Known issues / device test results
 - Fonts: fontsource latin subsets only; no Devanagari etc. Keep it that way for precache size.
@@ -33,6 +36,7 @@ Updates: new versions wait until the app is fully closed and reopened (registerT
 - Idle verified (2s override reset to gate) and counter incremented once on reaching finale.
 - Master gain is 0.6 in `src/audio.js` (`MASTER`); tune after hearing it in headphones.
 - The Chrome automation tab is `visibilityState: hidden`, so requestAnimationFrame is paused and animations cannot be watched live. QA was done by seeking timelines (`window.__fx.seek`) and screenshotting after a flush. Real-time smoothness and timing still need a real iPad check (Phase 8).
-- `lottie-web` is installed but unused. ClickCircle Lottie is a full-screen 1440x1024 comp with off-center targets, unsuitable as a scroll hint; hint is CSS (pill label + line). Decide in Phase 8 whether to drop the dependency.
+- `lottie-web` was removed (unused). ClickCircle Lottie is a full-screen 1440x1024 comp with off-center targets, unsuitable as a scroll hint; hint is CSS. Lottie files stay in `public/lottie/` but are excluded from precache.
+- No Vercel deployment was visible via the GitHub API when checked; confirm the Vercel project is connected to the repo.
 - Slide 4 backdrop (`sky.png`) is a bright white image dimmed with CSS filter; check legibility on iPad.
 - Beat durations (s): 2.4, 5.7, 2.8, 14 (slow bg zoom), 3.9. Tune pacing on device.
