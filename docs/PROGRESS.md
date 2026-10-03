@@ -3,7 +3,7 @@
 See `docs/PLAN.md` for phase details and recommended model per phase.
 
 - [x] Phase 0: Repo + docs foundation (branch `init-plan`)
-- [ ] Phase 1: Scaffold + Vercel pipeline
+- [x] Phase 1: Scaffold (Vercel connection is manual, see below)
 - [ ] Phase 2: Reference study + style (STYLE.md, chosen assets)
 - [ ] Phase 3: Assets + gate + shell (scroll-snap, slides.js)
 - [ ] Phase 4: Motion
@@ -15,7 +15,7 @@ See `docs/PLAN.md` for phase details and recommended model per phase.
 - [ ] Phase 10 (optional): Particles
 
 ## Next agent start here
-Phase 1. Needs a GitHub remote first (none configured yet) and for `init-plan` to be merged or set as the base branch, since `main` has no commits. Then scaffold Vite vanilla, add `gsap lottie-web vite-plugin-pwa`, connect Vercel.
+Phase 2 (reference study + style, Opus 5.5). Phase 1 left a blank Vite app (`npm run dev`, `npm run build`). Human still needs to import the GitHub repo into Vercel (framework preset Vite, defaults) and confirm the preview URL opens on an iPad. `vite-plugin-pwa` is installed but not wired until Phase 7.
 
 ## Known issues / device test results
 None yet.
