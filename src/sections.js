@@ -25,10 +25,10 @@ export function renderSections(scroller, progress, slides, onDone) {
     if (s.frames) {
       const f = el('div', s.fit === 'contain' ? 'frames contain' : 'frames')
       s.frames.forEach((art) => {
-        const { src, dim } = typeof art === 'string' ? { src: art } : art
+        const { src, dim, sat } = typeof art === 'string' ? { src: art } : art
         const img = el('img')
         img.src = src
-        if (dim) img.style.filter = `brightness(${dim}) saturate(0.9)`
+        if (dim || sat !== undefined) img.style.filter = `brightness(${dim ?? 0.5}) saturate(${sat ?? 0.9})`
         img.alt = ''
         // portrait art (e.g. the whisper illustration) is shown whole instead of cropped
         img.addEventListener('load', () => img.naturalHeight > img.naturalWidth && img.classList.add('tall'))

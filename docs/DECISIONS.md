@@ -81,3 +81,9 @@ Format: date, decision, why, alternatives rejected.
 - **Slide 1 opens on the green garden** (the sunset-hills art looked like a dead world), then a bright coast, then people. Removed `genesis-dawn.svg`.
 - **Slide 2 pacing slowed**: 1.3s before the first word (was 0.4), 2.2s between words (was 1.1), art crossfade 1.6s. Tunable constants at the top of `src/fx.js`.
 - **Real cause of "only a portion of the image" fixed**: frame images lived in a CSS grid cell, and the portrait whisper art inflated the cell to about 1500px tall, so every other image was cropped from a stretched box. Frames are now absolutely positioned. Slide 2 also uses `fit: 'contain'` (whole image, soft edges); other slides still fill with `cover`.
+
+## 2026-10-03 (flip, auto-advance, darker comparison)
+
+- **Creation images flipped**: coast first, then garden, then people.
+- **Light beat auto-advances** (`auto: 2.5` in `slides.js`): 2.5s after its text lands it glides to the next beat with a smooth programmatic scroll (works while manual input is locked). No SCROLL hint on that beat. Any beat can opt in. Revisiting it by scrolling back shows it complete and does not re-advance.
+- **Comparison art kept but made cold**: photo wall at brightness 0.3 and saturation 0.3 (`{ src, dim, sat }` frame option) so it reads as envy, not joy.

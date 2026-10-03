@@ -27,7 +27,7 @@ const ART_FADE = 1.6 // artwork crossfade
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
 // Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
-function buildTimeline(sec) {
+function buildTimeline(sec, slide) {
   const eyebrow = sec.querySelector('.eyebrow')
   const heads = q(sec, '.headline').map(splitWords) // one word-array per headline = one stage each
   const words = heads.flat()
@@ -38,7 +38,7 @@ function buildTimeline(sec) {
   const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames img')
   const glow = sec.querySelector('.glow')
-  const hint = sec.querySelector('.hint')
+  const hint = slide.auto ? null : sec.querySelector('.hint') // auto beats move on by themselves
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
@@ -102,10 +102,12 @@ function buildTimeline(sec) {
     tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
     textEnd = at + 0.8
   }
-  // Scrolling is released only once the SCROLL hint has fully appeared.
+  // Scrolling is released only once the SCROLL hint has fully appeared. Auto beats instead advance
+  // on their own after a short hold.
   const hintAt = textEnd + 0.3
   if (hint) tl.to(hint, { opacity: 1, duration: 0.6 }, hintAt)
-  return { tl, unlockAt: hintAt + (hint ? 0.6 : 0) }
+  const unlockAt = slide.auto ? textEnd + slide.auto : hintAt + (hint ? 0.6 : 0)
+  return { tl, unlockAt, auto: !!slide.auto }
 }
 
 export function initFx(scroller, slides, onBeat = () => {}) {
@@ -132,6 +134,11 @@ export function initFx(scroller, slides, onBeat = () => {}) {
     seen.add(i)
     setLocked(false)
   }
+  // Auto beats: glide to the next beat (programmatic scrolling still works while input is locked).
+  const advance = (i) => {
+    seen.add(i)
+    if (beats[i + 1]) scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
+  }
   // Lock right away; add overflow hidden once the snap has settled, so we never freeze the scroller
   // between two beats while momentum is still carrying it.
   const lockWhenSettled = (i) => {
@@ -154,8 +161,8 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   }
 
   beats.forEach((sec, i) => {
-    const { tl, unlockAt } = buildTimeline(sec)
-    tl.call(() => unlock(i), null, unlockAt)
+    const { tl, unlockAt, auto } = buildTimeline(sec, slides[i])
+    tl.call(() => (auto ? advance(i) : unlock(i)), null, unlockAt)
     timelines.push(tl)
     ScrollTrigger.create({
       scroller,
