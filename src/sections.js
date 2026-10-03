@@ -16,7 +16,22 @@ export function renderSections(scroller, progress, slides, onDone) {
   slides.forEach((s, i) => {
     const sec = el('section', 'beat')
     sec.dataset.id = s.id
-    if (s.bg) sec.style.setProperty('--bg-image', `url(${s.bg})`)
+    if (s.bg) {
+      const bg = el('div', 'bg')
+      bg.style.backgroundImage = `url(${s.bg})`
+      sec.append(bg)
+    }
+    if (s.frames) {
+      const f = el('div', 'frames')
+      s.frames.forEach((src) => {
+        const img = el('img')
+        img.src = src
+        img.alt = ''
+        f.append(img)
+      })
+      sec.append(f)
+    }
+    if (s.fx === 'glow') sec.append(el('div', 'glow'))
     if (s.eyebrow) sec.append(el('p', 'eyebrow', s.eyebrow))
     s.text.forEach((t) => sec.append(el('p', 'headline', t)))
     if (s.reveal) {
@@ -29,6 +44,11 @@ export function renderSections(scroller, progress, slides, onDone) {
       const b = el('button', 'btn', s.button)
       b.addEventListener('click', onDone)
       sec.append(b)
+    }
+    if (s.hint) {
+      const h = el('div', 'hint')
+      h.append(el('span', null, s.hint), el('i'))
+      sec.append(h)
     }
     scroller.append(sec)
     progress.append(el('span', i === 0 ? 'dash active' : 'dash'))
