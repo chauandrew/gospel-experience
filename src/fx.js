@@ -45,8 +45,8 @@ function buildTimeline(sec) {
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
   let t = 0
   if (glow) {
-    tl.to(glow, { opacity: 1, scale: 1.4, duration: 2.8, ease: 'power2.inOut' }, 0)
-    t = 0.9 // let the light swell before the words land
+    tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)
+    t = 2.4 // let the light swell before the words land
   }
   if (bg) {
     tl.to(bg, { opacity: ART, duration: 1.5 }, 0)

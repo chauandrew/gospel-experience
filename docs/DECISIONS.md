@@ -54,3 +54,8 @@ Format: date, decision, why, alternatives rejected.
 
 - **Scroll is locked until a beat's text has fully landed.** `#scroller` gets `overflow-y: hidden` once the snap settles (polls `scrollTop == offsetTop`, so it never freezes between beats) and releases at the timeline's `unlockAt` (last text + 0.3s). A "SCROLL" hint fades in at that moment. Beats already read this run show complete instantly if you scroll back (no replay, no lock). The finale never locks. Rejected: scrubbing text with scroll (no scroll range inside a snapped beat).
 - **Each beat has real artwork** from Course 101 ch1/ch2 (see `docs/ASSETS.md`), dimmed with CSS (`dim` per slide in `slides.js`) and slowly zoomed. Slide 2 uses three crossfading images instead of the picture-frame SVGs: a garden darkening into the ruined city.
+
+## 2026-10-03 (finale art + slower glow)
+
+- **Finale art is now a warm sunrise** (`sunrise.svg`) instead of the pale arch hall: warmer and more inviting after the green hills. Alternatives are listed in `docs/ASSETS.md`.
+- **Glow swell slowed from 2.8s to 5.5s** (sine in/out), words land after 2.4s (was 0.9s). Adds about 1.5s to the forced wait on that beat.

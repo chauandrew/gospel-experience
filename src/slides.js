@@ -54,7 +54,7 @@ export const slides = [
     text: ["You've read the preview. Now step inside."],
     cta: 'Take off your headphones and ask for your pass at the counter.',
     button: 'Done',
-    bg: '/img/arch.svg',
+    bg: '/img/sunrise.svg',
     idle: 10,
   },
 ]

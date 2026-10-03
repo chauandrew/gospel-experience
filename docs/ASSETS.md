@@ -38,7 +38,8 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 - `genesis-dusk.svg` (1-03), `genesis-fall.svg` (1-04), `broken-world.svg` (ch2_broken_world-new): slide 2, crossfade in step with Pain / Brokenness / Silence
 - `night-sky.jpg` (ch1_night-sky-100vh): slide 3, darkness before the light swell
 - `hills.jpg` (ch2_intro_v4): slide 4, hopeful landscape for "rescue"
-- `arch.svg` (wall-w-o-arch): finale, "step inside"
+- `sunrise.svg` (ch5a-sunny-desert_3): finale, warm sunrise for "step inside" (replaced `arch.svg`)
+- Other finale/slide-3 candidates found (ch3-7, not downloaded into repo; fetch from the cdn host): `man-kneel-before-god.png` (rays of light on a kneeling figure), `God_appears.png` / `god_appears_w_one_person.png` (sun burst over a dark city: would suit slide 3), `c06-s02-gift_offer.svg` (an offered hand/gift), `king-maiden-intro.svg`, `c05-s05_wreckage_light.svg`, ch7 night-sky van photo. Note several PNGs are small (about 480px).
 - Considered and rejected: Bethlehem and cave PNGs (477px, too small for full bleed), hell-door and sin-room art (too dark/heavy), picture-frame SVGs (replaced by the full-bleed set), sky.png (too bright behind white text).
 - Perf watch: `broken-world.svg` is 611 KB and is scaled by an animation. If the iPad stutters, rasterize it to WebP at 2048px wide.
 
