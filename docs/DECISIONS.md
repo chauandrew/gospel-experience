@@ -43,3 +43,9 @@ Format: date, decision, why, alternatives rejected.
 - **Completion counter** = reached finale once per run, in localStorage. No on-screen readout (hidden staff UI was declined); read via Safari Web Inspector.
 - **PWA: `injectManifest` with a custom `src/sw.js`, classic (iife) worker, `registerType: 'prompt'`** so updates apply only after the app is fully closed. Custom route answers `.mp3` with `createPartialResponse` from the precache so iOS Range requests get 206. Unused borrowed assets (Lottie json, two images) are excluded from precache. Total precache about 5.9 MB.
 - **Icons are generated placeholders** (yellow ring on black). Replace with real art if wanted.
+
+## 2026-10-03 (wrap-up)
+
+- **Removed `lottie-web`** (no Lottie used). Re-add only if a beat needs one.
+- **Phase 10 particles not built**: needs real iPad frame-rate data first; adds heat/battery risk for an event kiosk.
+- **Added `README.md` and `docs/KIOSK.md`** (event runbook: install, Guided Access, offline check, updates, reading the counter).
