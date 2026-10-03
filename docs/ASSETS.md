@@ -19,5 +19,14 @@ Hosts: `https://course101-online.s3.amazonaws.com/assets/` and `https://cdn.prod
 | Lottie | `c101-online-chapter-4a-lotties/en/DownwardSpiral.json` | ? | tension |
 | SVG | ch2 picture frames: `pictureframe_normal_v3`, `slightlydamaged_v5`, `heavydamaged_v9` (cdn) | small | Slide 2 decay |
 
+## Chosen for v1 (Phase 2 decision, download in Phase 3)
+- Ambient (gate to Slide 2): `Silent_Place.mp3`
+- Tension (Slide 2): `BGM_Downward_Spiral.mp3` (optionally layer `SFX_Heartbeat_Loop.mp3`)
+- Pivot and finale (Slide 3 on): `BGM_Ending.mp3` (crossfade in at Slide 3)
+- SVG: the three ch2 picture frames (normal, slightly damaged, heavy damaged) for the Slide 2 decay
+- Lottie: `clickcircle_v5.json` as the scroll/tap hint; `ch1-soul.json` and `DownwardSpiral.json` are previews-to-judge, drop if they clash with dark theme or stutter
+- Fonts are not borrowed: `@fontsource/poppins`, `@fontsource/roboto` from npm (OFL)
+- Total audio about 6.4 MB precached
+
 ## Used
-None yet.
+None yet (nothing downloaded until Phase 3).
