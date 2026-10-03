@@ -35,3 +35,11 @@ Format: date, decision, why, alternatives rejected.
 - **Word gaps via CSS margin on `.w`, not text nodes.** Appended space text nodes lost the gap between the last two words in the live DOM (root cause not found), so `.w { margin-right: .35em }` replaces them.
 - **Scroll hint is CSS, not the ClickCircle Lottie** (see PROGRESS notes).
 - **Frames decay on slide 2:** three picture-frame SVGs crossfade in step with "Pain. Brokenness. Silence." Glow swell on slide 3 is a scaled radial gradient. Slide 4 gets a slow zoom on a dimmed background image.
+
+## 2026-10-03 (Phases 5-7, bundled in one PR at the user's request)
+
+- **Audio: all three tracks start inside the Begin tap and run silent; scroll only crossfades gains** (2s ramps, master 0.6). iOS only allows `play()` from a user gesture, and scrolling is not one. Revives on next touch/visibility if iOS suspends the context. Rejected: decoding to AudioBuffers (about 150 MB RAM), starting tracks on demand.
+- **Idle: 20s default, per-beat override (`idle` in slides.js; finale 10s). Any touch or scroll resets it; timeout resets to the gate and fades audio.**
+- **Completion counter** = reached finale once per run, in localStorage. No on-screen readout (hidden staff UI was declined); read via Safari Web Inspector.
+- **PWA: `injectManifest` with a custom `src/sw.js`, classic (iife) worker, `registerType: 'prompt'`** so updates apply only after the app is fully closed. Custom route answers `.mp3` with `createPartialResponse` from the precache so iOS Range requests get 206. Unused borrowed assets (Lottie json, two images) are excluded from precache. Total precache about 5.9 MB.
+- **Icons are generated placeholders** (yellow ring on black). Replace with real art if wanted.

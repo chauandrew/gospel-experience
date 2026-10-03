@@ -72,7 +72,7 @@ function buildTimeline(sec, slide) {
   return tl
 }
 
-export function initFx(scroller, slides) {
+export function initFx(scroller, slides, onBeat = () => {}) {
   const timelines = []
   scroller.querySelectorAll('.beat').forEach((sec, i) => {
     const tl = buildTimeline(sec, slides[i])
@@ -82,8 +82,8 @@ export function initFx(scroller, slides) {
       trigger: sec,
       start: 'top 55%',
       end: 'bottom 45%',
-      onEnter: () => tl.restart(),
-      onEnterBack: () => tl.restart(),
+      onEnter: () => (tl.restart(), onBeat(i)),
+      onEnterBack: () => (tl.restart(), onBeat(i)),
     })
     // Reset only when the beat is completely off screen so text never pops mid-transition.
     ScrollTrigger.create({
@@ -102,6 +102,7 @@ export function initFx(scroller, slides) {
       ScrollTrigger.refresh()
       timelines.forEach((tl) => tl.pause(0))
       timelines[0].restart()
+      onBeat(0)
     },
     reset() {
       timelines.forEach((tl) => tl.pause(0))
