@@ -1,5 +1,12 @@
 // All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
-// fx / music / bg are consumed in later phases (motion, audio).
+// fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
+// Music files are Course 101 tracks (see docs/ASSETS.md).
+export const tracks = {
+  ambient: '/audio/Silent_Place.mp3',
+  tense: '/audio/BGM_Downward_Spiral.mp3',
+  swell: '/audio/BGM_Ending.mp3',
+}
+
 export const gate = {
   text: ['Put on your headphones.'],
   button: 'Begin',
