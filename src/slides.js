@@ -52,7 +52,7 @@ export const slides = [
   },
   {
     id: 'invite',
-    text: ["The Gospel is the story of how God came to rescue us from our brokenness and sin."],
+    text: ["The Gospel is the story of how God came to rescue us from our brokenness and sin"],
     fx: 'pinReveal',
     bg: '/img/hills.jpg',
     dim: 0.55,
@@ -61,8 +61,8 @@ export const slides = [
   },
   {
     id: 'finale',
-    text: ["See it for yourself."],
-    cta: 'Take off your headphones and get your pass at the counter.',
+    text: ["See it for yourself"],
+    cta: 'Take off your headphones and get your pass at the counter',
     button: 'Done',
     bg: '/img/sunrise.svg',
     idle: 10,
