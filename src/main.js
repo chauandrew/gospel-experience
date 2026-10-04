@@ -7,6 +7,7 @@ import '@fontsource/trirong/latin-400-italic.css'
 import './style.css'
 import { gate, slides, tracks } from './slides.js'
 import { renderGate, renderSections, resetProgress } from './sections.js'
+import { gsap } from 'gsap'
 import { initFx } from './fx.js'
 import { createAudio } from './audio.js'
 import { createIdle } from './idle.js'
@@ -92,7 +93,7 @@ const fx = initFx(
   (i) => audio.cue(slides[i].music),
 )
 
-if (import.meta.env.DEV) Object.assign(window, { __fx: fx, __audio: audio, __idle: idle })
+if (import.meta.env.DEV) Object.assign(window, { __fx: fx, __audio: audio, __idle: idle, __gsap: gsap })
 
 // Spacebar works only on the two end screens: Begin on the gate, Reset on the finale. Mid-run it does nothing.
 addEventListener('keydown', (e) => {

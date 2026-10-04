@@ -21,7 +21,7 @@ Waiting on the human: merge the open PR, confirm the Vercel project is connected
 - Tap Begin (or press Space) on the gate: music starts in that tap, the run begins about 1.4s later.
 - No manual scrolling. The scroller is overflow hidden and every beat except the last glides to the next on its own once its text has landed plus a hold (`auto` in `src/slides.js`). Beats: creation, man, tension, light/Gospel, finale.
 - The finale shows "See it for yourself", the CTA and a Reset button. Reset, Space, or 15s idle returns to the gate and stops the audio. A mute button (top right) is shown during a run and clears on Reset.
-- Pace is set by `SPEED` (2.0) in `src/fx.js` plus a per-beat `speed`, `auto`, `lead` and `musicAt` in `slides.js`. Estimated run from the Begin tap to the Reset button: about 22-24s (timeline math, not timed live).
+- Pace is real seconds in the constants at the top of `src/fx.js` (`WORD`, `STAGGER`, `STAGE_GAP`, `REVEAL_*`, `HOLD`) plus per-beat `speed`, `auto`, `lead` and `musicAt` in `slides.js`. Run from the Begin tap to the Reset button: about 24s by a simulated clock (beats leave at 3.6, 3.5, 6.7 and 4.3s, finale text 1.7s, plus the 1.4s gate fade and the flips). A stopwatch run before the fix measured 55s; the earlier `SPEED` setting never worked (see DECISIONS).
 - Music: ambient on beats 1-2, switches to tense when "Then something happened" lands (`musicAt: 1`), swell on the light/Gospel beat. The track being left is low-passed as it fades.
 - Quotes: wrap words in `_underscores_` in slide text for italics. Older lines dim to 45% when the next one lands.
 
@@ -32,7 +32,7 @@ Waiting on the human: merge the open PR, confirm the Vercel project is connected
 4. Mute button works and clears on Reset. Hardware volume buttons still control loudness.
 5. Airplane mode, fully close the app, reopen: must load and play audio.
 6. Reset button, Space (with a keyboard) and the 15s finale idle all return to the gate, audio fades out.
-7. Check reading time (about 17 words in 3.5s on the first two beats), image legibility under the text, and tune `SPEED` / `auto`. Tune `MASTER` in `src/audio.js` after hearing it.
+7. Check reading time (about 17 words in 3.5s on the first two beats), image legibility under the text, and tune the `fx.js` timing constants / each beat's `auto`. Tune `MASTER` in `src/audio.js` after hearing it.
 
 Phase 10 (particles) intentionally not built: it only makes sense after seeing real iPad frame rate, and the motion is already rich. Add only if the human asks.
 
