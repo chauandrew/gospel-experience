@@ -138,3 +138,4 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-03 (mute button)
 
 - **Mute button** (`#mute`, top right, 48px, shown only during a run): toggles `audio.setMuted` (master gain ramps to 0 and back to 0.6 in 0.25s). Mute state clears on Reset and on every Begin, so one student's choice never carries to the next. It is a master-level mute only; the iPad's hardware volume is still the real volume control.
+- **Man beat opener is a newborn with family** (`newborn.jpg`, cropped from the ch7 collage) instead of the valley: new life fits "created man in his own image". Soft at iPad size because it is a 1000px crop; if it looks too blurry, find a higher-res source or switch back to `eden-valley.jpg` (git history).
