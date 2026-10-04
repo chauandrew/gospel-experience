@@ -30,7 +30,7 @@ const WORD = 0.6 // fade-in of a word / a line stepping back / an artwork crossf
 const STAGGER = 0.08 // delay between words of a line
 const STAGE_GAP = 0.65 // pause after a line has landed, before the next line starts
 const REVEAL_LEAD = 0.85 // pause between the headline landing and the first revealed word
-const REVEAL_GAP = 1.05 // seconds between revealed words (Comparison Isolation Betrayal)
+const REVEAL_GAP = 1.36 // pause around each revealed word: between words AND after the last one before the beat leaves, so all three pauses are even (tension runs at 0.85x, so about 1.6s real)
 const OLD = 0.45 // opacity a line sinks to once the next one lands, so the eye follows the newest text
 const HOLD = 1.6 // default seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 
@@ -85,7 +85,7 @@ function buildTimeline(sec, slide) {
       tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: WORD }, at)
       if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: WORD }, at + REVEAL_GAP)
     })
-    end += (reveal.length - 1) * REVEAL_GAP + WORD // text is done when the last word has landed, not a gap later
+    end += reveal.length * REVEAL_GAP // one gap after the last word too, so the exit pause matches the gaps between words
   }
 
   // Artwork crossfades in step: one image per headline stage, then one per reveal word. A bg is already the first image, so frames then

@@ -18,7 +18,7 @@ export const tracks = {
 
 export const gate = {
   text: ['Headphones on'],
-  sub: '35 seconds', // second line, set in the italic serif so it does not read as one sentence
+  sub: '30 seconds', // second line, set in the italic serif so it does not read as one sentence
   button: 'Begin',
 }
 
@@ -56,7 +56,7 @@ export const slides = [
     musicAt: 1, // the music change starts when headline 1 ("Then something happened") lands, not when the slide opens
     lead: 0.5, // seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
     speed: 0.85, // plays slower than the others: the reading and the three words need room
-    auto: 1.7,
+    auto: 0,
   },
   {
     id: 'pivot',
