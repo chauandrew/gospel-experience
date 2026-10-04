@@ -6,16 +6,20 @@ gsap.registerPlugin(ScrollTrigger)
 const DIM = '#86868b'
 const q = (sec, sel) => [...sec.querySelectorAll(sel)]
 
-// Wrap each word of a headline in a span so words can stagger in.
+// Wrap each word of a headline in a span so words can stagger in. Text between underscores
+// (_like this_, may span several words) is a quote and gets the .quote class (italic).
 function splitWords(p) {
   const words = p.textContent.split(' ')
   p.textContent = ''
+  let quote = false
   // Word gaps come from CSS margin (.w), not text nodes, so they can't collapse.
   return words.map((w) => {
+    if (w.startsWith('_')) quote = true
     const span = document.createElement('span')
-    span.className = 'w'
-    span.textContent = w
+    span.className = quote ? 'w quote' : 'w'
+    span.textContent = w.replace(/^_|_$/g, '')
     p.append(span)
+    if (w.endsWith('_')) quote = false
     return span
   })
 }
