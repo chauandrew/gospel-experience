@@ -20,7 +20,7 @@ export const slides = [
     id: 'genesis',
     eyebrow: 'Genesis 1',
     // Each line lands as its own stage; the artwork changes with it (people arrive at "Very good.")
-    text: ['In the beginning, God created everything…', 'And it was good.', 'Very good.'],
+    text: ['In the beginning, God created...', 'And it was good.', 'It was very good.'],
     // every stage is alive: bright coast, then green garden, then people
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
@@ -44,24 +44,25 @@ export const slides = [
   },
   {
     id: 'pivot',
-    text: ['Into that darkness… light stepped in.'],
+    text: ['Into that darkness, light stepped in.'],
     fx: 'glow',
     music: 'swell',
     bg: '/img/night-sky.jpg',
-    auto: 2.5, // short beat: glides on to the next one by itself this many seconds after the text lands
+    auto: 1.5, // short beat: glides on to the next one by itself this many seconds after the text lands
   },
   {
     id: 'invite',
-    text: ["The Gospel isn't just an ancient book. It's the story of how God came to rescue us."],
+    text: ["The Gospel is the story of how God came to rescue us from our brokenness and sin."],
     fx: 'pinReveal',
     bg: '/img/hills.jpg',
     dim: 0.55,
-    hint: 'Scroll',
+    auto: 2.0 
+    // hint: 'Scroll',
   },
   {
     id: 'finale',
-    text: ["You've read the preview. Now step inside."],
-    cta: 'Take off your headphones and ask for your pass at the counter.',
+    text: ["See it for yourself."],
+    cta: 'Take off your headphones and get your pass at the counter.',
     button: 'Done',
     bg: '/img/sunrise.svg',
     idle: 10,
