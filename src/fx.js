@@ -23,7 +23,7 @@ function splitWords(p) {
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
 const REVEAL_GAP = 1.6 // seconds between revealed words (Comparison. Isolation. Betrayal.)
-const ART_FADE = 1.6 // artwork crossfade
+const ART_FADE = 0.9 // artwork crossfade (same as a word landing)
 const HOLD = 2.5 // default timeline seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
 
@@ -43,13 +43,13 @@ function buildTimeline(sec, slide) {
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
-  if (glow) gsap.set(glow, { opacity: 0, scale: 0.3 })
+  if (glow) gsap.set(glow, { opacity: 0, scale: 0.21 })
   gsap.set(frames, { opacity: 0 })
 
   const tl = gsap.timeline({ paused: true, timeScale: SPEED * (slide.speed ?? 1), defaults: { ease: 'power2.out' } })
   let t = 0
   if (glow) {
-    tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)
+    tl.to(glow, { opacity: 1, scale: 1, duration: 5.5, ease: 'sine.inOut' }, 0)
     t = 1.0 // let the light start to swell before the words land
   }
   if (bg) {
