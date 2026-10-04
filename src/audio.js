@@ -84,6 +84,7 @@ export function createAudio(files) {
       if (!ctx || !name || name === current || !tracks[name]) return
       const prev = current
       current = name
+      if (prev) tracks[name].el.currentTime = 0 // tracks run silent from Begin; start the incoming one from its beginning, not mid-song
       for (const [n, t] of Object.entries(tracks)) ramp(t.gain, n === name ? 1 : 0, fade)
       setCutoff(tracks[name].lowpass, OPEN)
       if (prev) setCutoff(tracks[prev].lowpass, MUFFLED, fade) // the track we leave muffles as it fades
@@ -109,7 +110,7 @@ export function createAudio(files) {
       current,
       muted,
       master: master && +master.gain.value.toFixed(2),
-      tracks: tracks && Object.fromEntries(Object.entries(tracks).map(([n, t]) => [n, { playing: !t.el.paused, gain: +t.gain.gain.value.toFixed(2) }])),
+      tracks: tracks && Object.fromEntries(Object.entries(tracks).map(([n, t]) => [n, { playing: !t.el.paused, time: +t.el.currentTime.toFixed(1), gain: +t.gain.gain.value.toFixed(2) }])),
     }),
   }
 }
