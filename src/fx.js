@@ -85,7 +85,7 @@ function buildTimeline(sec, slide) {
       tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: WORD }, at)
       if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: WORD }, at + REVEAL_GAP)
     })
-    end += reveal.length * REVEAL_GAP
+    end += (reveal.length - 1) * REVEAL_GAP + WORD // text is done when the last word has landed, not a gap later
   }
 
   // Artwork crossfades in step: one image per headline stage, then one per reveal word. A bg is already the first image, so frames then

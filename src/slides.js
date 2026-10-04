@@ -31,14 +31,14 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    auto: 2.0,
+    auto: 1.5,
   },
   {
     id: 'man',
     text: ['Then God created man in his own image.', '_"God blessed them."_', '_"And behold, it was very good."_'],
     // warm valley, then people together, then the golden field
     frames: [{ src: '/img/creation-people.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/eden-valley.jpg', dim: 0.65 }],
-    auto: 2.4,
+    auto: 2.8,
     fx: 'pinReveal',
     music: 'ambient',
   },
