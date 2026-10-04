@@ -1,6 +1,8 @@
 // All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
 // frames entries may be a path or { src, dim, sat } (dim = brightness 0.5, sat = saturation 0.9 by default).
-// auto: timeline seconds to hold after the text lands (real time is this divided by SPEED in fx.js), then advance without scrolling (no SCROLL hint).
+// speed: per-beat multiplier on the global SPEED in fx.js (1.33 = text lands in 0.75 of the time).
+// auto: timeline seconds a beat holds after its text lands before gliding on by itself (real time is this divided by SPEED in fx.js; default 2.5).
+// There is no manual scrolling: every beat but the last advances on its own.
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
 // fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
 // Music files are Course 101 tracks (see docs/ASSETS.md).
@@ -27,7 +29,7 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    hint: 'Scroll',
+    auto: 2.2,
   },
   {
     id: 'man',
@@ -35,9 +37,10 @@ export const slides = [
     text: ['Then God created man in his own image.', 'And God blessed them.', 'And behold, it was very good.'],
     // warm valley, then people together, then the golden field
     frames: [{ src: '/img/eden-valley.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
+    speed: 1.33,
+    auto: 2.4,
     fx: 'pinReveal',
     music: 'ambient',
-    hint: 'Scroll',
   },
   {
     id: 'tension',
@@ -48,7 +51,7 @@ export const slides = [
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',
-    hint: 'Scroll',
+    auto: 2.7,
   },
   {
     id: 'pivot',
@@ -57,7 +60,7 @@ export const slides = [
     music: 'swell',
     // night sky behind the light swelling from the start, then the golden ridge for the Gospel line
     bg: '/img/night-sky.jpg',
-    frames: [{ src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
+    frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1 }],
     auto: 3.2, // glides on to the finale by itself this long after the text lands (timeline seconds, played at SPEED in fx.js)
   },
   {

@@ -29,7 +29,7 @@ Phase 10 (particles) intentionally not built: it only makes sense after seeing r
 
 ## Known issues / device test results
 - Slide 1/2 art changed (see DECISIONS). On iPad check legibility over `creation-people.jpg` and that `alone.svg`'s tiny figure is visible.
-- Scroll lock + hint added (see DECISIONS). Verify on iPad that the lock engages after snap and that a hard flick cannot skip a beat. Total forced reading time before the finale is about 15s (2.7 + 6 + 3 + 4.3).
+- The run now advances by itself (no manual scrolling, no SCROLL hint; see DECISIONS). Verify on iPad: each beat glides to the next after its text lands, the whole run is about 25s, nothing can be scrolled by hand, Done and the 10s finale idle still reset, and the black-square glitch in the light beat is gone (ridge is now a jpg).
 - Fonts: fontsource latin subsets only; no Devanagari etc. Keep it that way for precache size.
 - Done button currently just returns to the gate (full reset/idle/audio fade is Phase 6).
 - Verified in desktop Chrome at 1180x820 only; not yet on a real iPad.

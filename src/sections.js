@@ -50,11 +50,6 @@ export function renderSections(scroller, progress, slides, onDone) {
       b.addEventListener('click', onDone)
       sec.append(b)
     }
-    if (s.hint) {
-      const h = el('div', 'hint')
-      h.append(el('span', null, s.hint), el('i'))
-      sec.append(h)
-    }
     scroller.append(sec)
     progress.append(el('span', i === 0 ? 'dash active' : 'dash'))
   })

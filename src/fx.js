@@ -24,10 +24,11 @@ const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
 const REVEAL_GAP = 1.6 // seconds between revealed words (Comparison. Isolation. Betrayal.)
 const ART_FADE = 1.6 // artwork crossfade
+const HOLD = 2.5 // default timeline seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
-// Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
+// Returns the timeline and `advanceAt`: the moment all text has landed and held, when the run glides on.
 function buildTimeline(sec, slide) {
   const eyebrow = sec.querySelector('.eyebrow')
   const heads = q(sec, '.headline').map(splitWords) // one word-array per headline = one stage each
@@ -39,15 +40,13 @@ function buildTimeline(sec, slide) {
   const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames img')
   const glow = sec.querySelector('.glow')
-  const hint = slide.auto ? null : sec.querySelector('.hint') // auto beats move on by themselves
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
   if (glow) gsap.set(glow, { opacity: 0, scale: 0.3 })
-  if (hint) gsap.set(hint, { opacity: 0 })
   gsap.set(frames, { opacity: 0 })
 
-  const tl = gsap.timeline({ paused: true, timeScale: SPEED, defaults: { ease: 'power2.out' } })
+  const tl = gsap.timeline({ paused: true, timeScale: SPEED * (slide.speed ?? 1), defaults: { ease: 'power2.out' } })
   let t = 0
   if (glow) {
     tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)
@@ -104,67 +103,25 @@ function buildTimeline(sec, slide) {
     tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
     textEnd = at + 0.8
   }
-  // Scrolling is released only once the SCROLL hint has fully appeared. Auto beats instead advance
-  // on their own after a short hold.
-  const hintAt = textEnd + 0.3
-  if (hint) tl.to(hint, { opacity: 1, duration: 0.6 }, hintAt)
-  const unlockAt = slide.auto ? textEnd + slide.auto : hintAt + (hint ? 0.6 : 0)
-  return { tl, unlockAt, auto: !!slide.auto }
+  return { tl, advanceAt: textEnd + (slide.auto ?? HOLD) }
 }
 
 export function initFx(scroller, slides, onBeat = () => {}) {
   const beats = [...scroller.querySelectorAll('.beat')]
   const last = beats.length - 1
   const timelines = []
-  const seen = new Set() // beats whose text has fully landed this run
-  let settleTimer
 
-  // While locked, all scrolling input is refused: wheel, touch drags and scroll keys are cancelled
-  // immediately, and once the snap has settled the scroller also gets overflow hidden.
-  let locked = false
-  const stop = (e) => locked && e.cancelable && e.preventDefault()
-  scroller.addEventListener('wheel', stop, { passive: false })
-  scroller.addEventListener('touchmove', stop, { passive: false })
-  addEventListener('keydown', (e) => {
-    if (locked && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', 'Home'].includes(e.key)) e.preventDefault()
-  })
-  const setLocked = (on) => {
-    locked = on
-    if (!on) scroller.style.overflowY = ''
-  }
-  const unlock = (i) => {
-    seen.add(i)
-    setLocked(false)
-  }
-  // Auto beats: glide to the next beat (programmatic scrolling still works while input is locked).
-  const advance = (i) => {
-    seen.add(i)
-    if (beats[i + 1]) scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
-  }
-  // Lock right away; add overflow hidden once the snap has settled, so we never freeze the scroller
-  // between two beats while momentum is still carrying it.
-  const lockWhenSettled = (i) => {
-    clearInterval(settleTimer)
-    if (i === last || seen.has(i)) return setLocked(false)
-    setLocked(true)
-    settleTimer = setInterval(() => {
-      if (seen.has(i)) return clearInterval(settleTimer)
-      if (Math.abs(scroller.scrollTop - beats[i].offsetTop) < 2) {
-        scroller.style.overflowY = 'hidden'
-        clearInterval(settleTimer)
-      }
-    }, 60)
-  }
+  // There is no manual scrolling: the scroller is overflow hidden (CSS) and every beat but the last
+  // glides to the next one by itself (programmatic scrolling still works on overflow hidden).
+  const advance = (i) => scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
   const enter = (i) => {
-    if (seen.has(i)) timelines[i].progress(1) // already read: show it complete, no replay
-    else timelines[i].restart()
-    lockWhenSettled(i)
+    timelines[i].restart()
     onBeat(i)
   }
 
   beats.forEach((sec, i) => {
-    const { tl, unlockAt, auto } = buildTimeline(sec, slides[i])
-    tl.call(() => (auto ? advance(i) : unlock(i)), null, unlockAt)
+    const { tl, advanceAt } = buildTimeline(sec, slides[i])
+    if (i < last) tl.call(() => advance(i), null, advanceAt)
     timelines.push(tl)
     ScrollTrigger.create({
       scroller,
@@ -172,7 +129,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
       start: 'top 55%',
       end: 'bottom 45%',
       onEnter: () => enter(i),
-      onEnterBack: () => enter(i),
     })
     // Reset only when the beat is completely off screen so text never pops mid-transition.
     ScrollTrigger.create({
@@ -186,9 +142,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   })
 
   const clear = () => {
-    clearInterval(settleTimer)
-    seen.clear()
-    setLocked(false)
     timelines.forEach((tl) => tl.pause(0))
   }
 
@@ -202,9 +155,8 @@ export function initFx(scroller, slides, onBeat = () => {}) {
     reset: clear,
     // Dev/QA: jump beat i's timeline to time t (seconds) without needing rAF.
     seek(i, t) {
-      timelines[i].pause().time(t, false) // false: still fire the unlock callback
+      timelines[i].pause().time(t, false) // false: still fire the advance callback
     },
     durations: () => timelines.map((tl) => tl.duration()),
-    isLocked: () => locked,
   }
 }
