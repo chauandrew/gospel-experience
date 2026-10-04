@@ -52,7 +52,7 @@ export const slides = [
     fx: 'fadeWords',
     music: 'tense',
     lead: 0.8, // timeline seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
-    auto: 2.7,
+    auto: 2.2,
   },
   {
     id: 'pivot',

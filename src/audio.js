@@ -13,6 +13,7 @@ export function createAudio(files) {
   let current
   let stopTimer
   let active = false
+  let muted = false
 
   const ramp = (gain, to, secs) => {
     const t = ctx.currentTime
@@ -64,6 +65,7 @@ export function createAudio(files) {
     start() {
       clearTimeout(stopTimer)
       active = true
+      muted = false
       if (!ctx) init()
       ctx.resume()
       current = undefined
@@ -86,6 +88,12 @@ export function createAudio(files) {
       setCutoff(tracks[name].lowpass, OPEN)
       if (prev) setCutoff(tracks[prev].lowpass, MUFFLED, fade) // the track we leave muffles as it fades
     },
+    // Mute/unmute the master level (the hardware volume stays the iPad's).
+    setMuted(m) {
+      muted = m
+      if (ctx && active) ramp(master, m ? 0 : MASTER, 0.25)
+    },
+    isMuted: () => muted,
     stop() {
       if (!ctx) return
       current = undefined
@@ -99,6 +107,7 @@ export function createAudio(files) {
     state: () => ({
       ctx: ctx && ctx.state,
       current,
+      muted,
       master: master && +master.gain.value.toFixed(2),
       tracks: tracks && Object.fromEntries(Object.entries(tracks).map(([n, t]) => [n, { playing: !t.el.paused, gain: +t.gain.gain.value.toFixed(2) }])),
     }),

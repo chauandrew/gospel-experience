@@ -161,3 +161,23 @@ html, body {
 }
 
 #gate.leaving { opacity: 0; pointer-events: none; }
+
+#mute {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  cursor: pointer;
+}
+
+#mute .slash { display: none; }
+#mute[aria-pressed='true'] .slash { display: block; }
+#mute[aria-pressed='true'] .waves { display: none; }

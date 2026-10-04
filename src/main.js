@@ -16,6 +16,18 @@ const $ = (id) => document.getElementById(id)
 const gateEl = $('gate')
 const scroller = $('scroller')
 const progress = $('progress')
+const muteBtn = $('mute')
+
+const paintMute = (m) => {
+  muteBtn.setAttribute('aria-pressed', m)
+  muteBtn.setAttribute('aria-label', m ? 'Unmute sound' : 'Mute sound')
+}
+muteBtn.addEventListener('click', () => {
+  const m = !audio.isMuted()
+  audio.setMuted(m)
+  paintMute(m)
+  muteBtn.blur() // so a later Space press is not swallowed by the button
+})
 
 let counted = false
 let atFinale = false
@@ -27,6 +39,7 @@ function begin() {
   if (starting) return
   counted = false
   audio.start()
+  paintMute(false)
   audio.cue('ambient', 1.2)
   gateEl.classList.add('leaving')
   starting = setTimeout(() => {
@@ -35,6 +48,7 @@ function begin() {
     gateEl.classList.remove('leaving')
     scroller.hidden = false
     progress.hidden = false
+    muteBtn.hidden = false
     scroller.scrollTop = 0
     resetProgress(progress)
     idle.start()
@@ -51,6 +65,8 @@ function reset() {
   scroller.hidden = true
   scroller.scrollTop = 0
   progress.hidden = true
+  muteBtn.hidden = true
+  paintMute(false)
   gateEl.hidden = false
   resetProgress(progress)
   fx.reset()
