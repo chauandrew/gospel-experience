@@ -30,7 +30,7 @@ const REVEAL_GAP = 1.6 // seconds between revealed words (Comparison. Isolation.
 const OLD = 0.45 // opacity a line sinks to once the next one lands, so the eye follows the newest text
 const ART_FADE = 0.9 // artwork crossfade (same as a word landing)
 const HOLD = 2.5 // default timeline seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
-const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
+const SPEED = 2.0 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
 // Returns the timeline and `advanceAt`: the moment all text has landed and held, when the run glides on.
