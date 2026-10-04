@@ -35,7 +35,7 @@ Direction: dark, high contrast, large typography, generous whitespace, cinematic
 Fonts: self-host via npm `@fontsource/poppins` (700, 500), `@fontsource/roboto` (400, 700), `@fontsource/trirong` (italic 400), Latin subset only. No Google Fonts at runtime.
 
 ## Motion spec
-Note: the bullets below are the original scroll-driven spec. The shipped model is a self-advancing run: each beat is a paused GSAP timeline that plays on entering and the scroller moves on by itself (see `docs/DECISIONS.md`, entries from 2026-10-03, and `src/fx.js`). Still true: one idea per screen, `power2.out`, dim-to-white word landings, edge dash progress, a slow zoom behind the text. Not true any more: scroll-scrubbed text, the SCROLL hint, the glow swell, 30-45s total (it is about 30s now).
+Note: the bullets below are the original scroll-driven spec. The shipped model is a self-advancing run: each beat is a paused GSAP timeline that plays on entering and the scroller moves on by itself (see `docs/DECISIONS.md`, entries from 2026-10-03, and `src/fx.js`). Still true: one idea per screen, `power2.out`, dim-to-white word landings, edge dash progress, a slow zoom behind the text. Not true any more: scroll-scrubbed text, the SCROLL hint, the glow swell, 30-45s total (it is about 35s now).
 - One idea per screen. Each beat is a full-viewport stage (`100svh`), `scroll-snap-align: center`, `scroll-snap-stop: always`.
 - Text reveals are scroll-scrubbed (GSAP ScrollTrigger `scrub: 0.6`): opacity `--text-dim` to `--text` plus `y: 24px` to `0`, line by line (stagger).
 - Easing: `power2.out` for entrances; `none` for scrubbed values. Time-based fades 600-900ms. Glow swell (Slide 3) 1.5-2.5s ease-in-out.

@@ -31,15 +31,14 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    auto: 1.45,
+    auto: 2.0,
   },
   {
     id: 'man',
     text: ['Then God created man in his own image.', '_"God blessed them."_', '_"And behold, it was very good."_'],
     // warm valley, then people together, then the golden field
     frames: [{ src: '/img/creation-people.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/eden-valley.jpg', dim: 0.65 }],
-    speed: 1.33,
-    auto: 1.55,
+    auto: 2.4,
     fx: 'pinReveal',
     music: 'ambient',
   },
@@ -54,7 +53,8 @@ export const slides = [
     music: 'tense',
     musicAt: 1, // the music change starts when headline 1 ("Then something happened") lands, not when the slide opens
     lead: 0.5, // seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
-    auto: 1.45,
+    speed: 0.85, // plays slower than the others: the reading and the three words need room
+    auto: 2.1,
   },
   {
     id: 'pivot',
@@ -64,7 +64,7 @@ export const slides = [
     // night sky, then the golden ridge crossfades in for the Gospel line
     bg: '/img/night-sky.jpg',
     frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1, pos: '100% 25%' }],
-    auto: 2.1, // glides on to the finale by itself this long after the text lands
+    auto: 2.8, // glides on to the finale by itself this long after the text lands
   },
   {
     id: 'finale',
