@@ -19,7 +19,7 @@ export const slides = [
   {
     id: 'genesis',
     eyebrow: 'Genesis 1',
-    text: ['In the beginning, God created...', 'And it was good.'],
+    text: ['In the beginning, God created the heavens and the earth', 'And it was good.'],
     // every stage is alive: bright coast, then green garden
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
@@ -32,8 +32,11 @@ export const slides = [
   {
     id: 'man',
     eyebrow: 'Genesis 2',
-    text: ['Then he paused, and formed man.', 'In his own image.', 'It was very good.'],
-    frames: [{ src: '/img/creation-people.jpg', dim: 0.65 }],
+    text: ['Then God created man in his own image.', 'And God blessed them.', 'And behold, it was very good.'],
+    // garden backdrop; silhouette of a person in it, then people together, then the golden field
+    bg: '/img/eden.jpg',
+    dim: 0.8,
+    frames: [{ src: '/img/man.png', dim: 1.6, sat: 0.9 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
     fx: 'pinReveal',
     music: 'ambient',
     hint: 'Scroll',
