@@ -3,6 +3,7 @@
 // Images change in step with the text: one per headline, then one per reveal word.
 // speed: per-beat playback multiplier (1.33 = this beat's text lands in 0.75 of the time).
 // auto: seconds a beat holds after its text lands before gliding on by itself (divided by the beat's speed; default 1.6).
+// hush: true fades the music to silence when the beat opens (pair with musicAt to bring music back on a line).
 // musicAt: index of the headline that triggers this beat's music crossfade (default: when the beat opens).
 // lead: seconds of art alone before the text starts (default 0).
 // There is no manual scrolling: every beat but the last advances on its own.
@@ -16,14 +17,14 @@ export const tracks = {
 }
 
 export const gate = {
-  text: ['Put on your headphones'],
+  text: ['Headphones on', '35 seconds'],
   button: 'Begin',
 }
 
 export const slides = [
   {
     id: 'genesis',
-    text: ['In the beginning, God created the heavens and the earth.', '_"And God saw that it was good."_'],
+    text: ['In the beginning, God created the heavens and the earth.', '_"And it was good."_'],
     // every stage is alive: bright coast, then flowered hills
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
@@ -31,7 +32,7 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    auto: 2.0,
+    auto: 1.6,
   },
   {
     id: 'man',
@@ -46,8 +47,8 @@ export const slides = [
     id: 'tension',
     text: ['That\'s how it was meant to be', 'Then something happened'],
     reveal: ['Comparison', 'Isolation', 'Betrayal'],
-    // garden behind the first line, dusk when it breaks, then one image per word above
-    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, '/img/genesis-dusk.svg', { src: '/img/photo-wall.svg', dim: 0.3, sat: 0.3 }, { src: '/img/alone-room.svg', dim: 0.8 }, '/img/whisper.svg'],
+    // garden behind the first line, dusk when it breaks, then one image per word: Comparison (a face lit by a phone), Isolation (the empty dusk), Betrayal (a whisper)
+    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, '/img/genesis-dusk.svg', { src: '/img/alone-room.svg', dim: 0.8 }, { src: '/img/genesis-dusk.svg', dim: 0.6 }, { src: '/img/whisper.svg', dim: 0.5, sat: 0.6 }],
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',
@@ -58,9 +59,12 @@ export const slides = [
   },
   {
     id: 'pivot',
-    text: ['But that\'s not how it ends', 'The Gospel is the story of how God stepped in and changed the story'],
+    text: ['But that\'s not how it ends', 'God stepped into the story as Jesus'],
     fx: 'crossfade',
     music: 'swell',
+    hush: true, // the music drops to silence as the beat opens
+    lead: 0.9, // a beat of night sky in silence
+    musicAt: 0, // then the swell starts exactly on "But"
     // night sky, then the golden ridge crossfades in for the Gospel line
     bg: '/img/night-sky.jpg',
     frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1, pos: '100% 25%' }],
@@ -69,7 +73,7 @@ export const slides = [
   {
     id: 'finale',
     text: ["See it for yourself"],
-    cta: 'Get your pass at the counter',
+    cta: 'Walk through the whole story at the interactive exhibit',
     button: 'Reset',
     bg: '/img/desert-city.jpg',
     dim: 0.8,
