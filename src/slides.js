@@ -19,14 +19,22 @@ export const slides = [
   {
     id: 'genesis',
     eyebrow: 'Genesis 1',
-    // Each line lands as its own stage; the artwork changes with it (people arrive at "Very good.")
-    text: ['In the beginning, God created...', 'And it was good.', 'It was very good.'],
-    // every stage is alive: bright coast, then green garden, then people
+    text: ['In the beginning, God created the heavens and the earth', 'And it was good.'],
+    // every stage is alive: bright coast, then green garden
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
       { src: '/img/genesis-garden.svg', dim: 0.75 },
-      { src: '/img/creation-people.jpg', dim: 0.65 },
     ],
+    fx: 'pinReveal',
+    music: 'ambient',
+    hint: 'Scroll',
+  },
+  {
+    id: 'man',
+    eyebrow: 'Genesis 2',
+    text: ['Then God created man in his own image.', 'And God blessed them.', 'And behold, it was very good.'],
+    // warm valley, then people together, then the golden field
+    frames: [{ src: '/img/eden-valley.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
     fx: 'pinReveal',
     music: 'ambient',
     hint: 'Scroll',
@@ -44,20 +52,12 @@ export const slides = [
   },
   {
     id: 'pivot',
-    text: ['Into that darkness, light stepped in.'],
+    text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us.'],
     fx: 'glow',
     music: 'swell',
-    bg: '/img/night-sky.jpg',
-    auto: 1.5, // short beat: glides on to the next one by itself this many seconds after the text lands
-  },
-  {
-    id: 'invite',
-    text: ["The Gospel is the story of how God came to rescue us from our brokenness and sin"],
-    fx: 'pinReveal',
-    bg: '/img/hills.jpg',
-    dim: 0.55,
-    auto: 2.0 
-    // hint: 'Scroll',
+    // night sky with the light swelling, then the golden ridge for the Gospel line
+    frames: [{ src: '/img/night-sky.jpg', dim: 0.5 }, { src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
+    auto: 2.0, // glides on to the finale by itself this many seconds after the text lands
   },
   {
     id: 'finale',
@@ -65,6 +65,6 @@ export const slides = [
     cta: 'Take off your headphones and get your pass at the counter',
     button: 'Done',
     bg: '/img/sunrise.svg',
-    idle: 10,
+    idle: 15,
   },
 ]

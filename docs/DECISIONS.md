@@ -87,3 +87,14 @@ Format: date, decision, why, alternatives rejected.
 - **Creation images flipped**: coast first, then garden, then people.
 - **Light beat auto-advances** (`auto: 2.5` in `slides.js`): 2.5s after its text lands it glides to the next beat with a smooth programmatic scroll (works while manual input is locked). No SCROLL hint on that beat. Any beat can opt in. Revisiting it by scrolling back shows it complete and does not re-advance.
 - **Comparison art kept but made cold**: photo wall at brightness 0.3 and saturation 0.3 (`{ src, dim, sat }` frame option) so it reads as envy, not joy.
+
+## 2026-10-03 (creation of man beat)
+
+- **Genesis split in two**: beat 1 is creation ("In the beginning, God created..." / "And it was good.", coast then garden). New beat 2 `man` (eyebrow "Genesis 2") is the creation of man: "Then he paused, and formed man." / "In his own image." / "It was very good." Copy is drawn from Course 101 ch1 (the "pause" and "own image" lines) and Gen 1:27 / 2:7. Tone rule: plain statements, no sermon voice. Run is now 6 beats.
+- **Art**: one image (`creation-people.jpg`) behind the whole man beat; a frame count lower than the line count is fine, the last frame just stays.
+- **Man beat copy and art (author edit)**: "Then God created man in his own image." / "And God blessed them." / "It was very good." Art follows the lines: Eden garden backdrop with a silhouette fading in, then a collage of people together (hugs, family, friends) for "blessed", then the golden field. Beat 1 line is now "In the beginning, God created the heavens and the earth".
+- **Man beat stage 1 art swapped** to the bright ch2 valley (`eden-valley.jpg`); the silhouette and the dark Eden backdrop were dropped as too gloomy for "made in his image".
+
+## 2026-10-03 (merge pivot and invite)
+
+- **Pivot and invite merged into one beat** (`pivot`): "But that's not how the story ends." then the Gospel line, staged like the other multi-line beats. Glow stays; art crossfades night sky to the golden ridge (`ridge.svg`, Course 101 ch6). Auto-advances to the finale 2.5s after the text lands (the long line needs reading time). `hills.jpg` and the separate `invite` beat were removed. The run is now 5 beats: genesis, man, tension, pivot, finale. Tradeoff: the night sky now fades in with the first line (about 2.6s) rather than at 0s, so the glow swells on black first.
