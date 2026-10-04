@@ -27,6 +27,7 @@ function splitWords(p) {
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
 const REVEAL_GAP = 1.6 // seconds between revealed words (Comparison. Isolation. Betrayal.)
+const OLD = 0.45 // opacity a line sinks to once the next one lands, so the eye follows the newest text
 const ART_FADE = 0.9 // artwork crossfade (same as a word landing)
 const HOLD = 2.5 // default timeline seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
@@ -64,6 +65,7 @@ function buildTimeline(sec, slide) {
   const headStarts = []
   heads.forEach((ws, k) => {
     headStarts.push(cursor)
+    if (k > 0) tl.to(heads[k - 1], { opacity: OLD, duration: 0.9 }, cursor)
     tl.to(ws, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, cursor)
     cursor += 0.9 + 0.12 * ws.length + (k < heads.length - 1 ? 1 : 0)
   })
@@ -73,6 +75,7 @@ function buildTimeline(sec, slide) {
   const revealStarts = []
   if (reveal.length) {
     end += REVEAL_LEAD
+    tl.to(heads[heads.length - 1], { opacity: OLD, duration: 0.7 }, end) // the question steps back as the words arrive
     reveal.forEach((w, i) => {
       const at = end + i * REVEAL_GAP
       revealStarts.push(at)
