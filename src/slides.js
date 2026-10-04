@@ -35,8 +35,8 @@ export const slides = [
   {
     id: 'man',
     text: ['Then God created man in his own image.', '_"God blessed them."_', '_"And behold, it was very good."_'],
-    // Eden garden, then people together, then the golden field
-    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
+    // warm valley, then people together, then the golden field
+    frames: [{ src: '/img/eden-valley.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
     speed: 1.33,
     auto: 2.4,
     fx: 'pinReveal',

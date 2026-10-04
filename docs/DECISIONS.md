@@ -133,3 +133,4 @@ Format: date, decision, why, alternatives rejected.
 - **Pace**: `SPEED` 1.8 to 2.0 in `src/fx.js` (run is about 25s).
 - **Creation image swapped again** to the green ch2 valley (`eden-valley.jpg`); the man beat's first stage went back to `genesis-garden.svg` so two consecutive beats do not open on the same picture. Tension also opens on the garden, on purpose (the world as it was meant to be).
 - **Creation image is now the ch1 Eden river** (`eden-river.jpg`, cropped to 16:9, shown at dim 1.1): vivid green, matches the flat style of the garden. The valley (`eden-valley.jpg`) was dropped from the repo; man's opener stays the garden.
+- **Man beat opener restored** to the ch2 valley (`eden-valley.jpg`, back from git history) after the garden swap; the creation slide keeps the river, tension keeps the garden.
