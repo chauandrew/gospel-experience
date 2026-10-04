@@ -84,10 +84,17 @@ export function createAudio(files) {
       if (!ctx || !name || name === current || !tracks[name]) return
       const prev = current
       current = name
-      if (prev) tracks[name].el.currentTime = 0 // tracks run silent from Begin; start the incoming one from its beginning, not mid-song
+      if (prev !== undefined) tracks[name].el.currentTime = 0 // tracks run silent from Begin; start the incoming one from its beginning, not mid-song
       for (const [n, t] of Object.entries(tracks)) ramp(t.gain, n === name ? 1 : 0, fade)
       setCutoff(tracks[name].lowpass, OPEN)
       if (prev) setCutoff(tracks[prev].lowpass, MUFFLED, fade) // the track we leave muffles as it fades
+    },
+    // Fade every track to silence (the playing one muffles as it goes). The next cue starts its track from the beginning.
+    hush(fade = 0.6) {
+      if (!ctx || current === undefined) return
+      if (current) setCutoff(tracks[current].lowpass, MUFFLED, fade)
+      current = null
+      for (const t of Object.values(tracks)) ramp(t.gain, 0, fade)
     },
     // Mute/unmute the master level (the hardware volume stays the iPad's).
     setMuted(m) {

@@ -87,6 +87,7 @@ const fx = initFx(
   slides,
   (i) => {
     atFinale = i === slides.length - 1
+    if (slides[i].hush) audio.hush()
     if (slides[i].musicAt == null) audio.cue(slides[i].music) // else fx cues it when that headline lands
     idle.setSecs(slides[i].idle)
     if (i === slides.length - 1 && !counted) {

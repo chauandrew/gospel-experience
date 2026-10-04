@@ -153,6 +153,19 @@ Format: date, decision, why, alternatives rejected.
 - **Dead gap after the last tension word removed.** A reveal beat's text was treated as finished one `REVEAL_GAP` after the last word appeared, so tension waited about 0.5s of nothing before its hold even began. Text now ends when the last word has landed (`src/fx.js`). Remaining wait after the last text is the deliberate hold (`auto` divided by the beat's speed): creation 2.0s, man 2.4s, tension 2.5s, light/Gospel 2.8s.
 - **Holds set by the author**: 2.0s real after the last text on creation, man and tension (`auto` 2.0, 2.0, 1.7 because tension plays at 0.85x), 2.5s on the light/Gospel beat (`auto` 2.5). The finale has no hold; it waits for Reset or the 15s idle.
 
+## 2026-10-04 (Opus content/feel/flow review, first batch applied)
+
+- The author accepted items 2, 4, 5, 6, 7 and 8 of the review (items 1, 3, 9 and 10 and the bolder ideas are not applied; man and tension copy stay as they were).
+- **Gospel line**: "But that's not how it ends" / "God stepped into the story as Jesus" (names Jesus, no definition of the word Gospel).
+- **Finale**: "See it for yourself" with the CTA "Walk through the whole story at the interactive exhibit" (no pass mentioned).
+- **Silence before the turn**: pivot has `hush: true`, `lead: 0.9`, `musicAt: 0`. `audio.hush()` fades every track to 0 over 0.6s (the playing track low-passes as it goes) and clears `current`, so the next `cue()` starts its track from the beginning; the swell then starts on "But" about 1.0s into the beat.
+- **Creation**: second line is `_"And it was good."_`, hold 1.6s.
+- **Tension art**: Comparison is `alone-room.svg` (a face lit by a phone), Isolation is the dusk held at dim 0.6, Betrayal is `whisper.svg` darkened (dim 0.5, sat 0.6). `photo-wall.svg` is no longer used and was removed (still in git history).
+- **Gate**: "Headphones on / 35 seconds". The run is about 34s by the simulated clock; if the pace changes, change this line.
+- **Isolation art replaced** (the author did not want the dusk reused): ch1 sky-foreground figure looking out at the night, `isolation.jpg`, dim 0.9. **Holds shortened**: creation `auto` 1.6 to 1.2, man 2.0 to 1.5 (about 0.4s and 0.5s less after "it was good" / "it was very good"). Run is about 33s by the simulated clock.
+- **Gate second line** (`gate.sub`, "35 seconds") is rendered with the `.cta` style (italic serif, yellow) instead of a second all-caps headline, so the gate no longer reads as one sentence.
+- **Even pauses on the three words**: Comparison to Isolation, Isolation to Betrayal, and Betrayal to the beat leaving are now all `REVEAL_GAP` (1.36 timeline seconds, about 1.6s real at tension's 0.85x). Tension `auto` is 0 and the reveal block ends one gap after the last word (before, the first two gaps were about 1.2s and the exit pause after Betrayal about 2.7s). Tension is about 9.7s; the whole run about 33s. **Gate says "30 seconds"** on purpose (the author: close enough).
+
 ## 2026-10-04 (Vercel Web Analytics)
 
 - **`@vercel/analytics` added** (`inject()` in `src/main.js`): page views only, no cookies. It also has to be enabled once in the Vercel dashboard (Project > Analytics > Enable) and the project redeployed. The script loads from `/_vercel/insights/script.js` at runtime, so it only reports while an iPad is online and does nothing in airplane mode (the app itself still works offline). Event-day completions are still counted by the local counter (`gx-completions`, see KIOSK.md); analytics will mostly show installs, updates and any online use. Custom events were not added.
