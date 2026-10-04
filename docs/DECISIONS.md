@@ -87,3 +87,8 @@ Format: date, decision, why, alternatives rejected.
 - **Creation images flipped**: coast first, then garden, then people.
 - **Light beat auto-advances** (`auto: 2.5` in `slides.js`): 2.5s after its text lands it glides to the next beat with a smooth programmatic scroll (works while manual input is locked). No SCROLL hint on that beat. Any beat can opt in. Revisiting it by scrolling back shows it complete and does not re-advance.
 - **Comparison art kept but made cold**: photo wall at brightness 0.3 and saturation 0.3 (`{ src, dim, sat }` frame option) so it reads as envy, not joy.
+
+## 2026-10-03 (creation of man beat)
+
+- **Genesis split in two**: beat 1 is creation ("In the beginning, God created..." / "And it was good.", coast then garden). New beat 2 `man` (eyebrow "Genesis 2") is the creation of man: "Then he paused, and formed man." / "In his own image." / "It was very good." Copy is drawn from Course 101 ch1 (the "pause" and "own image" lines) and Gen 1:27 / 2:7. Tone rule: plain statements, no sermon voice. Run is now 6 beats.
+- **Art**: one image (`creation-people.jpg`) behind the whole man beat; a frame count lower than the line count is fine, the last frame just stays.

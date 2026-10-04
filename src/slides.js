@@ -19,14 +19,21 @@ export const slides = [
   {
     id: 'genesis',
     eyebrow: 'Genesis 1',
-    // Each line lands as its own stage; the artwork changes with it (people arrive at "Very good.")
-    text: ['In the beginning, God created...', 'And it was good.', 'It was very good.'],
-    // every stage is alive: bright coast, then green garden, then people
+    text: ['In the beginning, God created...', 'And it was good.'],
+    // every stage is alive: bright coast, then green garden
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
       { src: '/img/genesis-garden.svg', dim: 0.75 },
-      { src: '/img/creation-people.jpg', dim: 0.65 },
     ],
+    fx: 'pinReveal',
+    music: 'ambient',
+    hint: 'Scroll',
+  },
+  {
+    id: 'man',
+    eyebrow: 'Genesis 2',
+    text: ['Then he paused, and formed man.', 'In his own image.', 'It was very good.'],
+    frames: [{ src: '/img/creation-people.jpg', dim: 0.65 }],
     fx: 'pinReveal',
     music: 'ambient',
     hint: 'Scroll',
