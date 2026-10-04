@@ -26,7 +26,7 @@ export const slides = [
     // every stage is alive: bright coast, then flowered hills
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
-      { src: '/img/eden-valley.jpg', dim: 0.7, sat: 1 },
+      { src: '/img/eden-river.jpg', dim: 1.1, sat: 1.1 },
     ],
     fx: 'pinReveal',
     music: 'ambient',
