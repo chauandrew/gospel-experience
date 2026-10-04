@@ -162,3 +162,5 @@ Format: date, decision, why, alternatives rejected.
 - **Creation**: second line is `_"And it was good."_`, hold 1.6s.
 - **Tension art**: Comparison is `alone-room.svg` (a face lit by a phone), Isolation is the dusk held at dim 0.6, Betrayal is `whisper.svg` darkened (dim 0.5, sat 0.6). `photo-wall.svg` is no longer used and was removed (still in git history).
 - **Gate**: "Headphones on / 35 seconds". The run is about 34s by the simulated clock; if the pace changes, change this line.
+- **Isolation art replaced** (the author did not want the dusk reused): ch1 sky-foreground figure looking out at the night, `isolation.jpg`, dim 0.9. **Holds shortened**: creation `auto` 1.6 to 1.2, man 2.0 to 1.5 (about 0.4s and 0.5s less after "it was good" / "it was very good"). Run is about 33s by the simulated clock.
+- **Gate second line** (`gate.sub`, "35 seconds") is rendered with the `.cta` style (italic serif, yellow) instead of a second all-caps headline, so the gate no longer reads as one sentence.

@@ -7,6 +7,7 @@ function el(tag, className, text) {
 
 export function renderGate(root, gate, onBegin) {
   gate.text.forEach((t) => root.append(el('p', 'headline', t)))
+  if (gate.sub) root.append(el('p', 'cta', gate.sub))
   const btn = el('button', 'btn', gate.button)
   btn.addEventListener('click', onBegin)
   root.append(btn)

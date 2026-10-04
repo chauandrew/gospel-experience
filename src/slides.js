@@ -17,7 +17,8 @@ export const tracks = {
 }
 
 export const gate = {
-  text: ['Headphones on', '35 seconds'],
+  text: ['Headphones on'],
+  sub: '35 seconds', // second line, set in the italic serif so it does not read as one sentence
   button: 'Begin',
 }
 
@@ -32,14 +33,14 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    auto: 1.6,
+    auto: 1.2,
   },
   {
     id: 'man',
     text: ['Then God created man in his own image.', '_"God blessed them."_', '_"And behold, it was very good."_'],
     // warm valley, then people together, then the golden field
     frames: [{ src: '/img/creation-people.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/eden-valley.jpg', dim: 0.65 }],
-    auto: 2.0,
+    auto: 1.5,
     fx: 'pinReveal',
     music: 'ambient',
   },
@@ -47,8 +48,8 @@ export const slides = [
     id: 'tension',
     text: ['That\'s how it was meant to be', 'Then something happened'],
     reveal: ['Comparison', 'Isolation', 'Betrayal'],
-    // garden behind the first line, dusk when it breaks, then one image per word: Comparison (a face lit by a phone), Isolation (the empty dusk), Betrayal (a whisper)
-    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, '/img/genesis-dusk.svg', { src: '/img/alone-room.svg', dim: 0.8 }, { src: '/img/genesis-dusk.svg', dim: 0.6 }, { src: '/img/whisper.svg', dim: 0.5, sat: 0.6 }],
+    // garden behind the first line, dusk when it breaks, then one image per word: Comparison (a face lit by a phone), Isolation (a figure alone, looking out at the night), Betrayal (a whisper)
+    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, '/img/genesis-dusk.svg', { src: '/img/alone-room.svg', dim: 0.8 }, { src: '/img/isolation.jpg', dim: 0.9 }, { src: '/img/whisper.svg', dim: 0.5, sat: 0.6 }],
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',

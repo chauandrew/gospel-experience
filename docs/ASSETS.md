@@ -51,3 +51,4 @@ Downloaded in Phase 3 into `public/` (Course 101, with permission):
 - `svg/frame-normal.svg`, `svg/frame-damaged.svg`, `svg/frame-broken.svg` (removed from repo; replaced by full-bleed art)
 - `lottie/clickcircle.json` (NOT used: full-screen off-center comp)
 - `img/sky.png` (used as slide 4 bg, very dim), `img/shooting-star.png`, `img/leaves.png` (unused so far)
+- `isolation.jpg` (ch1 `ch1_sky-img-foreground.png`, 2000px jpg): tension beat, Isolation: a figure seen from behind in a dark opening, looking at a starry night sky.
