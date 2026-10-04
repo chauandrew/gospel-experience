@@ -1,6 +1,6 @@
 # Gospel Experience Teaser
 
-Offline iPad kiosk web app (vanilla JS + Vite, GSAP, lottie-web, vite-plugin-pwa). Scroll-driven dark cinematic story, ambient music, idle auto-reset. Runs on 2 iPads (Safari, Guided Access) at a noisy retreat booth.
+Offline iPad kiosk web app (vanilla JS + Vite, GSAP, vite-plugin-pwa). Self-advancing dark cinematic story (no manual scrolling, about 25s), music, mute button, idle auto-reset. Runs on 2 iPads (Safari, Guided Access) at a noisy retreat booth.
 
 ## Start here
 1. Read `docs/PROGRESS.md` (current phase and "next agent start here" notes).

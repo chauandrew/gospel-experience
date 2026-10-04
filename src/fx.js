@@ -6,27 +6,36 @@ gsap.registerPlugin(ScrollTrigger)
 const DIM = '#86868b'
 const q = (sec, sel) => [...sec.querySelectorAll(sel)]
 
-// Wrap each word of a headline in a span so words can stagger in.
+// Wrap each word of a headline in a span so words can stagger in. Text between underscores
+// (_like this_, may span several words) is a quote and gets the .quote class (italic).
 function splitWords(p) {
   const words = p.textContent.split(' ')
   p.textContent = ''
+  let quote = false
   // Word gaps come from CSS margin (.w), not text nodes, so they can't collapse.
   return words.map((w) => {
+    if (w.startsWith('_')) quote = true
     const span = document.createElement('span')
-    span.className = 'w'
-    span.textContent = w
+    span.className = quote ? 'w quote' : 'w'
+    span.textContent = w.replace(/^_|_$/g, '')
     p.append(span)
+    if (w.endsWith('_')) quote = false
     return span
   })
 }
 
+// All timings are real seconds. Per-beat extras live in slides.js: `lead`, `auto`, `speed`, `musicAt`.
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
-const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
-const REVEAL_GAP = 2.2 // seconds between revealed words (Comparison. Isolation. Betrayal.)
-const ART_FADE = 1.6 // artwork crossfade
+const WORD = 0.6 // fade-in of a word / a line stepping back / an artwork crossfade
+const STAGGER = 0.08 // delay between words of a line
+const STAGE_GAP = 0.65 // pause after a line has landed, before the next line starts
+const REVEAL_LEAD = 0.85 // pause between the headline landing and the first revealed word
+const REVEAL_GAP = 1.05 // seconds between revealed words (Comparison Isolation Betrayal)
+const OLD = 0.45 // opacity a line sinks to once the next one lands, so the eye follows the newest text
+const HOLD = 1.6 // default seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
-// Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
+// Returns the timeline and `advanceAt`: the moment all text has landed and held, when the run glides on.
 function buildTimeline(sec, slide) {
   const eyebrow = sec.querySelector('.eyebrow')
   const heads = q(sec, '.headline').map(splitWords) // one word-array per headline = one stage each
@@ -37,37 +46,31 @@ function buildTimeline(sec, slide) {
   const bg = sec.querySelector('.bg')
   const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames img')
-  const glow = sec.querySelector('.glow')
-  const hint = slide.auto ? null : sec.querySelector('.hint') // auto beats move on by themselves
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
-  if (glow) gsap.set(glow, { opacity: 0, scale: 0.3 })
-  if (hint) gsap.set(hint, { opacity: 0 })
   gsap.set(frames, { opacity: 0 })
 
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
-  let t = 0
-  if (glow) {
-    tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)
-    t = 2.4 // let the light swell before the words land
-  }
+  tl.timeScale(slide.speed ?? 1) // per-beat multiplier (timeScale is not a timeline config option, it must be called)
+  const t = slide.lead ?? 0 // seconds the art gets before the text starts
   if (bg) {
-    tl.to(bg, { opacity: ART, duration: 1.5 }, 0)
+    tl.to(bg, { opacity: ART, duration: 1 }, 0)
     tl.to(bg, { scale: 1.1, duration: 14, ease: 'none' }, 0)
   }
   if (framesBox) {
     gsap.set(framesBox, { scale: 1 })
     tl.to(framesBox, { scale: 1.08, duration: 10, ease: 'none' }, 0)
   }
-  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, t)
+  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.5 }, t)
   // Each headline is its own stage, with a pause before the next one lands.
-  let cursor = t + 0.2
+  let cursor = t + 0.13
   const headStarts = []
   heads.forEach((ws, k) => {
     headStarts.push(cursor)
-    tl.to(ws, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, cursor)
-    cursor += 0.9 + 0.12 * ws.length + (k < heads.length - 1 ? 1 : 0)
+    if (k > 0) tl.to(heads[k - 1], { opacity: OLD, duration: WORD }, cursor)
+    tl.to(ws, { opacity: 1, y: 0, duration: WORD, stagger: STAGGER }, cursor)
+    cursor += WORD + STAGGER * ws.length + (k < heads.length - 1 ? STAGE_GAP : 0)
   })
   let end = cursor
 
@@ -75,94 +78,55 @@ function buildTimeline(sec, slide) {
   const revealStarts = []
   if (reveal.length) {
     end += REVEAL_LEAD
+    tl.to(heads[heads.length - 1], { opacity: OLD, duration: WORD }, end) // the question steps back as the words arrive
     reveal.forEach((w, i) => {
       const at = end + i * REVEAL_GAP
       revealStarts.push(at)
-      tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: 0.7 }, at)
-      if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: 0.7 }, at + REVEAL_GAP)
+      tl.to(w, { opacity: 1, y: 0, color: '#fff', duration: WORD }, at)
+      if (i < reveal.length - 1) tl.to(w, { color: DIM, duration: WORD }, at + REVEAL_GAP)
     })
-    end += reveal.length * REVEAL_GAP
+    end += (reveal.length - 1) * REVEAL_GAP + WORD // text is done when the last word has landed, not a gap later
   }
 
-  // Artwork crossfades in step: with the reveal words if there are any (first image sits behind the
-  // headline), otherwise with each headline stage.
-  const starts = reveal.length ? [headStarts[0], ...revealStarts] : headStarts
+  // Artwork crossfades in step: one image per headline stage, then one per reveal word. A bg is already the first image, so frames then
+  // begin with the second headline.
+  const starts = [...(bg ? headStarts.slice(1) : headStarts), ...revealStarts]
   frames.forEach((f, i) => {
-    const at = starts[i] ?? starts[starts.length - 1]
-    tl.to(f, { opacity: ART, duration: ART_FADE }, at)
-    if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: ART_FADE }, at)
+    const at = i === 0 && !bg ? 0 : starts[i] ?? starts[starts.length - 1] // first image never waits for the text
+    tl.to(f, { opacity: ART, duration: WORD }, at)
+    if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: WORD }, at)
   })
   let textEnd = end
   if (cta) {
-    tl.to(cta, { opacity: 1, y: 0, duration: 1 }, end + 0.2)
-    textEnd = end + 1.2
+    tl.to(cta, { opacity: 1, y: 0, duration: 0.65 }, end + 0.13)
+    textEnd = end + 0.8
   }
   if (btn) {
-    const at = end + (cta ? 1.2 : 0.2)
-    tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
-    textEnd = at + 0.8
+    const at = end + (cta ? 0.8 : 0.13)
+    tl.to(btn, { opacity: 1, y: 0, duration: 0.5 }, at)
+    textEnd = at + 0.5
   }
-  // Scrolling is released only once the SCROLL hint has fully appeared. Auto beats instead advance
-  // on their own after a short hold.
-  const hintAt = textEnd + 0.3
-  if (hint) tl.to(hint, { opacity: 1, duration: 0.6 }, hintAt)
-  const unlockAt = slide.auto ? textEnd + slide.auto : hintAt + (hint ? 0.6 : 0)
-  return { tl, unlockAt, auto: !!slide.auto }
+  return { tl, advanceAt: textEnd + (slide.auto ?? HOLD), headStarts }
 }
 
-export function initFx(scroller, slides, onBeat = () => {}) {
+export function initFx(scroller, slides, onBeat = () => {}, onCue = () => {}) {
   const beats = [...scroller.querySelectorAll('.beat')]
   const last = beats.length - 1
   const timelines = []
-  const seen = new Set() // beats whose text has fully landed this run
-  let settleTimer
 
-  // While locked, all scrolling input is refused: wheel, touch drags and scroll keys are cancelled
-  // immediately, and once the snap has settled the scroller also gets overflow hidden.
-  let locked = false
-  const stop = (e) => locked && e.cancelable && e.preventDefault()
-  scroller.addEventListener('wheel', stop, { passive: false })
-  scroller.addEventListener('touchmove', stop, { passive: false })
-  addEventListener('keydown', (e) => {
-    if (locked && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', 'Home'].includes(e.key)) e.preventDefault()
-  })
-  const setLocked = (on) => {
-    locked = on
-    if (!on) scroller.style.overflowY = ''
-  }
-  const unlock = (i) => {
-    seen.add(i)
-    setLocked(false)
-  }
-  // Auto beats: glide to the next beat (programmatic scrolling still works while input is locked).
-  const advance = (i) => {
-    seen.add(i)
-    if (beats[i + 1]) scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
-  }
-  // Lock right away; add overflow hidden once the snap has settled, so we never freeze the scroller
-  // between two beats while momentum is still carrying it.
-  const lockWhenSettled = (i) => {
-    clearInterval(settleTimer)
-    if (i === last || seen.has(i)) return setLocked(false)
-    setLocked(true)
-    settleTimer = setInterval(() => {
-      if (seen.has(i)) return clearInterval(settleTimer)
-      if (Math.abs(scroller.scrollTop - beats[i].offsetTop) < 2) {
-        scroller.style.overflowY = 'hidden'
-        clearInterval(settleTimer)
-      }
-    }, 60)
-  }
+  // There is no manual scrolling: the scroller is overflow hidden (CSS) and every beat but the last
+  // glides (flips) to the next one by itself; programmatic scrolling works on overflow hidden.
+  const advance = (i) => scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
   const enter = (i) => {
-    if (seen.has(i)) timelines[i].progress(1) // already read: show it complete, no replay
-    else timelines[i].restart()
-    lockWhenSettled(i)
+    timelines[i].restart()
     onBeat(i)
   }
 
   beats.forEach((sec, i) => {
-    const { tl, unlockAt, auto } = buildTimeline(sec, slides[i])
-    tl.call(() => (auto ? advance(i) : unlock(i)), null, unlockAt)
+    const { tl, advanceAt, headStarts } = buildTimeline(sec, slides[i])
+    if (i < last) tl.call(() => advance(i), null, advanceAt)
+    // `musicAt: n` cues the beat's music when its n-th headline lands (0 = first) instead of on entering.
+    if (slides[i].musicAt != null) tl.call(() => onCue(i), null, headStarts[slides[i].musicAt])
     timelines.push(tl)
     ScrollTrigger.create({
       scroller,
@@ -170,7 +134,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
       start: 'top 55%',
       end: 'bottom 45%',
       onEnter: () => enter(i),
-      onEnterBack: () => enter(i),
     })
     // Reset only when the beat is completely off screen so text never pops mid-transition.
     ScrollTrigger.create({
@@ -184,9 +147,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   })
 
   const clear = () => {
-    clearInterval(settleTimer)
-    seen.clear()
-    setLocked(false)
     timelines.forEach((tl) => tl.pause(0))
   }
 
@@ -200,9 +160,10 @@ export function initFx(scroller, slides, onBeat = () => {}) {
     reset: clear,
     // Dev/QA: jump beat i's timeline to time t (seconds) without needing rAF.
     seek(i, t) {
-      timelines[i].pause().time(t, false) // false: still fire the unlock callback
+      timelines[i].pause().time(t, false) // false: still fire the advance callback
     },
+    // Dev/QA: play beat i from its start in the normal clock.
+    play: (i) => timelines[i].restart(),
     durations: () => timelines.map((tl) => tl.duration()),
-    isLocked: () => locked,
   }
 }

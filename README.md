@@ -1,6 +1,6 @@
 # The Gospel Experience (teaser)
 
-Offline iPad kiosk web app: dark, scroll-driven preview with ambient music. Vanilla JS + Vite, GSAP, PWA.
+Offline iPad kiosk web app: a dark, self-advancing (no scrolling) 25-second preview with music. Tap Begin, it plays through five beats, then Reset. Vanilla JS + Vite, GSAP, PWA.
 
 ```
 npm install

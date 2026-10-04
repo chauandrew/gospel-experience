@@ -41,7 +41,7 @@ html, body {
 #scroller {
   position: fixed;
   inset: 0;
-  overflow-y: auto;
+  overflow-y: hidden; /* no manual scrolling: the run advances by itself */
   overscroll-behavior: none;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
@@ -66,7 +66,7 @@ html, body {
 
 .beat > p, .beat > button { position: relative; z-index: 1; }
 
-.bg, .frames, .glow, .hint { position: absolute; pointer-events: none; }
+.bg, .frames { position: absolute; pointer-events: none; will-change: transform, opacity; } /* own GPU layers, so GSAP's per-frame scale/fade does not repaint the whole beat */
 
 .bg {
   inset: 0;
@@ -87,45 +87,9 @@ html, body {
 }
 .frames img.tall { object-fit: contain; inset: 5% 0; height: 90%; filter: brightness(0.6) saturate(0.9); }
 
-.glow {
-  left: 50%;
-  top: 50%;
-  width: 90vmax;
-  height: 90vmax;
-  margin: -45vmax 0 0 -45vmax;
-  background: radial-gradient(circle, rgba(248, 200, 30, 0.38), rgba(248, 200, 30, 0) 60%);
-}
-
 .w { display: inline-block; margin-right: 0.35em; }
 .w:last-child { margin-right: 0; }
-
-.hint {
-  left: 50%;
-  bottom: max(6svh, 32px);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font: 700 16px var(--font-head);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.hint i {
-  width: 2px;
-  height: 48px;
-  background: linear-gradient(var(--accent), transparent);
-  transform-origin: top;
-  animation: hint-line 1.8s ease-in-out infinite;
-}
-
-@keyframes hint-line {
-  0% { transform: scaleY(0); opacity: 1; }
-  70% { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(1); opacity: 0; }
-}
+.w.quote { font-style: italic; }
 
 .eyebrow {
   margin: 0;
@@ -197,3 +161,23 @@ html, body {
 }
 
 #gate.leaving { opacity: 0; pointer-events: none; }
+
+#mute {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  cursor: pointer;
+}
+
+#mute .slash { display: none; }
+#mute[aria-pressed='true'] .slash { display: block; }
+#mute[aria-pressed='true'] .waves { display: none; }

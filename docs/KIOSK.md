@@ -3,7 +3,7 @@
 ## Before the event (at home, on Wi-Fi)
 1. Make sure the latest `main` is deployed (Vercel URL, HTTPS). Open it in Safari on the iPad.
 2. Share > Add to Home Screen. Launch from the new icon (opens full screen, no Safari bar).
-3. Tap Begin once with headphones on. Scroll through to the finale and confirm music plays and crossfades.
+3. Tap Begin once with headphones on. Let the run play by itself (about 25s, nothing to scroll) and confirm music plays and changes mood at "Then something happened".
 4. Close the app fully (swipe up, swipe the app away). Turn on Airplane Mode. Reopen from the icon and run through again. If it loads and plays offline, the cache is good.
 5. Repeat on the second iPad.
 6. Do step 4 again the morning of the event. iOS can evict cached data on a device that is low on storage.
@@ -18,7 +18,7 @@
 ## Starting Guided Access
 1. Open the app from the Home Screen.
 2. Triple-click the side or home button, tap Guided Access, then Start.
-3. Tap Options. Keep Touch on (students scroll). Optionally turn off Motion and Keyboards, and turn off the volume buttons if you want volume locked.
+3. Tap Options. Keep Touch on (students tap Begin, the mute button and Reset; the run itself needs no touch). Optionally turn off Motion, and turn off the volume buttons if you want volume locked. Leave Keyboards on only if you use a keyboard (Space works as Begin on the first screen and Reset on the last).
 4. To exit: triple-click again and enter the passcode.
 
 ## Updating the app
@@ -29,5 +29,6 @@ Count of people who reached the final screen, stored on the iPad only. Connect t
 
 ## If something goes wrong
 - Silent: check the iPad is not muted (ring/silent switch does not affect Web Audio, but volume does) and headphones are connected. Tap anywhere; the app resumes audio on touch.
-- Stuck mid-experience: wait 20s (idle reset), or exit Guided Access and reopen the app.
+- Stuck on the last screen: tap Reset (or wait 15s for the idle reset). The run itself ends by itself in about 25s, so it should never be stuck mid-way; if it is, exit Guided Access and reopen the app.
+- Someone muted the sound: the mute button (top right) clears itself on Reset and on every Begin.
 - Blank or error offline: the cache was evicted. Connect to Wi-Fi, reopen the app once, then it is cached again.
