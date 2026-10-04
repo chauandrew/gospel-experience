@@ -33,10 +33,8 @@ export const slides = [
     id: 'man',
     eyebrow: 'Genesis 2',
     text: ['Then God created man in his own image.', 'And God blessed them.', 'And behold, it was very good.'],
-    // garden backdrop; silhouette of a person in it, then people together, then the golden field
-    bg: '/img/eden.jpg',
-    dim: 0.8,
-    frames: [{ src: '/img/man.png', dim: 1.6, sat: 0.9 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
+    // warm valley, then people together, then the golden field
+    frames: [{ src: '/img/eden-valley.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/creation-people.jpg', dim: 0.65 }],
     fx: 'pinReveal',
     music: 'ambient',
     hint: 'Scroll',
