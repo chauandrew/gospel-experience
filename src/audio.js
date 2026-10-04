@@ -1,6 +1,8 @@
 const MASTER = 0.6 // fixed in-app level; real loudness is the iPad's hardware volume
 const FADE = 2 // seconds, crossfade between tracks
 const STOP_FADE = 1
+const OPEN = 20000 // lowpass cutoff (Hz) when a track is heard normally
+const MUFFLED = 400 // cutoff a track sinks to while it fades out, so a cue sounds like the world closing in
 
 // All tracks are started inside the Begin tap (iOS blocks later play() calls) and kept running
 // silent; cue() just crossfades their gains. Reuses the idea of Course 101's SoundController.
@@ -19,6 +21,14 @@ export function createAudio(files) {
     gain.gain.linearRampToValueAtTime(to, t + secs)
   }
 
+  const setCutoff = (lowpass, to, secs) => {
+    const t = ctx.currentTime
+    lowpass.frequency.cancelScheduledValues(t)
+    lowpass.frequency.setValueAtTime(lowpass.frequency.value, t)
+    if (secs) lowpass.frequency.exponentialRampToValueAtTime(to, t + secs)
+    else lowpass.frequency.setValueAtTime(to, t)
+  }
+
   function init() {
     const Ctx = window.AudioContext || window.webkitAudioContext
     ctx = new Ctx()
@@ -32,8 +42,11 @@ export function createAudio(files) {
       el.preload = 'auto'
       const gain = ctx.createGain()
       gain.gain.value = 0
-      ctx.createMediaElementSource(el).connect(gain).connect(master)
-      tracks[name] = { el, gain }
+      const lowpass = ctx.createBiquadFilter()
+      lowpass.type = 'lowpass'
+      lowpass.frequency.value = OPEN
+      ctx.createMediaElementSource(el).connect(lowpass).connect(gain).connect(master)
+      tracks[name] = { el, gain, lowpass }
     }
   }
 
@@ -54,7 +67,8 @@ export function createAudio(files) {
       if (!ctx) init()
       ctx.resume()
       current = undefined
-      for (const { el, gain } of Object.values(tracks)) {
+      for (const { el, gain, lowpass } of Object.values(tracks)) {
+        setCutoff(lowpass, OPEN)
         gain.gain.cancelScheduledValues(ctx.currentTime)
         gain.gain.value = 0
         el.currentTime = 0
@@ -66,8 +80,11 @@ export function createAudio(files) {
     // Crossfade to a named track. No name = keep whatever is playing.
     cue(name, fade = FADE) {
       if (!ctx || !name || name === current || !tracks[name]) return
+      const prev = current
       current = name
       for (const [n, t] of Object.entries(tracks)) ramp(t.gain, n === name ? 1 : 0, fade)
+      setCutoff(tracks[name].lowpass, OPEN)
+      if (prev) setCutoff(tracks[prev].lowpass, MUFFLED, fade) // the track we leave muffles as it fades
     },
     stop() {
       if (!ctx) return

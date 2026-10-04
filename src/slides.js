@@ -2,6 +2,7 @@
 // frames entries may be a path or { src, dim, sat } (dim = brightness 0.5, sat = saturation 0.9 by default).
 // speed: per-beat multiplier on the global SPEED in fx.js (1.33 = text lands in 0.75 of the time).
 // auto: timeline seconds a beat holds after its text lands before gliding on by itself (real time is this divided by SPEED in fx.js; default 2.5).
+// lead: timeline seconds of art alone before the text starts (default 0).
 // There is no manual scrolling: every beat but the last advances on its own.
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
 // fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
@@ -51,14 +52,15 @@ export const slides = [
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',
+    lead: 1.1, // timeline seconds the dark art fades in before the question lands (softens the cut from the warm beat)
     auto: 2.7,
   },
   {
     id: 'pivot',
     text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us.'],
-    fx: 'glow',
+    fx: 'crossfade',
     music: 'swell',
-    // night sky behind the light swelling from the start, then the golden ridge for the Gospel line
+    // night sky, then the golden ridge crossfades in for the Gospel line
     bg: '/img/night-sky.jpg',
     frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1 }],
     auto: 3.2, // glides on to the finale by itself this long after the text lands (timeline seconds, played at SPEED in fx.js)

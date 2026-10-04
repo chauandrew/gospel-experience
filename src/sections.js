@@ -36,7 +36,6 @@ export function renderSections(scroller, progress, slides, onDone) {
       })
       sec.append(f)
     }
-    if (s.fx === 'glow') sec.append(el('div', 'glow'))
     if (s.eyebrow) sec.append(el('p', 'eyebrow', s.eyebrow))
     s.text.forEach((t) => sec.append(el('p', 'headline', t)))
     if (s.reveal) {

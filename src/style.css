@@ -66,7 +66,7 @@ html, body {
 
 .beat > p, .beat > button { position: relative; z-index: 1; }
 
-.bg, .frames, .glow { position: absolute; pointer-events: none; will-change: transform, opacity; } /* own GPU layers, so GSAP's per-frame scale/fade does not repaint the whole beat */
+.bg, .frames { position: absolute; pointer-events: none; will-change: transform, opacity; } /* own GPU layers, so GSAP's per-frame scale/fade does not repaint the whole beat */
 
 .bg {
   inset: 0;
@@ -86,15 +86,6 @@ html, body {
   mask-composite: intersect;
 }
 .frames img.tall { object-fit: contain; inset: 5% 0; height: 90%; filter: brightness(0.6) saturate(0.9); }
-
-.glow {
-  left: 50%;
-  top: 50%;
-  width: 90vmax;
-  height: 90vmax;
-  margin: -45vmax 0 0 -45vmax;
-  background: radial-gradient(circle closest-side, rgba(248, 200, 30, 0.38), rgba(248, 200, 30, 0)); /* fades out exactly at the layer edge; never scaled past 1, so the layer is rasterized once at its final size */
-}
 
 .w { display: inline-block; margin-right: 0.35em; }
 .w:last-child { margin-right: 0; }

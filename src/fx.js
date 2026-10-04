@@ -39,19 +39,13 @@ function buildTimeline(sec, slide) {
   const bg = sec.querySelector('.bg')
   const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames img')
-  const glow = sec.querySelector('.glow')
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
-  if (glow) gsap.set(glow, { opacity: 0, scale: 0.21 })
   gsap.set(frames, { opacity: 0 })
 
   const tl = gsap.timeline({ paused: true, timeScale: SPEED * (slide.speed ?? 1), defaults: { ease: 'power2.out' } })
-  let t = 0
-  if (glow) {
-    tl.to(glow, { opacity: 1, scale: 1, duration: 5.5, ease: 'sine.inOut' }, 0)
-    t = 1.0 // let the light start to swell before the words land
-  }
+  const t = slide.lead ?? 0 // timeline seconds the art gets before the text starts
   if (bg) {
     tl.to(bg, { opacity: ART, duration: 1.5 }, 0)
     tl.to(bg, { scale: 1.1, duration: 14, ease: 'none' }, 0)
@@ -89,7 +83,7 @@ function buildTimeline(sec, slide) {
   // begin with the second headline.
   const starts = reveal.length ? [headStarts[0], ...revealStarts] : bg ? headStarts.slice(1) : headStarts
   frames.forEach((f, i) => {
-    const at = starts[i] ?? starts[starts.length - 1]
+    const at = i === 0 && !bg ? 0 : starts[i] ?? starts[starts.length - 1] // first image never waits for the text
     tl.to(f, { opacity: ART, duration: ART_FADE }, at)
     if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: ART_FADE }, at)
   })
@@ -112,8 +106,20 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   const timelines = []
 
   // There is no manual scrolling: the scroller is overflow hidden (CSS) and every beat but the last
-  // glides to the next one by itself (programmatic scrolling still works on overflow hidden).
-  const advance = (i) => scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
+  // moves to the next by itself. The move is a fade through black, not a vertical glide: the beat
+  // fades out, the scroller jumps (instant, programmatic scrolling works on overflow hidden), and the
+  // next beat's own timeline fades its art and text in from black.
+  const FADE_OUT = 0.5 // seconds
+  let advanceTimer
+  const advance = (i) => {
+    const beat = beats[i]
+    beat.style.transition = `opacity ${FADE_OUT}s ease-in`
+    beat.style.opacity = 0
+    advanceTimer = setTimeout(() => {
+      scroller.scrollTop = beats[i + 1].offsetTop
+      beat.style.transition = beat.style.opacity = ''
+    }, FADE_OUT * 1000)
+  }
   const enter = (i) => {
     timelines[i].restart()
     onBeat(i)
@@ -142,6 +148,8 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   })
 
   const clear = () => {
+    clearTimeout(advanceTimer)
+    beats.forEach((b) => (b.style.transition = b.style.opacity = ''))
     timelines.forEach((tl) => tl.pause(0))
   }
 
