@@ -67,7 +67,7 @@ export const slides = [
     id: 'finale',
     text: ["See it for yourself"],
     cta: 'Get your pass at the counter',
-    button: 'Done',
+    button: 'Reset',
     bg: '/img/sunrise.svg',
     idle: 15,
   },

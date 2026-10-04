@@ -70,5 +70,13 @@ const fx = initFx(scroller, slides, (i) => {
 
 if (import.meta.env.DEV) Object.assign(window, { __fx: fx, __audio: audio, __idle: idle })
 
+// Spacebar resets from anywhere in a run (same as the finale's Reset button): back to the gate.
+addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !scroller.hidden) {
+    e.preventDefault()
+    reset()
+  }
+})
+
 // Block pinch zoom on iOS Safari.
 document.addEventListener('gesturestart', (e) => e.preventDefault())

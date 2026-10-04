@@ -21,7 +21,7 @@ Phase 8 iPad checklist:
 1. Open the Vercel URL in Safari, Add to Home Screen, launch from the icon (standalone).
 2. Tap Begin with headphones on: music must start. Scroll: tracks crossfade (ambient, tense on beat 2, swell on beat 3).
 3. Airplane mode, fully close the app, reopen: must load and play audio.
-4. Walk away mid-experience: reset to gate after 20s (10s on finale), audio fades out. Tap Done: same.
+4. Walk away mid-experience: reset to gate after 20s (10s on finale), audio fades out. Tap Reset: same.
 5. Check pacing, scroll-snap feel, no rubber-band/zoom/selection, slide 4 backdrop legibility, glow beat.
 6. Tune `MASTER` in `src/audio.js` after hearing it.
 
