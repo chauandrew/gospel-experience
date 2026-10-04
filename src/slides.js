@@ -52,20 +52,12 @@ export const slides = [
   },
   {
     id: 'pivot',
-    text: ['Into that darkness, light stepped in.'],
+    text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us.'],
     fx: 'glow',
     music: 'swell',
-    bg: '/img/night-sky.jpg',
-    auto: 1.5, // short beat: glides on to the next one by itself this many seconds after the text lands
-  },
-  {
-    id: 'invite',
-    text: ["The Gospel is the story of how God came to rescue us from our brokenness and sin"],
-    fx: 'pinReveal',
-    bg: '/img/hills.jpg',
-    dim: 0.55,
-    auto: 2.0 
-    // hint: 'Scroll',
+    // night sky with the light swelling, then the golden ridge for the Gospel line
+    frames: [{ src: '/img/night-sky.jpg', dim: 0.5 }, { src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
+    auto: 2.0, // glides on to the finale by itself this many seconds after the text lands
   },
   {
     id: 'finale',
@@ -73,6 +65,6 @@ export const slides = [
     cta: 'Take off your headphones and get your pass at the counter',
     button: 'Done',
     bg: '/img/sunrise.svg',
-    idle: 10,
+    idle: 15,
   },
 ]

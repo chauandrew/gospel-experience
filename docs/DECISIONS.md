@@ -94,3 +94,7 @@ Format: date, decision, why, alternatives rejected.
 - **Art**: one image (`creation-people.jpg`) behind the whole man beat; a frame count lower than the line count is fine, the last frame just stays.
 - **Man beat copy and art (author edit)**: "Then God created man in his own image." / "And God blessed them." / "It was very good." Art follows the lines: Eden garden backdrop with a silhouette fading in, then a collage of people together (hugs, family, friends) for "blessed", then the golden field. Beat 1 line is now "In the beginning, God created the heavens and the earth".
 - **Man beat stage 1 art swapped** to the bright ch2 valley (`eden-valley.jpg`); the silhouette and the dark Eden backdrop were dropped as too gloomy for "made in his image".
+
+## 2026-10-03 (merge pivot and invite)
+
+- **Pivot and invite merged into one beat** (`pivot`): "But that's not how the story ends." then the Gospel line, staged like the other multi-line beats. Glow stays; art crossfades night sky to the golden ridge (`ridge.svg`, Course 101 ch6). Auto-advances to the finale 2.5s after the text lands (the long line needs reading time). `hills.jpg` and the separate `invite` beat were removed. The run is now 5 beats: genesis, man, tension, pivot, finale. Tradeoff: the night sky now fades in with the first line (about 2.6s) rather than at 0s, so the glow swells on black first.
