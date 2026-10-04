@@ -22,7 +22,7 @@ function splitWords(p) {
 
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
-const REVEAL_GAP = 2.2 // seconds between revealed words (Comparison. Isolation. Betrayal.)
+const REVEAL_GAP = 1.6 // seconds between revealed words (Comparison. Isolation. Betrayal.)
 const ART_FADE = 1.6 // artwork crossfade
 const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
 

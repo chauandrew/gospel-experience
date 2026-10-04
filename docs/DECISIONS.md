@@ -102,3 +102,4 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-03 (faster pacing)
 
 - **Run tightened from about 45s to about 25s** with one knob: `SPEED = 1.8` in `src/fx.js`, applied as the `timeScale` of every beat timeline. Everything (word stagger, pauses, art crossfades, hint, auto holds) scales together; raise or lower SPEED to retune. Fixed waits per beat (timeline seconds / SPEED): genesis 5.9/1.8, man 8.0/1.8, tension 10.9/1.8, pivot 11.5/1.8, finale about 3.6/1.8, plus gate fade 1.4s and scroll glides. The merged beat's `auto` hold went from 2.0 to 3.2 timeline seconds so its long line keeps about 1.8s real reading time after landing. `auto` and `seek(i, t)` are in timeline seconds, not real seconds.
+- **Slide 2 word gap 2.2 to 1.6** timeline seconds (`REVEAL_GAP` in `src/fx.js`), about 0.9s real at SPEED 1.8. Tension beat is now about 8.6/1.8 = 4.8s of fixed wait.
