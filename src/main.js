@@ -5,6 +5,7 @@ import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import '@fontsource/trirong/latin-400-italic.css'
 import './style.css'
+import { inject } from '@vercel/analytics'
 import { gate, slides, tracks } from './slides.js'
 import { renderGate, renderSections, resetProgress } from './sections.js'
 import { gsap } from 'gsap'
@@ -12,6 +13,9 @@ import { initFx } from './fx.js'
 import { createAudio } from './audio.js'
 import { createIdle } from './idle.js'
 import { countCompletion } from './counter.js'
+
+// Vercel Web Analytics (page views). Needs to be switched on in the Vercel dashboard; it only reports while the iPad is online.
+inject()
 
 const $ = (id) => document.getElementById(id)
 const gateEl = $('gate')

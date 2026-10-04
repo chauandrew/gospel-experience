@@ -24,6 +24,9 @@
 ## Updating the app
 New versions download in the background but only take effect after the app is fully closed and reopened (by design, so nothing reloads mid-event). To update an iPad: exit Guided Access, swipe the app away, reopen while online, wait a few seconds, swipe away again, reopen. Then re-run the offline check.
 
+## Analytics
+Vercel Web Analytics counts page views, but only while the iPad is online (it cannot report from airplane mode). For how many people finished the run, use the local count below.
+
 ## Reading the completion count
 Count of people who reached the final screen, stored on the iPad only. Connect the iPad to a Mac, enable Settings > Safari > Advanced > Web Inspector (iPad) and Safari > Settings > Advanced > Show features for web developers (Mac). In Safari's Develop menu pick the iPad, then the app, and run `localStorage.getItem('gx-completions')`.
 
