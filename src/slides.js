@@ -1,6 +1,6 @@
 // All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
 // frames entries may be a path or { src, dim, sat } (dim = brightness 0.5, sat = saturation 0.9 by default).
-// auto: seconds to hold after the text lands, then advance without scrolling (no SCROLL hint).
+// auto: timeline seconds to hold after the text lands (real time is this divided by SPEED in fx.js), then advance without scrolling (no SCROLL hint).
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
 // fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
 // Music files are Course 101 tracks (see docs/ASSETS.md).
@@ -19,7 +19,7 @@ export const slides = [
   {
     id: 'genesis',
     eyebrow: 'Genesis 1',
-    text: ['In the beginning, God created the heavens and the earth', 'And it was good.'],
+    text: ['In the beginning, God created the heavens and the earth.', 'And God saw that it was good.'],
     // every stage is alive: bright coast, then green garden
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
@@ -57,7 +57,7 @@ export const slides = [
     music: 'swell',
     // night sky with the light swelling, then the golden ridge for the Gospel line
     frames: [{ src: '/img/night-sky.jpg', dim: 0.5 }, { src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
-    auto: 2.0, // glides on to the finale by itself this many seconds after the text lands
+    auto: 3.2, // glides on to the finale by itself this long after the text lands (timeline seconds, played at SPEED in fx.js)
   },
   {
     id: 'finale',

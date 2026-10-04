@@ -24,6 +24,7 @@ const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const REVEAL_LEAD = 1.3 // pause between the headline landing and the first revealed word
 const REVEAL_GAP = 2.2 // seconds between revealed words (Comparison. Isolation. Betrayal.)
 const ART_FADE = 1.6 // artwork crossfade
+const SPEED = 1.8 // playback rate of every beat timeline; raise it to tighten the whole run (1 = original pace)
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
 // Returns the timeline and `unlockAt`: the moment all text has landed and scrolling may continue.
@@ -46,7 +47,7 @@ function buildTimeline(sec, slide) {
   if (hint) gsap.set(hint, { opacity: 0 })
   gsap.set(frames, { opacity: 0 })
 
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
+  const tl = gsap.timeline({ paused: true, timeScale: SPEED, defaults: { ease: 'power2.out' } })
   let t = 0
   if (glow) {
     tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)

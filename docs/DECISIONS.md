@@ -98,3 +98,7 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-03 (merge pivot and invite)
 
 - **Pivot and invite merged into one beat** (`pivot`): "But that's not how the story ends." then the Gospel line, staged like the other multi-line beats. Glow stays; art crossfades night sky to the golden ridge (`ridge.svg`, Course 101 ch6). Auto-advances to the finale 2.5s after the text lands (the long line needs reading time). `hills.jpg` and the separate `invite` beat were removed. The run is now 5 beats: genesis, man, tension, pivot, finale. Tradeoff: the night sky now fades in with the first line (about 2.6s) rather than at 0s, so the glow swells on black first.
+
+## 2026-10-03 (faster pacing)
+
+- **Run tightened from about 45s to about 25s** with one knob: `SPEED = 1.8` in `src/fx.js`, applied as the `timeScale` of every beat timeline. Everything (word stagger, pauses, art crossfades, hint, auto holds) scales together; raise or lower SPEED to retune. Fixed waits per beat (timeline seconds / SPEED): genesis 5.9/1.8, man 8.0/1.8, tension 10.9/1.8, pivot 11.5/1.8, finale about 3.6/1.8, plus gate fade 1.4s and scroll glides. The merged beat's `auto` hold went from 2.0 to 3.2 timeline seconds so its long line keeps about 1.8s real reading time after landing. `auto` and `seek(i, t)` are in timeline seconds, not real seconds.
