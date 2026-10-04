@@ -18,6 +18,7 @@ const scroller = $('scroller')
 const progress = $('progress')
 
 let counted = false
+let atFinale = false
 let starting // timer for the short lead-in between the tap and the first beat
 
 // iOS only plays audio started from a tap, so the music starts the moment Begin is tapped; the gate
@@ -42,6 +43,7 @@ function begin() {
 }
 
 function reset() {
+  atFinale = false
   idle.stop()
   clearTimeout(starting)
   starting = undefined
@@ -60,6 +62,7 @@ renderSections(scroller, progress, slides, reset)
 const audio = createAudio(tracks)
 const idle = createIdle(reset)
 const fx = initFx(scroller, slides, (i) => {
+  atFinale = i === slides.length - 1
   audio.cue(slides[i].music)
   idle.setSecs(slides[i].idle)
   if (i === slides.length - 1 && !counted) {
@@ -70,12 +73,12 @@ const fx = initFx(scroller, slides, (i) => {
 
 if (import.meta.env.DEV) Object.assign(window, { __fx: fx, __audio: audio, __idle: idle })
 
-// Spacebar resets from anywhere in a run (same as the finale's Reset button): back to the gate.
+// Spacebar works only on the two end screens: Begin on the gate, Reset on the finale. Mid-run it does nothing.
 addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && !scroller.hidden) {
-    e.preventDefault()
-    reset()
-  }
+  if (e.code !== 'Space') return
+  e.preventDefault()
+  if (!gateEl.hidden) begin()
+  else if (atFinale) reset()
 })
 
 // Block pinch zoom on iOS Safari.
