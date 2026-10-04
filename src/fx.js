@@ -51,7 +51,7 @@ function buildTimeline(sec, slide) {
   let t = 0
   if (glow) {
     tl.to(glow, { opacity: 1, scale: 1.4, duration: 5.5, ease: 'sine.inOut' }, 0)
-    t = 2.4 // let the light swell before the words land
+    t = 1.0 // let the light start to swell before the words land
   }
   if (bg) {
     tl.to(bg, { opacity: ART, duration: 1.5 }, 0)
@@ -86,8 +86,9 @@ function buildTimeline(sec, slide) {
   }
 
   // Artwork crossfades in step: with the reveal words if there are any (first image sits behind the
-  // headline), otherwise with each headline stage.
-  const starts = reveal.length ? [headStarts[0], ...revealStarts] : headStarts
+  // headline), otherwise with each headline stage. A bg is already the first image, so frames then
+  // begin with the second headline.
+  const starts = reveal.length ? [headStarts[0], ...revealStarts] : bg ? headStarts.slice(1) : headStarts
   frames.forEach((f, i) => {
     const at = starts[i] ?? starts[starts.length - 1]
     tl.to(f, { opacity: ART, duration: ART_FADE }, at)

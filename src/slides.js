@@ -55,8 +55,9 @@ export const slides = [
     text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us.'],
     fx: 'glow',
     music: 'swell',
-    // night sky with the light swelling, then the golden ridge for the Gospel line
-    frames: [{ src: '/img/night-sky.jpg', dim: 0.5 }, { src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
+    // night sky behind the light swelling from the start, then the golden ridge for the Gospel line
+    bg: '/img/night-sky.jpg',
+    frames: [{ src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
     auto: 3.2, // glides on to the finale by itself this long after the text lands (timeline seconds, played at SPEED in fx.js)
   },
   {
