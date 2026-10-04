@@ -52,12 +52,12 @@ export const slides = [
   },
   {
     id: 'pivot',
-    text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us from our brokenness and sin'],
+    text: ['But that\'s not how the story ends.', 'The Gospel is the story of how God came to rescue us.'],
     fx: 'glow',
     music: 'swell',
     // night sky with the light swelling, then the golden ridge for the Gospel line
     frames: [{ src: '/img/night-sky.jpg', dim: 0.5 }, { src: '/img/ridge.svg', dim: 0.6, sat: 1 }],
-    auto: 2.5, // glides on to the finale by itself this many seconds after the text lands
+    auto: 2.0, // glides on to the finale by itself this many seconds after the text lands
   },
   {
     id: 'finale',
@@ -65,6 +65,6 @@ export const slides = [
     cta: 'Take off your headphones and get your pass at the counter',
     button: 'Done',
     bg: '/img/sunrise.svg',
-    idle: 10,
+    idle: 15,
   },
 ]
