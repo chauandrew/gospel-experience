@@ -26,13 +26,13 @@ function splitWords(p) {
 
 // All timings are real seconds. Per-beat extras live in slides.js: `lead`, `auto`, `speed`, `musicAt`.
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
-const WORD = 0.45 // fade-in of a word / a line stepping back / an artwork crossfade
-const STAGGER = 0.06 // delay between words of a line
-const STAGE_GAP = 0.5 // pause after a line has landed, before the next line starts
-const REVEAL_LEAD = 0.65 // pause between the headline landing and the first revealed word
-const REVEAL_GAP = 0.8 // seconds between revealed words (Comparison Isolation Betrayal)
+const WORD = 0.6 // fade-in of a word / a line stepping back / an artwork crossfade
+const STAGGER = 0.08 // delay between words of a line
+const STAGE_GAP = 0.65 // pause after a line has landed, before the next line starts
+const REVEAL_LEAD = 0.85 // pause between the headline landing and the first revealed word
+const REVEAL_GAP = 1.05 // seconds between revealed words (Comparison Isolation Betrayal)
 const OLD = 0.45 // opacity a line sinks to once the next one lands, so the eye follows the newest text
-const HOLD = 1.25 // default seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
+const HOLD = 1.6 // default seconds a beat waits after its text lands before gliding on (slide `auto` overrides)
 
 // One paused timeline per beat. Plays when the beat snaps into view, resets once fully off screen.
 // Returns the timeline and `advanceAt`: the moment all text has landed and held, when the run glides on.
@@ -55,16 +55,16 @@ function buildTimeline(sec, slide) {
   tl.timeScale(slide.speed ?? 1) // per-beat multiplier (timeScale is not a timeline config option, it must be called)
   const t = slide.lead ?? 0 // seconds the art gets before the text starts
   if (bg) {
-    tl.to(bg, { opacity: ART, duration: 0.75 }, 0)
+    tl.to(bg, { opacity: ART, duration: 1 }, 0)
     tl.to(bg, { scale: 1.1, duration: 14, ease: 'none' }, 0)
   }
   if (framesBox) {
     gsap.set(framesBox, { scale: 1 })
     tl.to(framesBox, { scale: 1.08, duration: 10, ease: 'none' }, 0)
   }
-  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.4 }, t)
+  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.5 }, t)
   // Each headline is its own stage, with a pause before the next one lands.
-  let cursor = t + 0.1
+  let cursor = t + 0.13
   const headStarts = []
   heads.forEach((ws, k) => {
     headStarts.push(cursor)
@@ -98,13 +98,13 @@ function buildTimeline(sec, slide) {
   })
   let textEnd = end
   if (cta) {
-    tl.to(cta, { opacity: 1, y: 0, duration: 0.5 }, end + 0.1)
-    textEnd = end + 0.6
+    tl.to(cta, { opacity: 1, y: 0, duration: 0.65 }, end + 0.13)
+    textEnd = end + 0.8
   }
   if (btn) {
-    const at = end + (cta ? 0.6 : 0.1)
-    tl.to(btn, { opacity: 1, y: 0, duration: 0.4 }, at)
-    textEnd = at + 0.4
+    const at = end + (cta ? 0.8 : 0.13)
+    tl.to(btn, { opacity: 1, y: 0, duration: 0.5 }, at)
+    textEnd = at + 0.5
   }
   return { tl, advanceAt: textEnd + (slide.auto ?? HOLD), headStarts }
 }

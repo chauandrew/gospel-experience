@@ -2,7 +2,7 @@
 // frames entries may be a path or { src, dim, sat, pos } (dim = brightness 0.5, sat = saturation 0.9, pos = CSS object-position, e.g. '100% 25%' to keep a corner in view).
 // Images change in step with the text: one per headline, then one per reveal word.
 // speed: per-beat playback multiplier (1.33 = this beat's text lands in 0.75 of the time).
-// auto: seconds a beat holds after its text lands before gliding on by itself (divided by the beat's speed; default 1.25).
+// auto: seconds a beat holds after its text lands before gliding on by itself (divided by the beat's speed; default 1.6).
 // musicAt: index of the headline that triggers this beat's music crossfade (default: when the beat opens).
 // lead: seconds of art alone before the text starts (default 0).
 // There is no manual scrolling: every beat but the last advances on its own.
@@ -31,7 +31,7 @@ export const slides = [
     ],
     fx: 'pinReveal',
     music: 'ambient',
-    auto: 1.1,
+    auto: 1.45,
   },
   {
     id: 'man',
@@ -39,7 +39,7 @@ export const slides = [
     // warm valley, then people together, then the golden field
     frames: [{ src: '/img/creation-people.jpg', dim: 0.6, sat: 1 }, { src: '/img/blessed-people.jpg', dim: 0.6 }, { src: '/img/eden-valley.jpg', dim: 0.65 }],
     speed: 1.33,
-    auto: 1.2,
+    auto: 1.55,
     fx: 'pinReveal',
     music: 'ambient',
   },
@@ -53,8 +53,8 @@ export const slides = [
     fx: 'fadeWords',
     music: 'tense',
     musicAt: 1, // the music change starts when headline 1 ("Then something happened") lands, not when the slide opens
-    lead: 0.4, // seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
-    auto: 1.1,
+    lead: 0.5, // seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
+    auto: 1.45,
   },
   {
     id: 'pivot',
@@ -64,7 +64,7 @@ export const slides = [
     // night sky, then the golden ridge crossfades in for the Gospel line
     bg: '/img/night-sky.jpg',
     frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1, pos: '100% 25%' }],
-    auto: 1.6, // glides on to the finale by itself this long after the text lands
+    auto: 2.1, // glides on to the finale by itself this long after the text lands
   },
   {
     id: 'finale',
