@@ -3,6 +3,7 @@
 // Images change in step with the text: one per headline, then one per reveal word.
 // speed: per-beat multiplier on the global SPEED in fx.js (1.33 = text lands in 0.75 of the time).
 // auto: timeline seconds a beat holds after its text lands before gliding on by itself (real time is this divided by SPEED in fx.js; default 2.5).
+// musicAt: index of the headline that triggers this beat's music crossfade (default: when the beat opens).
 // lead: timeline seconds of art alone before the text starts (default 0).
 // There is no manual scrolling: every beat but the last advances on its own.
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
@@ -51,6 +52,7 @@ export const slides = [
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',
+    musicAt: 1, // the music change starts when headline 1 ("Then something happened") lands, not when the slide opens
     lead: 0.8, // timeline seconds the dark art fades in before the first line lands (softens the cut from the warm beat)
     auto: 2.2,
   },

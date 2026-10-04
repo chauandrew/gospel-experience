@@ -35,10 +35,11 @@ Direction: dark, high contrast, large typography, generous whitespace, cinematic
 Fonts: self-host via npm `@fontsource/poppins` (700, 500), `@fontsource/roboto` (400, 700), `@fontsource/trirong` (italic 400), Latin subset only. No Google Fonts at runtime.
 
 ## Motion spec
+Note: the bullets below are the original scroll-driven spec. The shipped model is a self-advancing run: each beat is a paused GSAP timeline that plays on entering and the scroller moves on by itself (see `docs/DECISIONS.md`, entries from 2026-10-03, and `src/fx.js`). Still true: one idea per screen, `power2.out`, dim-to-white word landings, edge dash progress, a slow zoom behind the text. Not true any more: scroll-scrubbed text, the SCROLL hint, the glow swell, 30-45s total (it is about 25s now).
 - One idea per screen. Each beat is a full-viewport stage (`100svh`), `scroll-snap-align: center`, `scroll-snap-stop: always`.
 - Text reveals are scroll-scrubbed (GSAP ScrollTrigger `scrub: 0.6`): opacity `--text-dim` to `--text` plus `y: 24px` to `0`, line by line (stagger).
 - Easing: `power2.out` for entrances; `none` for scrubbed values. Time-based fades 600-900ms. Glow swell (Slide 3) 1.5-2.5s ease-in-out.
-- Slide 2: words "Pain." "Brokenness." "Silence." fade in one at a time, each dimming slightly as the next arrives; picture-frame SVG steps normal, slightly damaged, heavy damaged across the same scroll range.
+- Slide 3 (tension): words "Comparison" "Isolation" "Betrayal" (the original spec had "Pain." "Brokenness." "Silence.") fade in one at a time, each dimming slightly as the next arrives; picture-frame SVG steps normal, slightly damaged, heavy damaged across the same scroll range.
 - Progress: 5 short horizontal dashes on the left edge (Course 101 style), 20px wide, `--text-dim`; active one `--accent`. No labels.
 - Background layer: each beat gets a full-bleed dim image or Lottie behind the text (opacity about 0.35-0.5, darkened), crossfading between beats; keep one subtle looping motion alive (slow zoom, drifting grain). Add a film-grain overlay (tiny PNG noise at 4-6% opacity), as in ch1.
 - Scroll hint: bottom-center yellow "SCROLL" pill with a thin vertical line, as in ch2, fades out after first scroll.

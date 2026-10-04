@@ -77,15 +77,20 @@ renderGate(gateEl, gate, begin)
 renderSections(scroller, progress, slides, reset)
 const audio = createAudio(tracks)
 const idle = createIdle(reset)
-const fx = initFx(scroller, slides, (i) => {
-  atFinale = i === slides.length - 1
-  audio.cue(slides[i].music)
-  idle.setSecs(slides[i].idle)
-  if (i === slides.length - 1 && !counted) {
-    counted = true
-    countCompletion()
-  }
-})
+const fx = initFx(
+  scroller,
+  slides,
+  (i) => {
+    atFinale = i === slides.length - 1
+    if (slides[i].musicAt == null) audio.cue(slides[i].music) // else fx cues it when that headline lands
+    idle.setSecs(slides[i].idle)
+    if (i === slides.length - 1 && !counted) {
+      counted = true
+      countCompletion()
+    }
+  },
+  (i) => audio.cue(slides[i].music),
+)
 
 if (import.meta.env.DEV) Object.assign(window, { __fx: fx, __audio: audio, __idle: idle })
 

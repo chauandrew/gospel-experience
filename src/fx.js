@@ -103,10 +103,10 @@ function buildTimeline(sec, slide) {
     tl.to(btn, { opacity: 1, y: 0, duration: 0.8 }, at)
     textEnd = at + 0.8
   }
-  return { tl, advanceAt: textEnd + (slide.auto ?? HOLD) }
+  return { tl, advanceAt: textEnd + (slide.auto ?? HOLD), headStarts }
 }
 
-export function initFx(scroller, slides, onBeat = () => {}) {
+export function initFx(scroller, slides, onBeat = () => {}, onCue = () => {}) {
   const beats = [...scroller.querySelectorAll('.beat')]
   const last = beats.length - 1
   const timelines = []
@@ -120,8 +120,10 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   }
 
   beats.forEach((sec, i) => {
-    const { tl, advanceAt } = buildTimeline(sec, slides[i])
+    const { tl, advanceAt, headStarts } = buildTimeline(sec, slides[i])
     if (i < last) tl.call(() => advance(i), null, advanceAt)
+    // `musicAt: n` cues the beat's music when its n-th headline lands (0 = first) instead of on entering.
+    if (slides[i].musicAt != null) tl.call(() => onCue(i), null, headStarts[slides[i].musicAt])
     timelines.push(tl)
     ScrollTrigger.create({
       scroller,
