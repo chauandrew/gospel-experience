@@ -106,20 +106,8 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   const timelines = []
 
   // There is no manual scrolling: the scroller is overflow hidden (CSS) and every beat but the last
-  // moves to the next by itself. The move is a fade through black, not a vertical glide: the beat
-  // fades out, the scroller jumps (instant, programmatic scrolling works on overflow hidden), and the
-  // next beat's own timeline fades its art and text in from black.
-  const FADE_OUT = 0.5 // seconds
-  let advanceTimer
-  const advance = (i) => {
-    const beat = beats[i]
-    beat.style.transition = `opacity ${FADE_OUT}s ease-in`
-    beat.style.opacity = 0
-    advanceTimer = setTimeout(() => {
-      scroller.scrollTop = beats[i + 1].offsetTop
-      beat.style.transition = beat.style.opacity = ''
-    }, FADE_OUT * 1000)
-  }
+  // glides (flips) to the next one by itself; programmatic scrolling works on overflow hidden.
+  const advance = (i) => scroller.scrollTo({ top: beats[i + 1].offsetTop, behavior: 'smooth' })
   const enter = (i) => {
     timelines[i].restart()
     onBeat(i)
@@ -148,8 +136,6 @@ export function initFx(scroller, slides, onBeat = () => {}) {
   })
 
   const clear = () => {
-    clearTimeout(advanceTimer)
-    beats.forEach((b) => (b.style.transition = b.style.opacity = ''))
     timelines.forEach((tl) => tl.pause(0))
   }
 
