@@ -49,3 +49,41 @@ Format: date, decision, why, alternatives rejected.
 - **Removed `lottie-web`** (no Lottie used). Re-add only if a beat needs one.
 - **Phase 10 particles not built**: needs real iPad frame-rate data first; adds heat/battery risk for an event kiosk.
 - **Added `README.md` and `docs/KIOSK.md`** (event runbook: install, Guided Access, offline check, updates, reading the counter).
+
+## 2026-10-03 (scroll gate + artwork)
+
+- **Scroll is locked until a beat's text has fully landed.** `#scroller` gets `overflow-y: hidden` once the snap settles (polls `scrollTop == offsetTop`, so it never freezes between beats) and releases at the timeline's `unlockAt` (last text + 0.3s). A "SCROLL" hint fades in at that moment. Beats already read this run show complete instantly if you scroll back (no replay, no lock). The finale never locks. Rejected: scrubbing text with scroll (no scroll range inside a snapped beat).
+- **Each beat has real artwork** from Course 101 ch1/ch2 (see `docs/ASSETS.md`), dimmed with CSS (`dim` per slide in `slides.js`) and slowly zoomed. Slide 2 uses three crossfading images instead of the picture-frame SVGs: a garden darkening into the ruined city.
+
+## 2026-10-03 (finale art + slower glow)
+
+- **Finale art is now a warm sunrise** (`sunrise.svg`) instead of the pale arch hall: warmer and more inviting after the green hills. Alternatives are listed in `docs/ASSETS.md`.
+- **Glow swell slowed from 2.8s to 5.5s** (sine in/out), words land after 2.4s (was 0.9s). Adds about 1.5s to the forced wait on that beat.
+
+## 2026-10-03 (staged creation, relational slide, audio lead-in)
+
+- **Slide 1 lands as three stages**: "In the beginning, God created everything…", "And it was good.", "Very good." Each headline in `slides.js` is its own stage (1s pause between); artwork crossfades per stage and people arrive at "Very good." Lines stack so the full verse is visible at the end.
+- **Slide 2 is about relational sin**, in language teens relate to: "So why does the world feel so fractured?" then Gossip. Betrayal. Loneliness., with matching art (whispering, cracked photo, lone figure). Wording and images are plain data in `slides.js`; swap freely.
+- **Audio starts the instant Begin is tapped** (1.2s fade-in, no 2s wait), and the gate fades out over it during a 1.4s lead-in before the first beat. Audio cannot start before the first tap on iOS, so the Begin tap is the earliest possible moment. If sound is wanted on the "put on your headphones" screen itself, add a tap-to-start screen before it (two taps).
+- **`frames` entries may be `{ src, dim }`** to set per-image brightness; tall (portrait) art is shown whole instead of cropped.
+
+## 2026-10-03 (hard scroll lock, full reset)
+
+- **Scroll is refused outright until the SCROLL hint has fully appeared.** The lock now engages the moment a beat is entered (not after the snap settles): wheel, touch drags and scroll keys are cancelled with `preventDefault`, and overflow hidden is added once the snap settles. Release happens at the end of the hint's fade-in (about 0.6s after the text finishes), not when the text finishes.
+- **Reset is complete on Done or idle timeout:** scroller scroll position and progress dashes go back to the first beat, all timelines rewind (words, hints, art, glow, buttons hidden), lock/seen cleared, audio fades out and restarts from 0 on the next Begin. Verified by running a full pass, resetting, and starting again.
+
+## 2026-10-03 (slide 2 words)
+
+- **Slide 2 words are now Comparison. Isolation. Betrayal.** (user's choice; they escalate from social-media envy to withdrawal to being hurt by someone close). Art matches: photo wall of everyone else's happy moments, someone alone in a dark room, a whispered secret. Swap freely in `slides.js` (`reveal` + `frames`; frames[0] sits behind the question, then one per word).
+
+## 2026-10-03 (slide 1 green, slide 2 pacing and framing)
+
+- **Slide 1 opens on the green garden** (the sunset-hills art looked like a dead world), then a bright coast, then people. Removed `genesis-dawn.svg`.
+- **Slide 2 pacing slowed**: 1.3s before the first word (was 0.4), 2.2s between words (was 1.1), art crossfade 1.6s. Tunable constants at the top of `src/fx.js`.
+- **Real cause of "only a portion of the image" fixed**: frame images lived in a CSS grid cell, and the portrait whisper art inflated the cell to about 1500px tall, so every other image was cropped from a stretched box. Frames are now absolutely positioned. Slide 2 also uses `fit: 'contain'` (whole image, soft edges); other slides still fill with `cover`.
+
+## 2026-10-03 (flip, auto-advance, darker comparison)
+
+- **Creation images flipped**: coast first, then garden, then people.
+- **Light beat auto-advances** (`auto: 2.5` in `slides.js`): 2.5s after its text lands it glides to the next beat with a smooth programmatic scroll (works while manual input is locked). No SCROLL hint on that beat. Any beat can opt in. Revisiting it by scrolling back shows it complete and does not re-advance.
+- **Comparison art kept but made cold**: photo wall at brightness 0.3 and saturation 0.3 (`{ src, dim, sat }` frame option) so it reads as envy, not joy.

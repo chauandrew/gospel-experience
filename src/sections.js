@@ -19,14 +19,19 @@ export function renderSections(scroller, progress, slides, onDone) {
     if (s.bg) {
       const bg = el('div', 'bg')
       bg.style.backgroundImage = `url(${s.bg})`
+      if (s.dim) bg.style.setProperty('--dim', s.dim)
       sec.append(bg)
     }
     if (s.frames) {
-      const f = el('div', 'frames')
-      s.frames.forEach((src) => {
+      const f = el('div', s.fit === 'contain' ? 'frames contain' : 'frames')
+      s.frames.forEach((art) => {
+        const { src, dim, sat } = typeof art === 'string' ? { src: art } : art
         const img = el('img')
         img.src = src
+        if (dim || sat !== undefined) img.style.filter = `brightness(${dim ?? 0.5}) saturate(${sat ?? 0.9})`
         img.alt = ''
+        // portrait art (e.g. the whisper illustration) is shown whole instead of cropped
+        img.addEventListener('load', () => img.naturalHeight > img.naturalWidth && img.classList.add('tall'))
         f.append(img)
       })
       sec.append(f)
@@ -67,4 +72,9 @@ export function renderSections(scroller, progress, slides, onDone) {
     { root: scroller, threshold: 0.6 },
   )
   scroller.querySelectorAll('.beat').forEach((s) => io.observe(s))
+}
+
+// Back to the first beat's dash (the observer will not fire if the scroller was hidden meanwhile).
+export function resetProgress(progress) {
+  ;[...progress.children].forEach((d, i) => d.classList.toggle('active', i === 0))
 }

@@ -64,10 +64,10 @@ export function createAudio(files) {
       master.gain.value = MASTER
     },
     // Crossfade to a named track. No name = keep whatever is playing.
-    cue(name) {
+    cue(name, fade = FADE) {
       if (!ctx || !name || name === current || !tracks[name]) return
       current = name
-      for (const [n, t] of Object.entries(tracks)) ramp(t.gain, n === name ? 1 : 0, FADE)
+      for (const [n, t] of Object.entries(tracks)) ramp(t.gain, n === name ? 1 : 0, fade)
     },
     stop() {
       if (!ctx) return
