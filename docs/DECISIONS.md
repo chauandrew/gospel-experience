@@ -124,3 +124,9 @@ Format: date, decision, why, alternatives rejected.
 - **Older lines step back**: when the next headline lands, the previous one fades to `OLD` (0.45 opacity, constant in `src/fx.js`); on the tension beat the question also dims when the three words arrive. The newest text is always the brightest, so the eye follows it now that periods are gone.
 - **Spacebar resets** (`src/main.js`): during a run, Space does the same as the finale button, back to the gate (audio fades, run state clears). A keydown counts as a user gesture, so Begin works right after. The finale button now reads "Reset" (was "Done").
 - **Spacebar narrowed to the two end screens** (supersedes the line above): Space is Begin on the gate and Reset on the finale; mid-run it does nothing (`atFinale` in `src/main.js`, set from the beat callback).
+
+## 2026-10-03 (art pass: finale, tension, creation, cross)
+
+- **Finale backdrop** is `desert-city.jpg` (ch5), dim 0.8 so the gold shows and the text stays legible.
+- **Tension has two images before the three words**: genesis-garden behind "That's how it was meant to be", crossfading to genesis-dusk when "Then something happened" lands. `starts` in `src/fx.js` is now general: one image per headline stage (minus one when the beat has a `bg`), then one per reveal word. Creation's second image became `creation-field.jpg` (ch7 heaven-field) since the garden moved.
+- **Cross in view**: the first ridge file (`JesusInMyPlace_1`) has no cross; swapped to `_3` (cross on the ridge) and added a per-image `pos` option (CSS object-position, `'100% 25%'`) so the top-right cross stays on screen under cover cropping, including on a narrower iPad aspect.

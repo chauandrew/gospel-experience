@@ -85,10 +85,9 @@ function buildTimeline(sec, slide) {
     end += reveal.length * REVEAL_GAP
   }
 
-  // Artwork crossfades in step: with the reveal words if there are any (first image sits behind the
-  // headline), otherwise with each headline stage. A bg is already the first image, so frames then
+  // Artwork crossfades in step: one image per headline stage, then one per reveal word. A bg is already the first image, so frames then
   // begin with the second headline.
-  const starts = reveal.length ? [headStarts[0], ...revealStarts] : bg ? headStarts.slice(1) : headStarts
+  const starts = [...(bg ? headStarts.slice(1) : headStarts), ...revealStarts]
   frames.forEach((f, i) => {
     const at = i === 0 && !bg ? 0 : starts[i] ?? starts[starts.length - 1] // first image never waits for the text
     tl.to(f, { opacity: ART, duration: ART_FADE }, at)

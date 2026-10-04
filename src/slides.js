@@ -1,5 +1,6 @@
 // All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
-// frames entries may be a path or { src, dim, sat } (dim = brightness 0.5, sat = saturation 0.9 by default).
+// frames entries may be a path or { src, dim, sat, pos } (dim = brightness 0.5, sat = saturation 0.9, pos = CSS object-position, e.g. '100% 25%' to keep a corner in view).
+// Images change in step with the text: one per headline, then one per reveal word.
 // speed: per-beat multiplier on the global SPEED in fx.js (1.33 = text lands in 0.75 of the time).
 // auto: timeline seconds a beat holds after its text lands before gliding on by itself (real time is this divided by SPEED in fx.js; default 2.5).
 // lead: timeline seconds of art alone before the text starts (default 0).
@@ -14,7 +15,7 @@ export const tracks = {
 }
 
 export const gate = {
-  text: ['Put on your headphones.'],
+  text: ['Put on your headphones'],
   button: 'Begin',
 }
 
@@ -22,10 +23,10 @@ export const slides = [
   {
     id: 'genesis',
     text: ['In the beginning, God created the heavens and the earth.', '_"And God saw that it was good."_'],
-    // every stage is alive: bright coast, then green garden
+    // every stage is alive: bright coast, then flowered hills
     frames: [
       { src: '/img/sea.jpg', dim: 0.7 },
-      { src: '/img/genesis-garden.svg', dim: 0.75 },
+      { src: '/img/creation-field.jpg', dim: 0.7 },
     ],
     fx: 'pinReveal',
     music: 'ambient',
@@ -45,8 +46,8 @@ export const slides = [
     id: 'tension',
     text: ['That\'s how it was meant to be', 'Then something happened'],
     reveal: ['Comparison', 'Isolation', 'Betrayal'],
-    // first image sits behind the question, then one per word above
-    frames: ['/img/genesis-dusk.svg', { src: '/img/photo-wall.svg', dim: 0.3, sat: 0.3 }, { src: '/img/alone-room.svg', dim: 0.8 }, '/img/whisper.svg'],
+    // garden behind the first line, dusk when it breaks, then one image per word above
+    frames: [{ src: '/img/genesis-garden.svg', dim: 0.75 }, '/img/genesis-dusk.svg', { src: '/img/photo-wall.svg', dim: 0.3, sat: 0.3 }, { src: '/img/alone-room.svg', dim: 0.8 }, '/img/whisper.svg'],
     fit: 'contain', // show each whole image (zoomed out) with soft edges instead of cropping to fill
     fx: 'fadeWords',
     music: 'tense',
@@ -60,7 +61,7 @@ export const slides = [
     music: 'swell',
     // night sky, then the golden ridge crossfades in for the Gospel line
     bg: '/img/night-sky.jpg',
-    frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1 }],
+    frames: [{ src: '/img/ridge.jpg', dim: 0.6, sat: 1, pos: '100% 25%' }],
     auto: 3.2, // glides on to the finale by itself this long after the text lands (timeline seconds, played at SPEED in fx.js)
   },
   {
@@ -68,7 +69,8 @@ export const slides = [
     text: ["See it for yourself"],
     cta: 'Get your pass at the counter',
     button: 'Reset',
-    bg: '/img/sunrise.svg',
+    bg: '/img/desert-city.jpg',
+    dim: 0.8,
     idle: 15,
   },
 ]
