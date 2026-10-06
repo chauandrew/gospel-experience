@@ -55,7 +55,7 @@ export const slides = [
     text: ['The Bible says God became human.', 'An ordinary carpenter. Why would he do that?'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
-    frames: [{ src: '/img/crowd.jpg', dim: 0.85 }],
+    frames: [{ src: '/img/blessed-people.jpg', dim: 0.9 }],
     fit: 'contain',
     music: 'turn',
     idle: 15,

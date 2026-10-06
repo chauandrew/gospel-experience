@@ -189,3 +189,7 @@ Format: date, decision, why, alternatives rejected.
 - **Readability**: `.beat.prose` gets a soft dark radial scrim above the art and below the words, plus a stronger text shadow. Beat 2 holds 2.4s (was 3) since beats 1 and 2 make a related point.
 - **Art**: beat 2 `woman-covers-face.jpg` (ch3 `woman_cover_face_from_God.png`, a woman shielding her face from overwhelming light) replaces the skyline; beat 4 `crowd.jpg` (ch5a `sru-img-4.jpg`, a crowd of ordinary faces) replaces the reaching hand. Removed `god-appears.jpg` and `reaching-hand.jpg`.
 - **Music** still unheard by a human; swap the two paths in `tracks` in `src/trailers/king.js` to try others.
+
+## 2026-10-06 (King trailer: warmer last image)
+
+- The grayscale crowd (`crowd.jpg`) read as downcast, but the beat is "God became human", which is good news. Tinting it only made it sepia (the faces are glum), so the last beat now reuses `blessed-people.jpg` (warm collage of hugs, a proposal, baking with a grandmother, kids walking): ordinary human life, happy. Removed `crowd.jpg`. Shared with the first trailer's "man" beat.
