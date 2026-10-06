@@ -197,3 +197,7 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-06 (King trailer: last beat is a mother and child)
 
 - Last beat dropped the "An ordinary carpenter." line (now "The Bible says God became human." / "Why would he do that?") and the shared `blessed-people.jpg` image. It now shows `eden-valley.jpg` (warm valley, bg) with `mother-child.svg` (ch4 `mom-color.svg`, a mother walking with a small child, 19 KB so safe to use as a live SVG) pushed to the right so the text stays clear. Other options found and not used: ch6a pop-up storybook scenes (`ch6a-story-post-5.jpg`, a king reaching out to a boy in rags), ch3 `JesusWithTaxCollectors.jpg` / `JesusAndPeter.jpg` (Jesus among ordinary people), ch5 `Hands_v2.jpg` (two hands reaching, warm). There is no nativity art with a mother in the course (the Bethlehem background is an empty night panorama).
+
+## 2026-10-06 (King trailer: glowing stable on the last beat)
+
+- Last beat is now the Bethlehem stable at night: `stable-glow.jpg`, cropped from the ch5 "A Lowly Birth" panorama (`c05-s01-bethlehem-background-01.svg`, rendered at 10800px so the crop is sharp). The course art has a dark, unlit stable; I baked in a soft warm glow from the manger (screen blend of a radial gradient, kept low so the manger still shows) and a Bethlehem star (not in the source art). Text moved to the upper half via a new `top` class (`.beat.top`) so the light stays clear. Dropped `mother-child.svg`. The glow was tuned by eye over three passes (too strong twice).

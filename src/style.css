@@ -216,3 +216,6 @@ html, body {
 /* Soft dark pool behind the text so it reads over any picture. It sits above the art and below the words. */
 .beat.prose::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 40%, transparent 75%); }
 .beat.prose .headline { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9); }
+/* Text in the upper part of the beat, scrim moved up with it (for pictures whose subject sits low). */
+.beat.top { justify-content: flex-start; padding-top: 9vh; }
+.beat.top::after { background: radial-gradient(ellipse 70% 45% at 50% 28%, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 45%, transparent 100%); }

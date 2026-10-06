@@ -51,14 +51,13 @@ export const slides = [
   },
   {
     id: 'finale',
-    cls: 'prose',
+    cls: 'prose top',
     text: ['The Bible says God became human.', 'Why would he do that?'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
-    // warm valley behind the first line, then a mother and child walking when "Why would he do that?" lands
-    bg: '/img/eden-valley.jpg',
-    dim: 0.75,
-    frames: [{ src: '/img/mother-child.svg', dim: 1, sat: 1, pos: '88% 50%' }],
+    // Bethlehem at night: the stable lit from inside under the star (ch5 panorama, glow added). Text sits in the upper half so the light stays clear.
+    bg: '/img/stable-glow.jpg',
+    dim: 1.2,
     music: 'turn',
     idle: 15,
   },
