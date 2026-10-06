@@ -19,7 +19,7 @@ export const slides = [
   {
     id: 'question',
     cls: 'prose',
-    text: ['How would a king win the heart of a poor village girl?', 'He could ride in with an army. Nobody would dare say no.'],
+    text: ['How would a king win the heart of a poor village girl?', 'He could ride in with an army. She wouldn\'t dare say no.'],
     frames: [{ src: '/img/king-maiden-intro.jpg', dim: 0.45, sat: 0.8 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -29,7 +29,7 @@ export const slides = [
   {
     id: 'fear',
     cls: 'prose cool',
-    text: ['But she would be terrified of him.', 'Power gets you obedience. It can\'t get you love.'],
+    text: ['But would she love him?', 'Power can get you obedience, but it can\'t get you love.'],
     frames: [{ src: '/img/god-appears.jpg', dim: 0.7, sat: 0.6 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -39,7 +39,7 @@ export const slides = [
   {
     id: 'choice',
     cls: 'prose',
-    text: ['So he does something that makes no sense.', 'He drops the crown and shows up as someone she can say no to.'],
+    text: ['So he takes off the crown.', 'He walks into her village like anyone else, so that if she says yes, she means it.'],
     frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.5, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
