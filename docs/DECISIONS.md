@@ -193,3 +193,7 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-06 (King trailer: warmer last image)
 
 - The grayscale crowd (`crowd.jpg`) read as downcast, but the beat is "God became human", which is good news. Tinting it only made it sepia (the faces are glum), so the last beat now reuses `blessed-people.jpg` (warm collage of hugs, a proposal, baking with a grandmother, kids walking): ordinary human life, happy. Removed `crowd.jpg`. Shared with the first trailer's "man" beat.
+
+## 2026-10-06 (King trailer: last beat is a mother and child)
+
+- Last beat dropped the "An ordinary carpenter." line (now "The Bible says God became human." / "Why would he do that?") and the shared `blessed-people.jpg` image. It now shows `eden-valley.jpg` (warm valley, bg) with `mother-child.svg` (ch4 `mom-color.svg`, a mother walking with a small child, 19 KB so safe to use as a live SVG) pushed to the right so the text stays clear. Other options found and not used: ch6a pop-up storybook scenes (`ch6a-story-post-5.jpg`, a king reaching out to a boy in rags), ch3 `JesusWithTaxCollectors.jpg` / `JesusAndPeter.jpg` (Jesus among ordinary people), ch5 `Hands_v2.jpg` (two hands reaching, warm). There is no nativity art with a mother in the course (the Bethlehem background is an empty night panorama).

@@ -52,11 +52,13 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['The Bible says God became human.', 'An ordinary carpenter. Why would he do that?'],
+    text: ['The Bible says God became human.', 'Why would he do that?'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
-    frames: [{ src: '/img/blessed-people.jpg', dim: 0.9 }],
-    fit: 'contain',
+    // warm valley behind the first line, then a mother and child walking when "Why would he do that?" lands
+    bg: '/img/eden-valley.jpg',
+    dim: 0.75,
+    frames: [{ src: '/img/mother-child.svg', dim: 1, sat: 1, pos: '88% 50%' }],
     music: 'turn',
     idle: 15,
   },
