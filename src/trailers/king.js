@@ -1,9 +1,12 @@
 // "The King and the Maiden": the Kierkegaard parable (Course 101 chapter 3), told in four beats, then the counter pitch.
-// Same format as story.js (see the comment block there). Rough first pass: copy, art and timings are all placeholders to tune.
+// Same format as story.js (see the comment block there). Plain-spoken on purpose: the point is "huh, I never thought of Jesus like that", not a feeling.
+// Every beat uses fit: 'contain' so the whole picture shows on any screen (a laptop and an iPad crop very differently).
 // cls: 'prose' sets long sentences in smaller sentence case; 'cool' drains the text colour for the cold beat.
+// Tone: thought-provoking, not emotional. Both tracks were picked for being steady and unhurried in their first 40s
+// (low loudness swing, few attacks); the first-pass pair (Drifting Mirages, Love Will Save You) was busier and swelled.
 export const tracks = {
-  drone: '/audio/Drifting_Mirages.mp3', // ch3 music, ambient bed
-  pad: '/audio/Love_Will_Save_You.mp3', // ch3 music, warmer; comes in when the King lays down his crown
+  bed: '/audio/BGM_Biblical_View_Of_Salvation.mp3', // ch6a, calm and level
+  turn: '/audio/BGM_Jesus_In_My_Place.mp3', // ch6a, steady and a little warmer; enters when the King drops the crown
 }
 
 export const gate = {
@@ -16,39 +19,43 @@ export const slides = [
   {
     id: 'question',
     cls: 'prose',
-    text: ['How would a King win a humble maiden\'s heart?', 'He could ride into her village in full majesty, banners flying, power on display.'],
-    frames: [{ src: '/img/king-maiden-intro.jpg', dim: 0.5, sat: 0.8, pos: '50% 0%' }],
+    text: ['Imagine a king who falls for a poor village girl.', 'He could ride in with an army. Nobody would dare say no.'],
+    frames: [{ src: '/img/king-maiden-intro.jpg', dim: 0.45, sat: 0.8 }],
+    fit: 'contain',
     fx: 'pinReveal',
-    music: 'drone',
-    auto: 2.4,
+    music: 'bed',
+    auto: 2.5,
   },
   {
     id: 'fear',
     cls: 'prose cool',
-    text: ['But power would only terrify her.', 'It commands submission, but it can never force love.'],
-    frames: [{ src: '/img/god-appears.jpg', dim: 0.85, sat: 0.6 }],
+    text: ['But she would be terrified of him.', 'Power gets you obedience. It can\'t get you love.'],
+    frames: [{ src: '/img/god-appears.jpg', dim: 0.7, sat: 0.6 }],
+    fit: 'contain',
     fx: 'pinReveal',
-    music: 'drone',
+    music: 'bed',
     auto: 3,
   },
   {
     id: 'choice',
     cls: 'prose',
-    text: ['So the King chooses a different way.', 'He lays down his crown, steps off the throne, and meets her in the dirt as a common peasant.'],
-    frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.6, sat: 1, pos: '75% 50%' }],
+    text: ['So he does something that makes no sense.', 'He drops the crown and shows up as someone she can say no to.'],
+    frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.5, sat: 1 }],
+    fit: 'contain',
     fx: 'pinReveal',
-    music: 'pad',
-    musicAt: 1, // the pad swells in as the crown comes off
+    music: 'turn',
+    musicAt: 1, // the second track comes in on the crown line
     auto: 3.2,
   },
   {
     id: 'finale',
     cls: 'prose',
-    text: ['This is why God entered our history as Jesus.', 'Not to overwhelm us with power, but to meet us where we are.'],
+    text: ['Maybe that is why God showed up as Jesus.', 'He did not bring an army. He came as a carpenter anyone could turn down.'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
-    frames: [{ src: '/img/ridge.jpg', dim: 0.55, sat: 1, pos: '100% 25%' }],
-    music: 'pad',
+    frames: [{ src: '/img/reaching-hand.jpg', dim: 0.6 }],
+    fit: 'contain',
+    music: 'turn',
     idle: 15,
   },
 ]
