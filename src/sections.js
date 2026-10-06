@@ -15,7 +15,7 @@ export function renderGate(root, gate, onBegin) {
 
 export function renderSections(scroller, progress, slides, onDone) {
   slides.forEach((s, i) => {
-    const sec = el('section', 'beat')
+    const sec = el('section', s.cls ? `beat ${s.cls}` : 'beat')
     sec.dataset.id = s.id
     if (s.bg) {
       const bg = el('div', 'bg')

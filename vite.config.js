@@ -2,6 +2,10 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  build: {
+    // one page per trailer, plus the home page that lists them
+    rollupOptions: { input: { home: 'index.html', story: 'story/index.html', king: 'king/index.html' } },
+  },
   plugins: [
     VitePWA({
       // 'prompt' = a new version waits until the app is closed and reopened. No mid-event reloads.

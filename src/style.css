@@ -183,3 +183,33 @@ html, body {
 #mute .slash { display: none; }
 #mute[aria-pressed='true'] .slash { display: block; }
 #mute[aria-pressed='true'] .waves { display: none; }
+
+#home {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+  padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
+  text-align: center;
+}
+#home nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+#home .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+
+#gate .back {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 24px;
+  color: var(--text-dim);
+  font: 500 14px var(--font-head);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* Prose beats: long sentences (the parable) set smaller and in sentence case instead of the shouting headline. */
+.beat.prose .headline { max-width: 30ch; font-size: clamp(26px, 3.6vw, 46px); letter-spacing: 0.04em; text-transform: none; line-height: 1.3; }
+/* Cool beat: the same text drained of warmth. */
+.beat.cool .headline { color: #aebbd0; }

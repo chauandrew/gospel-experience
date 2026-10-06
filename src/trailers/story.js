@@ -1,4 +1,4 @@
-// All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
+// The Gospel Experience: creation, the fall, and Jesus. All copy and per-beat config lives here. Edit freely; no logic elsewhere hardcodes wording.
 // frames entries may be a path or { src, dim, sat, pos } (dim = brightness 0.5, sat = saturation 0.9, pos = CSS object-position, e.g. '100% 25%' to keep a corner in view).
 // Images change in step with the text: one per headline, then one per reveal word.
 // speed: per-beat playback multiplier (1.33 = this beat's text lands in 0.75 of the time).
@@ -6,6 +6,7 @@
 // hush: true fades the music to silence when the beat opens (pair with musicAt to bring music back on a line).
 // musicAt: index of the headline that triggers this beat's music crossfade (default: when the beat opens).
 // lead: seconds of art alone before the text starts (default 0).
+// cls: extra class(es) on the beat section (see king.js).
 // There is no manual scrolling: every beat but the last advances on its own.
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
 // fx = scroll motion, music = key into `tracks` below, bg = dimmed backdrop image.
