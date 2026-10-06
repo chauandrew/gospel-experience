@@ -213,3 +213,6 @@ html, body {
 .beat.prose .headline { max-width: 30ch; font-size: clamp(26px, 3.6vw, 46px); letter-spacing: 0.04em; text-transform: none; line-height: 1.3; }
 /* Cool beat: the same text drained of warmth. */
 .beat.cool .headline { color: #aebbd0; }
+/* Soft dark pool behind the text so it reads over any picture. It sits above the art and below the words. */
+.beat.prose::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 40%, transparent 75%); }
+.beat.prose .headline { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9); }
