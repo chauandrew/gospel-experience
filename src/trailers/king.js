@@ -41,7 +41,7 @@ export const slides = [
   {
     id: 'choice',
     cls: 'prose',
-    text: ['So he takes off the crown.', 'He goes to her as a beggar, for real, so they can meet as equals.'],
+    text: ['So he takes off the crown.', 'He goes to her as a beggar so they can meet as equals.'],
     frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.65, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -52,7 +52,7 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['That is what the Bible says God did: he became human.', 'An ordinary carpenter. Why would he do that?'],
+    text: ['The Bible says God became human.', 'An ordinary carpenter. Why would he do that?'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
     frames: [{ src: '/img/crowd.jpg', dim: 0.85 }],
