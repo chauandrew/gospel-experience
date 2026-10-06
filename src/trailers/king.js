@@ -39,7 +39,7 @@ export const slides = [
   {
     id: 'choice',
     cls: 'prose',
-    text: ['So he takes off the crown.', 'He walks into her village like anyone else, so that if she says yes, she means it.'],
+    text: ['So he takes off the crown.', 'He pretends to be an ordinary person in order to win her love.'],
     frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.5, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -50,7 +50,7 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['Maybe that is why God showed up as Jesus.', 'He did not bring an army. He came as a carpenter anyone could turn down.'],
+    text: ['The Bible claims that God became human.', 'And not just any human, but an ordinary carpenter.'],
     cta: 'Step inside to explore the story. Get your pass at the counter.',
     button: 'Reset',
     frames: [{ src: '/img/reaching-hand.jpg', dim: 0.6 }],
