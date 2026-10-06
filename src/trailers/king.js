@@ -19,7 +19,7 @@ export const slides = [
   {
     id: 'question',
     cls: 'prose',
-    text: ['Imagine a king who falls for a poor village girl.', 'He could ride in with an army. Nobody would dare say no.'],
+    text: ['How would a king win the heart of a poor village girl?', 'He could ride in with an army. Nobody would dare say no.'],
     frames: [{ src: '/img/king-maiden-intro.jpg', dim: 0.45, sat: 0.8 }],
     fit: 'contain',
     fx: 'pinReveal',
