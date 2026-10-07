@@ -169,3 +169,35 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-04 (Vercel Web Analytics)
 
 - **`@vercel/analytics` added** (`inject()` in `src/main.js`): page views only, no cookies. It also has to be enabled once in the Vercel dashboard (Project > Analytics > Enable) and the project redeployed. The script loads from `/_vercel/insights/script.js` at runtime, so it only reports while an iPad is online and does nothing in airplane mode (the app itself still works offline). Event-day completions are still counted by the local counter (`gx-completions`, see KIOSK.md); analytics will mostly show installs, updates and any online use. Custom events were not added.
+
+## 2026-10-05 (second trailer, home page)
+
+- **Multi-trailer layout**: `/` is now a plain home page with one button per trailer; each trailer is its own page (`/story/`, `/king/`) so a kiosk can be pinned to one URL. `src/main.js` became `runTrailer({ gate, slides, tracks })` in `src/trailer.js`; `src/slides.js` moved to `src/trailers/story.js`; each trailer page is the old shell plus a 3-line inline script. Pages are listed in `vite.config.js` (`rollupOptions.input`); the service worker precaches all of them (links use trailing slashes). A small "All trailers" link on each gate returns home. Third trailer: copy `king/` and `src/trailers/king.js`.
+- **"The King and the Maiden"** (Kierkegaard parable, Course 101 ch3): four beats, rough first pass. Added only a per-beat `cls` option (`prose` = smaller sentence-case text for long lines, `cool` = drained text colour). Not built yet from the brief: golden particle light, the golden border on the last beat, per-line timecodes (lines stage by the normal engine timing, tuned with `auto`; about 27s to the finale button). Em-dashes in the brief's copy were replaced with commas.
+- Art (ch3, rasterized): `king-maiden-intro.jpg`, `king-veils-himself.jpg` (SVGs cropped to remove white padding), `god-appears.jpg` (cropped between the black bars); last beat reuses `ridge.jpg`. Music: ch3 `Drifting_Mirages.mp3` (bed) and `Love_Will_Save_You.mp3` (pad on "He lays down his crown"), chosen by title, not yet auditioned.
+
+## 2026-10-06 (King and the Maiden: tone, copy, music, fit)
+
+- **Tone is "huh, I never thought of it that way", not a feeling.** Copy rewritten plain and conversational (the parable's point: love needs the freedom to refuse, so the King comes as someone she can say no to; Jesus came as someone people could turn down). The CTA line is the author's, unchanged. Pacing is unhurried: about 27s to the Reset button, gate still says 30 seconds.
+- **Music picked by measurement, not by ear** (the first pair did not fit): for every Course 101 track, the first 40s were scored for loudness swing, attack density and brightness. Chosen for steadiness: `BGM_Biblical_View_Of_Salvation` (bed) and `BGM_Jesus_In_My_Place` (enters on the crown line). The rejected first pair: `Drifting_Mirages` (about 2.5 attacks/s, busy) and `Love_Will_Save_You` (big swings). Still not auditioned by a human; other steady candidates: `Silent_Place` (used by the first trailer), `BGM_Introduction`, `BGM_Adoption`.
+- **Images fit any screen**: every beat uses `fit: 'contain'` (whole picture, soft edges) instead of `cover`, which cropped the King and the maiden on a wide laptop. Last beat is now the reaching-hand watercolor instead of the ridge/cross.
+
+## 2026-10-06 (King trailer: follow Kierkegaard, fix the review problems)
+
+- **Follows the original parable** (Kierkegaard, Philosophical Fragments, via retellings: kenboa.org/biblical/kierkegaards-king-and-maiden-story, patheos.com/blogs/danpeterson/2016/02/the-king-and-the-maiden.html): the king loves a humble maiden; riding in with power overwhelms her and he wants a lover, not a cringing subject; only love makes the unequal equal; so he descends and becomes a beggar, "no mere disguise". Beat 3 therefore says he goes to her as a beggar "for real" (the author's earlier "pretends to be an ordinary person" read as a costume, which contradicts the parable and the incarnation). Beats 1-2 are the author's lines.
+- **Beat 4** now: "That is what the Bible says God did: he became human." / "An ordinary carpenter. Why would he do that?" The closing question is the open loop that sends people to the counter. (Naming Jesus / "the girl is you" was deliberately left out.)
+- **Readability**: `.beat.prose` gets a soft dark radial scrim above the art and below the words, plus a stronger text shadow. Beat 2 holds 2.4s (was 3) since beats 1 and 2 make a related point.
+- **Art**: beat 2 `woman-covers-face.jpg` (ch3 `woman_cover_face_from_God.png`, a woman shielding her face from overwhelming light) replaces the skyline; beat 4 `crowd.jpg` (ch5a `sru-img-4.jpg`, a crowd of ordinary faces) replaces the reaching hand. Removed `god-appears.jpg` and `reaching-hand.jpg`.
+- **Music** still unheard by a human; swap the two paths in `tracks` in `src/trailers/king.js` to try others.
+
+## 2026-10-06 (King trailer: warmer last image)
+
+- The grayscale crowd (`crowd.jpg`) read as downcast, but the beat is "God became human", which is good news. Tinting it only made it sepia (the faces are glum), so the last beat now reuses `blessed-people.jpg` (warm collage of hugs, a proposal, baking with a grandmother, kids walking): ordinary human life, happy. Removed `crowd.jpg`. Shared with the first trailer's "man" beat.
+
+## 2026-10-06 (King trailer: last beat is a mother and child)
+
+- Last beat dropped the "An ordinary carpenter." line (now "The Bible says God became human." / "Why would he do that?") and the shared `blessed-people.jpg` image. It now shows `eden-valley.jpg` (warm valley, bg) with `mother-child.svg` (ch4 `mom-color.svg`, a mother walking with a small child, 19 KB so safe to use as a live SVG) pushed to the right so the text stays clear. Other options found and not used: ch6a pop-up storybook scenes (`ch6a-story-post-5.jpg`, a king reaching out to a boy in rags), ch3 `JesusWithTaxCollectors.jpg` / `JesusAndPeter.jpg` (Jesus among ordinary people), ch5 `Hands_v2.jpg` (two hands reaching, warm). There is no nativity art with a mother in the course (the Bethlehem background is an empty night panorama).
+
+## 2026-10-06 (King trailer: glowing stable on the last beat)
+
+- Last beat is now the Bethlehem stable at night: `stable-glow.jpg`, cropped from the ch5 "A Lowly Birth" panorama (`c05-s01-bethlehem-background-01.svg`, rendered at 10800px so the crop is sharp). The course art has a dark, unlit stable; I baked in a soft warm glow from the manger (screen blend of a radial gradient, kept low so the manger still shows) and a Bethlehem star (not in the source art). Text moved to the upper half via a new `top` class (`.beat.top`) so the light stays clear. Dropped `mother-child.svg`. The glow was tuned by eye over three passes (too strong twice).
