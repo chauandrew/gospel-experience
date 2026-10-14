@@ -34,7 +34,15 @@ export function renderSections(scroller, progress, slides, onDone) {
         img.alt = ''
         // portrait art (e.g. the whisper illustration) is shown whole instead of cropped
         img.addEventListener('load', () => img.naturalHeight > img.naturalWidth && img.classList.add('tall'))
-        f.append(img)
+        if (s.fit !== 'contain') return f.append(img)
+        // letterboxed art gets a blurred copy of itself behind it, so portrait screens read as full-bleed
+        const back = el('img', 'back')
+        back.src = src
+        back.alt = ''
+        back.style.filter = `blur(36px) brightness(${dim ?? 0.5}) saturate(${sat ?? 0.9})`
+        const frame = el('div', 'frame')
+        frame.append(back, img)
+        f.append(frame)
       })
       sec.append(f)
     }

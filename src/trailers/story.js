@@ -6,6 +6,8 @@
 // hush: true fades the music to silence when the beat opens (pair with musicAt to bring music back on a line).
 // musicAt: index of the headline that triggers this beat's music crossfade (default: when the beat opens).
 // lead: seconds of art alone before the text starts (default 0).
+// gap: seconds between one headline landing and the next one starting (default 0.65). Raise it to let line 1 sink in.
+// ctaGap: extra seconds after the last text lands before the cta and button appear (default 0).
 // cls: extra class(es) on the beat section (see king.js).
 // There is no manual scrolling: every beat but the last advances on its own.
 // fit: 'contain' on a slide with frames shows whole images instead of cropping to fill.
