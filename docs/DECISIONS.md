@@ -201,3 +201,9 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-06 (King trailer: glowing stable on the last beat)
 
 - Last beat is now the Bethlehem stable at night: `stable-glow.jpg`, cropped from the ch5 "A Lowly Birth" panorama (`c05-s01-bethlehem-background-01.svg`, rendered at 10800px so the crop is sharp). The course art has a dark, unlit stable; I baked in a soft warm glow from the manger (screen blend of a radial gradient, kept low so the manger still shows) and a Bethlehem star (not in the source art). Text moved to the upper half via a new `top` class (`.beat.top`) so the light stays clear. Dropped `mother-child.svg`. The glow was tuned by eye over three passes (too strong twice).
+
+## 2026-10-13 (King trailer: pacing fields and portrait fill)
+
+- New per-beat fields in `src/fx.js`: `gap` (seconds between one headline landing and the next starting, default `STAGE_GAP` 0.65) and `ctaGap` (extra seconds before the CTA and button appear, default 0). Both are real seconds, unlike `speed`, which scales the whole beat and also divides `auto`, so it was hard to tune. `speed` is unchanged. Documented in the `story.js` comment block.
+- `fit: 'contain'` beats now sit over a blurred, dimmed copy of the same image (`.frame` wrapper with `img.back`) so portrait screens read as full-bleed without cropping. A subtle round black vignette (`.frame::after`) sits over the whole frame. Tried and rejected: a black side fade on the sharp image only (looked mechanical), and a hard side fade over the whole frame (too strong). Outpainted portrait art was considered and not built (needs a generative fill tool).
+- King finale is vertically centered (dropped the `top` class) and has a single line plus the CTA.

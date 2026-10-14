@@ -24,7 +24,7 @@ function splitWords(p) {
   })
 }
 
-// All timings are real seconds. Per-beat extras live in slides.js: `lead`, `auto`, `speed`, `musicAt`.
+// All timings are real seconds. Per-beat extras live in slides.js: `lead`, `gap`, `ctaGap`, `auto`, `speed`, `musicAt`.
 const ART = 0.9 // opacity of full-bleed artwork (it is also darkened in CSS)
 const WORD = 0.6 // fade-in of a word / a line stepping back / an artwork crossfade
 const STAGGER = 0.08 // delay between words of a line
@@ -45,7 +45,7 @@ function buildTimeline(sec, slide) {
   const btn = sec.querySelector('.btn')
   const bg = sec.querySelector('.bg')
   const framesBox = sec.querySelector('.frames')
-  const frames = q(sec, '.frames img')
+  const frames = q(sec, '.frames > *') // an img, or a .frame wrapper (sharp img over its blurred backdrop) on contain beats
 
   gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
@@ -70,7 +70,7 @@ function buildTimeline(sec, slide) {
     headStarts.push(cursor)
     if (k > 0) tl.to(heads[k - 1], { opacity: OLD, duration: WORD }, cursor)
     tl.to(ws, { opacity: 1, y: 0, duration: WORD, stagger: STAGGER }, cursor)
-    cursor += WORD + STAGGER * ws.length + (k < heads.length - 1 ? STAGE_GAP : 0)
+    cursor += WORD + STAGGER * ws.length + (k < heads.length - 1 ? slide.gap ?? STAGE_GAP : 0)
   })
   let end = cursor
 
@@ -96,6 +96,7 @@ function buildTimeline(sec, slide) {
     tl.to(f, { opacity: ART, duration: WORD }, at)
     if (i > 0) tl.to(frames[i - 1], { opacity: 0, duration: WORD }, at)
   })
+  end += slide.ctaGap ?? 0 // extra pause before the CTA (and button) appear
   let textEnd = end
   if (cta) {
     tl.to(cta, { opacity: 1, y: 0, duration: 0.65 }, end + 0.13)
