@@ -207,3 +207,9 @@ Format: date, decision, why, alternatives rejected.
 - New per-beat fields in `src/fx.js`: `gap` (seconds between one headline landing and the next starting, default `STAGE_GAP` 0.65) and `ctaGap` (extra seconds before the CTA and button appear, default 0). Both are real seconds, unlike `speed`, which scales the whole beat and also divides `auto`, so it was hard to tune. `speed` is unchanged. Documented in the `story.js` comment block.
 - `fit: 'contain'` beats now sit over a blurred, dimmed copy of the same image (`.frame` wrapper with `img.back`) so portrait screens read as full-bleed without cropping. A subtle round black vignette (`.frame::after`) sits over the whole frame. Tried and rejected: a black side fade on the sharp image only (looked mechanical), and a hard side fade over the whole frame (too strong). Outpainted portrait art was considered and not built (needs a generative fill tool).
 - King finale is vertically centered (dropped the `top` class) and has a single line plus the CTA.
+
+## 2026-10-13 (Goodbye trailer: the Fall as a parable)
+
+- Third trailer, `/goodbye/` (`src/trailers/goodbye.js`, page `goodbye/index.html`, listed in `vite.config.js` and the home page). Sin as a broken relationship, not a broken rule: a college-bound daughter coldly thanks her parents and cuts them off (adapted from the author's source text on the Fall; Mr. and Mrs. Lee became Smith). Beats: setup, thanks, goodbye, bridge ("The Bible says this is our story with God"), finale.
+- Finale is an open question, "So what would the Father do next?", with the standard exhibit CTA, so the hook is to hear the answer at the exhibit.
+- All art is reused (`alone-room.svg`, `blessed-people.jpg` under her cold thanks, `isolation.jpg` as the figure leaving, `genesis-dusk.svg`, `night-sky.jpg`); no new assets. Music reuses the King's `bed` and `turn` plus `BGM_Downward_Spiral.mp3` on the goodbye. Not auditioned and not run on an iPad.
