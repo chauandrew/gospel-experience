@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a44"/>
+      <stop offset="1" stop-color="#8a6a5c"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3d37"/>
+      <stop offset="1" stop-color="#2b2420"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd9a0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <!-- tenement blocks with a few lit windows -->
+  <g fill="#1d1a26">
+    <rect x="0" y="150" width="260" height="400"/>
+    <rect x="270" y="90" width="230" height="460"/>
+    <rect x="510" y="190" width="200" height="360"/>
+    <rect x="720" y="110" width="260" height="440"/>
+    <rect x="990" y="170" width="290" height="380"/>
+  </g>
+  <g fill="#f2c27a">
+    <rect x="50" y="220" width="36" height="52"/>
+    <rect x="330" y="170" width="36" height="52"/>
+    <rect x="410" y="300" width="36" height="52"/>
+    <rect x="580" y="260" width="36" height="52"/>
+    <rect x="800" y="200" width="36" height="52"/>
+    <rect x="890" y="340" width="36" height="52"/>
+    <rect x="1080" y="250" width="36" height="52"/>
+    <rect x="1170" y="380" width="36" height="52"/>
+  </g>
+  <rect x="0" y="540" width="1280" height="180" fill="url(#ground)"/>
+  <!-- gutter -->
+  <path d="M0 600 H1280 V650 H0 Z" fill="#3a2d26"/>
+  <path d="M0 600 H1280" stroke="#241b17" stroke-width="6"/>
+  <ellipse cx="640" cy="640" rx="330" ry="26" fill="#5a4637"/>
+  <!-- warm glow on the child -->
+  <ellipse cx="640" cy="560" rx="260" ry="190" fill="url(#glow)"/>
+  <!-- mud pies -->
+  <g>
+    <ellipse cx="520" cy="624" rx="42" ry="14" fill="#6b4c36"/>
+    <path d="M480 620 Q520 580 560 620 Z" fill="#7d5a40"/>
+    <ellipse cx="740" cy="630" rx="44" ry="15" fill="#6b4c36"/>
+    <path d="M698 626 Q740 584 782 626 Z" fill="#7d5a40"/>
+    <ellipse cx="850" cy="622" rx="36" ry="12" fill="#6b4c36"/>
+    <path d="M816 618 Q850 584 884 618 Z" fill="#7d5a40"/>
+  </g>
+  <!-- the child, kneeling and shaping a pie -->
+  <g>
+    <path d="M590 640 Q600 560 640 548 Q690 552 688 640 Z" fill="#c76f4a"/>
+    <circle cx="640" cy="518" r="30" fill="#e0b08a"/>
+    <path d="M610 510 Q640 478 672 504 Q660 496 640 496 Q622 496 610 510 Z" fill="#3b2a22"/>
+    <path d="M610 590 Q580 610 560 618 L570 630 Q604 618 626 604 Z" fill="#e0b08a"/>
+    <path d="M668 592 Q696 610 706 626 L694 634 Q676 620 654 604 Z" fill="#e0b08a"/>
+    <circle cx="630" cy="520" r="3" fill="#2b2420"/>
+    <circle cx="652" cy="520" r="3" fill="#2b2420"/>
+    <path d="M630 532 Q641 542 652 532" stroke="#2b2420" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
