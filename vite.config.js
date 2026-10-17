@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   build: {
     // one page per trailer, plus the home page that lists them
-    rollupOptions: { input: { home: 'index.html', story: 'story/index.html', king: 'king/index.html' } },
+    rollupOptions: { input: { home: 'index.html', story: 'story/index.html', king: 'king/index.html', tree: 'tree/index.html' } },
   },
   plugins: [
     VitePWA({
