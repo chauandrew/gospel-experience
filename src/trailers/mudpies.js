@@ -31,7 +31,7 @@ export const slides = [
   {
     id: 'sea',
     cls: 'prose',
-    text: ['Now offer him a holiday at the sea', 'He cannot picture it, so he says no thanks and goes back to his pies'],
+    text: ['Now offer him a holiday at the sea', 'He cannot picture it, so he keeps making pies'],
     frames: [{ src: '/img/sea.jpg', dim: 0.8, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -42,7 +42,7 @@ export const slides = [
   {
     id: 'us',
     cls: 'prose',
-    text: ['Lewis said we are like that with God', 'We do not want too much, we settle for too little'],
+    text: ['Lewis said we are like that with God', 'We chase degrees, status and a nice life, and settle for too little'],
     // the course's "ornaments of life" collage (phone, house, trophy) as the mud pies
     frames: [{ src: '/img/ornaments-of-life.jpeg', dim: 0.7, sat: 0.9 }],
     fit: 'contain',
