@@ -211,3 +211,19 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-17 (King trailer: author's pass)
 
 - The author renamed the King's music key `bed` to `calm` and set it on every beat (no `turn` track change on beats 2, 3 or the finale), changed beat 2 line 2 to "Power can win obedience, but it can't force love" (held 2.0s), and put the finale question "What did it cost?" back under "Likewise, the Bible says God became human".
+
+## 2026-10-17 (Mud Pies trailer)
+
+- Fifth page, `/mudpies/` (`src/trailers/mudpies.js`, `mudpies/index.html`, listed in `vite.config.js` and the home page). C. S. Lewis's image from "The Weight of Glory": a slum child happy with mud pies who cannot imagine a holiday at the sea; our desires are not too strong but too weak. Chosen over the Christmas tree (PR for `tree-trailer` stays open) and a Solzhenitsyn quote because it is lighter and ends on a hopeful open question ("And what is the sea?").
+- Paraphrased: no Lewis wording on screen, only his name. Beats: scene, the offer of the sea (warmer `turn` track from the start), us, finale. Copy is a first draft, not yet reviewed by the author.
+- Art gap: no child-in-the-gutter image in Course 101, so beat 1 is a simple original SVG illustration (flat, not polished). The collage on beat 3 is only 500px. Youth-relatable contrasts (likes vs being known, concert clip vs front row, tutorial level) were considered and not used.
+
+## 2026-10-17 (Mud Pies trailer: Lewis's own words)
+
+- The trailer now walks through C. S. Lewis's mud pies passage from "The Weight of Glory" in his original wording (the author checked permission), instead of a paraphrase. Beats: a hook ("Why does 'I'll be happy when...' never seem to arrive?" / "C. S. Lewis phrased it like this", chosen because it starts from common ground nobody argues with, unlike "we want too much"), then the quote in three beats, then his closing line ("We are far too easily pleased") as the finale with an added question, "What is the joy being offered?" (the second line is the assistant's draft and not yet confirmed).
+- Art is atmospheric because the words carry the mud pies: `night-sky.jpg`, `alone-room.svg`, `ridge.jpg` (a tiny figure under a golden sky; it also appears in the first trailer and has a cross on the cliff), `sea.jpg`, `eden-valley.jpg`. The original gutter illustration and the puddle and Christmas tree directions were dropped.
+- Not auditioned (music is the King's calm `bed` throughout) and not run on an iPad.
+
+## 2026-10-17 (Mud Pies trailer: author's pass)
+
+- The author tightened the script by hand: the quote runs as one italic line per beat with the "C. S. Lewis" eyebrow on each, the finale is the single line "We are far too easily pleased." (the assistant's added question was dropped), and each quote beat holds 3.8s (`gap` commented out). Music is `Silent_Place.mp3` (a more pensive bed) on every beat, replacing the King's bed. A one-line closer before the CTA is still open.
