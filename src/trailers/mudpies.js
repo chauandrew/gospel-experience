@@ -30,7 +30,7 @@ export const slides = [
     id: 'half',
     cls: 'prose',
     eyebrow: 'C. S. Lewis',
-    text: ['We are half-hearted creatures', 'fooling about with drink and sex and ambition'],
+    text: ['_We are half-hearted creatures_', '_fooling about with drink and sex and ambition_'],
     frames: [{ src: '/img/alone-room.svg', dim: 0.8, sat: 0.9 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -41,7 +41,7 @@ export const slides = [
   {
     id: 'offered',
     cls: 'prose',
-    text: ['when infinite joy is offered us', 'like an ignorant child who wants to go on making mud pies in a slum'],
+    text: ['_when infinite joy is offered us_', '_like an ignorant child who wants to go on making mud pies in a slum_'],
     // a tiny figure under a huge golden sky: the offer is far bigger than the pies
     frames: [{ src: '/img/ridge.jpg', dim: 0.7, sat: 1 }],
     fit: 'contain',
@@ -53,7 +53,7 @@ export const slides = [
   {
     id: 'sea',
     cls: 'prose',
-    text: ['because he cannot imagine what is meant by', 'the offer of a holiday at the sea'],
+    text: ['_because he cannot imagine what is meant by_', '_the offer of a holiday at the sea_'],
     frames: [{ src: '/img/sea.jpg', dim: 0.8, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
@@ -64,7 +64,7 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['We are far too easily pleased', 'What is the joy being offered?'],
+    text: ['_We are far too easily pleased_', 'What is the joy being offered?'],
     cta: 'Walk through the whole story at the interactive exhibit',
     button: 'Reset',
     bg: '/img/eden-valley.jpg',
