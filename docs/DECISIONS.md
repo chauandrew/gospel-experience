@@ -208,6 +208,10 @@ Format: date, decision, why, alternatives rejected.
 - `fit: 'contain'` beats now sit over a blurred, dimmed copy of the same image (`.frame` wrapper with `img.back`) so portrait screens read as full-bleed without cropping. A subtle round black vignette (`.frame::after`) sits over the whole frame. Tried and rejected: a black side fade on the sharp image only (looked mechanical), and a hard side fade over the whole frame (too strong). Outpainted portrait art was considered and not built (needs a generative fill tool).
 - King finale is vertically centered (dropped the `top` class) and has a single line plus the CTA.
 
+## 2026-10-17 (King trailer: author's pass)
+
+- The author renamed the King's music key `bed` to `calm` and set it on every beat (no `turn` track change on beats 2, 3 or the finale), changed beat 2 line 2 to "Power can win obedience, but it can't force love" (held 2.0s), and put the finale question "What did it cost?" back under "Likewise, the Bible says God became human".
+
 ## 2026-10-17 (Mud Pies trailer)
 
 - Fifth page, `/mudpies/` (`src/trailers/mudpies.js`, `mudpies/index.html`, listed in `vite.config.js` and the home page). C. S. Lewis's image from "The Weight of Glory": a slum child happy with mud pies who cannot imagine a holiday at the sea; our desires are not too strong but too weak. Chosen over the Christmas tree (PR for `tree-trailer` stays open) and a Solzhenitsyn quote because it is lighter and ends on a hopeful open question ("And what is the sea?").
