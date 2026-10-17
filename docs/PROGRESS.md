@@ -14,6 +14,9 @@ See `docs/PLAN.md` for phase details and recommended model per phase.
 - [ ] Phase 9 (human, see docs/KIOSK.md): Kiosk deploy (manual)
 - [ ] Phase 10 (optional): Particles (not built, see notes)
 
+## Trailers
+Three pages share the engine in `src/trailer.js`: `/story/` (`story.js`), `/king/` (`king.js`), `/tree/` (`tree.js`, Christmas tree analogy from Course 101 ch2, not yet run on an iPad). The Goodbye trailer was dropped (branch `goodbye-trailer` kept). See DECISIONS.
+
 ## Next agent start here
 Waiting on the human: merge the open PR, confirm the Vercel project is connected to the repo (no deployment was visible through the GitHub API), then Phase 8 device QA (checklist below) and Phase 9 (`docs/KIOSK.md`). When the human reports iPad findings, fix them in a small PR (Sonnet 5.5; Opus 5.5 only for hard audio or rendering bugs).
 
