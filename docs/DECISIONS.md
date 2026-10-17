@@ -219,3 +219,7 @@ Format: date, decision, why, alternatives rejected.
 - The trailer now walks through C. S. Lewis's mud pies passage from "The Weight of Glory" in his original wording (the author checked permission), instead of a paraphrase. Beats: a hook ("Why does 'I'll be happy when...' never seem to arrive?" / "C. S. Lewis phrased it like this", chosen because it starts from common ground nobody argues with, unlike "we want too much"), then the quote in three beats, then his closing line ("We are far too easily pleased") as the finale with an added question, "What is the joy being offered?" (the second line is the assistant's draft and not yet confirmed).
 - Art is atmospheric because the words carry the mud pies: `night-sky.jpg`, `alone-room.svg`, `ridge.jpg` (a tiny figure under a golden sky; it also appears in the first trailer and has a cross on the cliff), `sea.jpg`, `eden-valley.jpg`. The original gutter illustration and the puddle and Christmas tree directions were dropped.
 - Not auditioned (music is the King's calm `bed` throughout) and not run on an iPad.
+
+## 2026-10-17 (Mud Pies trailer: author's pass)
+
+- The author tightened the script by hand: the quote runs as one italic line per beat with the "C. S. Lewis" eyebrow on each, the finale is the single line "We are far too easily pleased." (the assistant's added question was dropped), and each quote beat holds 3.8s (`gap` commented out). Music is `Silent_Place.mp3` (a more pensive bed) on every beat, replacing the King's bed. A one-line closer before the CTA is still open.
