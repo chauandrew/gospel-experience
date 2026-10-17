@@ -207,3 +207,7 @@ Format: date, decision, why, alternatives rejected.
 - New per-beat fields in `src/fx.js`: `gap` (seconds between one headline landing and the next starting, default `STAGE_GAP` 0.65) and `ctaGap` (extra seconds before the CTA and button appear, default 0). Both are real seconds, unlike `speed`, which scales the whole beat and also divides `auto`, so it was hard to tune. `speed` is unchanged. Documented in the `story.js` comment block.
 - `fit: 'contain'` beats now sit over a blurred, dimmed copy of the same image (`.frame` wrapper with `img.back`) so portrait screens read as full-bleed without cropping. A subtle round black vignette (`.frame::after`) sits over the whole frame. Tried and rejected: a black side fade on the sharp image only (looked mechanical), and a hard side fade over the whole frame (too strong). Outpainted portrait art was considered and not built (needs a generative fill tool).
 - King finale is vertically centered (dropped the `top` class) and has a single line plus the CTA.
+
+## 2026-10-17 (King trailer: author's pass)
+
+- The author renamed the King's music key `bed` to `calm` and set it on every beat (no `turn` track change on beats 2, 3 or the finale), changed beat 2 line 2 to "Power can win obedience, but it can't force love" (held 2.0s), and put the finale question "What did it cost?" back under "Likewise, the Bible says God became human".

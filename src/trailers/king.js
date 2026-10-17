@@ -7,7 +7,7 @@
 // Tone: thought-provoking, not emotional. Both tracks were picked for being steady and unhurried in their first 40s
 // (low loudness swing, few attacks); the first-pass pair (Drifting Mirages, Love Will Save You) was busier and swelled.
 export const tracks = {
-  bed: '/audio/BGM_Biblical_View_Of_Salvation.mp3', // ch6a, calm and level
+  calm: '/audio/BGM_Biblical_View_Of_Salvation.mp3', // ch6a, calm and level
   turn: '/audio/BGM_Jesus_In_My_Place.mp3', // ch6a, steady and a little warmer; enters when the King drops the crown
 }
 
@@ -25,21 +25,20 @@ export const slides = [
     frames: [{ src: '/img/king-maiden-intro.jpg', dim: 0.45, sat: 0.8 }],
     fit: 'contain',
     fx: 'pinReveal',
-    music: 'bed',
+    music: 'calm',
     gap: 1.8,
     auto: 1.4,
   },
   {
     id: 'fear',
     cls: 'prose',
-    text: ['But would she love him?', 'Power can win obedience, but not love'],
+    text: ['But would she love him?', 'Power can win obedience, but it can\'t force love'],
     frames: [{ src: '/img/woman-covers-face.jpg', dim: 1.1, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
-    music: 'turn',
-    // musicAt: 1, 
+    music: 'calm',
     gap: 1.8,
-    auto: 1.8,
+    auto: 2.0,
   },
   {
     id: 'choice',
@@ -48,21 +47,21 @@ export const slides = [
     frames: [{ src: '/img/king-veils-himself.jpg', dim: 0.65, sat: 1 }],
     fit: 'contain',
     fx: 'pinReveal',
-    music: 'turn',
+    music: 'calm',
     gap: 1.8,
     auto: 1.8,
   },
   {
     id: 'finale',
     cls: 'prose',
-    text: ['Likewise, the Bible says God became human'],
+    text: ['Likewise, the Bible says God became human', 'What did it cost?'],
     cta: 'Walk through the whole story at the interactive exhibit',
     button: 'Reset',
     // Bethlehem at night: the stable lit from inside under the star (ch5 panorama, glow added). Text is vertically centered over it.
     bg: '/img/stable-glow.jpg',
     ctaGap: 1.5,
     dim: 1.2,
-    music: 'turn',
+    music: 'calm',
     idle: 15,
   },
 ]
