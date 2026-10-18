@@ -19,8 +19,8 @@ export const slides = [
     id: 'hook',
     cls: 'prose',
     text: [
-      'Why does happiness never seem to arrive?', 
-      'Good grades to get into a good college to get a good job and so on', 
+      'Why does lasting happiness always seem like it\'s around the next corner?', 
+      'Get good grades to get into a good college to get a good job and so on', 
     ],
     frames: [{ src: '/img/night-sky.jpg', dim: 0.7, sat: 0.9 }],
     fit: 'contain',
@@ -35,7 +35,7 @@ export const slides = [
     eyebrow: 'C. S. Lewis',
     text: [
       'C. S. Lewis phrased it like this:',
-      '_We [aim for] drink and ambition when infinite joy is offered us_'
+      '_We [strive for] drink and ambition when infinite joy is offered us_'
     ],
     frames: [{ src: '/img/alone-room.svg', dim: 0.8, sat: 0.9 }],
     fit: 'contain',
@@ -62,11 +62,11 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['Is that true for you?'],
-    cta: 'Decide for yourself at the live, interactive exhibit',
+    text: ['We keep chasing small things, when something far bigger is available', 'Is that true for you?'],
+    cta: 'Come and see',
     button: 'Reset',
     bg: '/img/eden-valley.jpg',
-    gap: 1.8,
+    gap: 2.4,
     ctaGap: 1.5,
     dim: 1,
     music: 'pensive',
