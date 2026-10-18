@@ -54,8 +54,8 @@ export const slides = [
   {
     id: 'finale',
     cls: 'prose',
-    text: ['Likewise, the Bible says God became human', 'What did it cost?'],
-    cta: 'Walk through the whole story at the interactive exhibit',
+    text: ['Likewise, the Bible says God became human', 'But what did it cost?'],
+    cta: 'Enter to discover the answer',
     button: 'Reset',
     // Bethlehem at night: the stable lit from inside under the star (ch5 panorama, glow added). Text is vertically centered over it.
     bg: '/img/stable-glow.jpg',
