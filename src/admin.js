@@ -63,11 +63,13 @@ $('days').addEventListener('click', async (e) => {
   if (!b.classList.contains('arm')) {
     b.classList.add('arm')
     b.textContent = 'Tap to confirm'
-    setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Remove' }, 4000)
+    b.timer = setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Remove' }, 4000)
     return
   }
   const r = lastRows[b.dataset.i]
+  clearTimeout(b.timer)
   b.disabled = true
+  b.innerHTML = '<span class="spin" aria-hidden="true"></span>Removing...'
   try {
     const j = await (await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'delete', pass, row: r.row, slot: r.slot, name: r.name, size: r.size }) })).json()
     if (!j.ok) throw new Error(j.error)
