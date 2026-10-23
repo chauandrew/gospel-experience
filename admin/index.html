@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0b0b0d" />
+    <title>Signups | The Gospel Experience</title>
+  </head>
+  <body>
+    <main id="signup">
+      <p class="eyebrow">The Gospel Experience</p>
+      <h1>Signups</h1>
+      <form id="login" class="adm-login">
+        <label for="pass" class="adm-label">Passcode</label>
+        <input type="password" id="pass" autocomplete="off" />
+        <button type="submit" class="adm-btn go">View</button>
+        <p id="msg" class="msg" role="alert"></p>
+      </form>
+      <div id="out" hidden>
+        <p id="summary" class="sub"></p>
+        <button type="button" id="refresh" class="adm-btn">Refresh</button>
+        <div id="days"></div>
+      </div>
+    </main>
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>

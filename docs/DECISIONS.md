@@ -235,3 +235,8 @@ Format: date, decision, why, alternatives rejected.
 - The windows are duplicated in `src/signup.js` and the script (change both). `signup/**` is excluded from the PWA precache so schedule changes are never stale; the page is not part of the offline kiosk.
 - Signups cannot be cancelled by the visitor; the organizer deletes or edits the sheet row. The sheet can be mirrored into a church sheet with `IMPORTRANGE`.
 
+
+## 2026-10-23 (Admin page)
+
+- `/admin/` (`admin/index.html`, `src/admin.js`) lists signups grouped by day and slot, with a total per slot. Not linked from anywhere and `noindex`. It asks for a passcode and sends it in a POST body to the Apps Script (`action: 'list'`), which compares it with the `ADMIN_PASSCODE` script property (never in the repo). The passcode is kept in `sessionStorage` for the tab only. It is a light gate, not strong security: the script has no rate limit.
+- `src/signup-config.js` now holds the API URL, `CAP`, `DAYS` and the time helpers shared by the signup and admin pages. `admin/**` is excluded from the precache like `signup/**`.

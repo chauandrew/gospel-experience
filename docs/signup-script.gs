@@ -1,5 +1,6 @@
 // Google Apps Script behind /signup/. Paste into Extensions > Apps Script of the "GXP Signups" sheet
 // (tab "Signups", headers: Timestamp, Slot, Name, Group size), then Deploy > Web app, Execute as Me, access Anyone.
+// Admin page (/admin/): set Project Settings > Script properties > ADMIN_PASSCODE to the passcode you want.
 // After edits: Deploy > Manage deployments > pencil > New version (the URL stays the same).
 const SHEET = 'Signups', CAP = 8, TZ = 'America/Los_Angeles';
 // Same windows as src/signup.js. Change both together.
@@ -32,6 +33,15 @@ function taken_() {
   return t;
 }
 
+// Every signup, for the admin page. Needs the ADMIN_PASSCODE script property.
+function list_(pass) {
+  const want = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSCODE');
+  if (!want || pass !== want) return json_({ ok: false, error: 'Wrong passcode' });
+  const sh = sheet_();
+  const rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [];
+  return json_({ ok: true, rows: rows.map(r => ({ ts: r[0], slot: r[1], name: r[2], size: Number(r[3]) || 0 })) });
+}
+
 function doGet() {
   return json_({ taken: taken_() });
 }
@@ -39,8 +49,10 @@ function doGet() {
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
+    const body = JSON.parse(e.postData.contents);
+    if (body.action === 'list') return list_(body.pass);
     lock.waitLock(10000);
-    const { slot, name, size } = JSON.parse(e.postData.contents);
+    const { slot, name, size } = body;
     const n = String(name || '').trim().slice(0, 80), g = Number(size);
     const now = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd HH:mm');
     if (!SLOTS[slot]) return json_({ ok: false, error: 'Unknown slot' });

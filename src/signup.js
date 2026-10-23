@@ -3,9 +3,8 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
+import { API, CAP, DAYS, hhmm, clock } from './signup-config.js'
 
-const API = 'https://script.google.com/macros/s/AKfycbwfb7TUYeiGXA5dQTzhHdK1IP_oWu5lOy8ydf1q8_0k5_NUlLCpYcBJ11KYPnSpXYOs/exec'
-const CAP = 8
 const TZ = 'America/Los_Angeles'
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
 const WINDOWS = [
@@ -15,12 +14,8 @@ const WINDOWS = [
   ['2026-11-07', '15:00', '17:00'],
   ['2026-11-07', '19:00', '21:00'],
 ]
-const DAYS = { '2026-11-06': 'Fri Nov 6', '2026-11-07': 'Sat Nov 7' }
 
-const pad = (n) => String(n).padStart(2, '0')
 const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3)
-const hhmm = (m) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`
-const clock = (m) => `${Math.floor(m / 60) % 12 || 12}:${pad(m % 60)}${m < 720 ? 'am' : 'pm'}`
 
 const windows = WINDOWS.map(([date, s, e]) => {
   const slots = []
