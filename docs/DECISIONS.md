@@ -264,3 +264,7 @@ Format: date, decision, why, alternatives rejected.
 - The King and Mud Pies finales now show the CTA line, a white "Pick a time" button (the finale's `signup` field in each trailer file) that links to `/signup/?kiosk=<trailer folder>`, and a quieter outlined Reset. The trailer's idle timer and Reset are unchanged. `fx.js` now reveals every `.btn` on a beat (two on these finales).
 - `/signup/?kiosk=king|mudpies|story` is kiosk mode: a "Back to the trailer" link, an idle timeout of 60s (15s once the confirmation shows) and the Done button all send the visitor back to the trailer they came from with `location.replace`. Each iPad shows one trailer permanently, so it never goes to the home page. Unknown `kiosk` values are ignored (no open redirect), and the public page has no kiosk behavior.
 - The signup page needs Wi-Fi at the booth; the human confirmed it will be there. The page is not in the offline cache, so offline it fails to load.
+
+## 2026-10-23 (Next available)
+
+- `/signup/` has a "Next available" button at the top: the soonest slot that has not started yet and still has room, shown with its spots left. One tap opens the same modal for that slot, so people who do not want to think about their schedule have a default. The King finale CTA is now "Come and see", same as Mud Pies.

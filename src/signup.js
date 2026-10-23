@@ -31,6 +31,13 @@ const left = (s) => CAP - (taken[s.key] || 0)
 function render() {
   if (!taken) return
   const now = pacificNow()
+  // one-tap default for people who do not want to pick: the soonest slot that has not started and has room
+  const nx = Object.values(slotByKey).find((s) => s.key > now && left(s) > 0)
+  $('next').hidden = !nx
+  if (nx) {
+    $('next').dataset.key = nx.key
+    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${DAYS[nx.date]}, ${clock(nx.m)}</span><span class="next-n">${left(nx)} spots left</span>`
+  }
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
       .filter((w) => w.date === date)
@@ -104,6 +111,7 @@ function open(s) {
   $('dlg').showModal()
 }
 
+$('next').addEventListener('click', () => open(slotByKey[$('next').dataset.key]))
 $('list').addEventListener('click', (e) => {
   if (e.target.closest('#retry')) return load()
   const b = e.target.closest('.slot')
