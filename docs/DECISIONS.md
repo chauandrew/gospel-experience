@@ -253,3 +253,8 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-23 (Signup: caches removed)
 
 - Removed the 60s `CacheService` totals cache and the `localStorage` counts seed from the Signup speedups entry above. The sheet read is small; the wait is Apps Script startup, which a cache does not shorten, and the caches added a lock, stale counts and a one-minute lag after sheet edits or admin deletes. Kept: the signup reply carries fresh counts (no second request), preconnect, and a loading spinner plus a "Signing up..." button state.
+
+## 2026-10-23 (Wording and admin past toggle)
+
+- Lower-barrier wording: heading "Pick a time", description "Come on your own or bring your group", button "Save my spot" ("Saving..."), confirmation "You're in", home button "Pick a time". The admin page keeps "Signups".
+- `/admin/` hides signups whose slot has ended (Pacific time) with a "Show past slots" checkbox; the summary says how many are hidden. `pacificNow` moved into `src/signup-config.js` so both pages share it. Past rows are still in the sheet and removable once shown.

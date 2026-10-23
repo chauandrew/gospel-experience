@@ -92,6 +92,8 @@ input[type='text'] { width: 100%; padding: 14px; font: 400 18px var(--font-body)
 input[type='password'] { width: 100%; padding: 14px; font: 400 18px var(--font-body); color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .adm-btn { min-height: 48px; padding: 0 28px; font: 700 15px var(--font-body); text-transform: uppercase; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
 .adm-btn.go { color: #0b0b0d; background: var(--accent); border-color: var(--accent); }
+.adm-check { display: inline-flex; align-items: center; gap: 8px; margin-left: 16px; color: var(--dim); cursor: pointer; }
+.adm-check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .people { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .people li { display: flex; align-items: center; gap: 12px; padding: 8px 4px; border-bottom: 1px solid var(--line); }
 .people li span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }

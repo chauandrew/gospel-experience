@@ -3,7 +3,7 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { API, CAP, DAYS, clock } from './signup-config.js'
+import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -11,14 +11,21 @@ const slotMins = (k) => +k.slice(11, 13) * 60 + +k.slice(14, 16)
 
 let pass = ''
 let lastRows = []
+let showPast = false
 try { pass = sessionStorage.getItem('gx-admin') || '' } catch {}
+
+const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + 10)}`
 
 function render(rows) {
   const by = {}
   lastRows = rows
-  rows.forEach((r, i) => ((r.i = i), (by[r.slot] ||= []).push(r)))
-  const people = rows.reduce((a, r) => a + r.size, 0)
-  $('summary').textContent = `${people} people in ${rows.length} groups across ${Object.keys(by).length} slots.`
+  rows.forEach((r, i) => (r.i = i))
+  const now = pacificNow()
+  const shown = showPast ? rows : rows.filter((r) => slotEnd(r.slot) > now)
+  shown.forEach((r) => (by[r.slot] ||= []).push(r))
+  const people = shown.reduce((a, r) => a + r.size, 0)
+  const hidden = rows.length - shown.length
+  $('summary').textContent = `${people} people in ${shown.length} groups across ${Object.keys(by).length} slots.${hidden ? ` ${hidden} past hidden.` : ''}`
   const dates = [...new Set(Object.keys(by).map((k) => k.slice(0, 10)))].sort()
   $('days').innerHTML = dates.length
     ? dates
@@ -31,7 +38,7 @@ function render(rows) {
             .join('')}`,
         )
         .join('')
-    : '<p class="status">No signups yet.</p>'
+    : '<p class="status">No upcoming signups.</p>'
 }
 
 async function load() {
@@ -56,6 +63,10 @@ $('login').addEventListener('submit', (e) => {
   load()
 })
 $('refresh').onclick = load
+$('showPast').onchange = (e) => {
+  showPast = e.target.checked
+  render(lastRows)
+}
 // two taps to delete: the first arms the button, the second (within 4s) removes the signup
 $('days').addEventListener('click', async (e) => {
   const b = e.target.closest('.del')

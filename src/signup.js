@@ -3,9 +3,8 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { API, CAP, DAYS, hhmm, clock } from './signup-config.js'
+import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
-const TZ = 'America/Los_Angeles'
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
 const WINDOWS = [
   ['2026-11-06', '18:00', '19:30'],
@@ -23,16 +22,6 @@ const windows = WINDOWS.map(([date, s, e]) => {
   return { date, s: mins(s), e: mins(e), slots }
 })
 const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
-
-// "2026-11-06 18:05" in Pacific time, comparable with slot keys as plain strings
-const pacificNow = () => {
-  const p = Object.fromEntries(
-    new Intl.DateTimeFormat('en-US', { timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-      .formatToParts(new Date())
-      .map((x) => [x.type, x.value]),
-  )
-  return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`
-}
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
@@ -61,7 +50,7 @@ function render() {
   })
   $('list').innerHTML = days.join('')
     ? `<div class="cols">${days.join('')}</div>`
-    : '<p class="status">All sign-up times have passed.</p>'
+    : '<p class="status">All times have passed.</p>'
 }
 
 function setTaken(t) {
@@ -125,7 +114,7 @@ $('form').addEventListener('submit', async (e) => {
     return $('name').focus()
   }
   $('ok').disabled = true
-  $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Signing up...'
+  $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Saving...'
   $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
@@ -141,9 +130,9 @@ $('form').addEventListener('submit', async (e) => {
     if (r.taken && typeof r.taken === 'object') setTaken(r.taken) // fresh counts came back with the reply
     else await load()
   } catch {
-    $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'
+    $('msg').textContent = 'Could not save. Check your connection and try again.'
   }
-  $('ok').textContent = 'Sign up'
+  $('ok').textContent = 'Save my spot'
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
 })
