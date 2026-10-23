@@ -36,8 +36,6 @@ const pacificNow = () => {
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
-// last known counts (under 5 minutes old) shown instantly; the server still enforces the cap
-try { const c = JSON.parse(localStorage.getItem('gx-taken')); if (Date.now() - c.at < 300000) taken = c.t } catch {}
 const left = (s) => CAP - (taken[s.key] || 0)
 
 function render() {
@@ -68,7 +66,6 @@ function render() {
 
 function setTaken(t) {
   taken = t
-  try { localStorage.setItem('gx-taken', JSON.stringify({ t, at: Date.now() })) } catch {}
   render()
   if ($('dlg').open) sync()
 }
@@ -128,6 +125,7 @@ $('form').addEventListener('submit', async (e) => {
     return $('name').focus()
   }
   $('ok').disabled = true
+  $('ok').textContent = 'Signing up...'
   $('msg').textContent = ''
   try {
     // text/plain keeps this a simple request, so the browser skips a CORS preflight
@@ -144,10 +142,10 @@ $('form').addEventListener('submit', async (e) => {
   } catch {
     $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'
   }
+  $('ok').textContent = 'Sign up'
   if ($('form').hidden === false) sync()
 })
 
-render()
 load()
 setInterval(() => document.hidden || load(), 60000)
 document.addEventListener('visibilitychange', () => document.hidden || load())

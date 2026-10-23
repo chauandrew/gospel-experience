@@ -23,7 +23,7 @@ WINDOWS.forEach(([d, s, e]) => {
 const json_ = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 const sheet_ = () => SpreadsheetApp.getActive().getSheetByName(SHEET);
 
-// Truth: totals straight from the sheet. Used to check capacity when someone signs up.
+// Totals straight from the sheet: people signed up per slot.
 function sheetTaken_() {
   const sh = sheet_(), t = {};
   if (sh.getLastRow() > 1) {
@@ -44,24 +44,6 @@ function list_(pass) {
   return json_({ ok: true, rows: rows.map((r, i) => ({ row: i + 2, ts: r[0], slot: r[1], name: r[2], size: Number(r[3]) || 0 })) });
 }
 
-// Fast path for page loads: totals cached for 60s, refreshed on every signup.
-// Manual sheet edits show up within a minute.
-function taken_() {
-  const cache = CacheService.getScriptCache(), hit = cache.get('taken');
-  if (hit) return JSON.parse(hit);
-  const lock = LockService.getScriptLock(); // so a stale read cannot overwrite the cache a signup just refreshed
-  lock.waitLock(10000);
-  try {
-    const again = cache.get('taken');
-    if (again) return JSON.parse(again);
-    const t = sheetTaken_();
-    cache.put('taken', JSON.stringify(t), 60);
-    return t;
-  } finally {
-    lock.releaseLock();
-  }
-}
-
 // Delete one signup row for the admin page. The row must still match what the admin saw.
 function delete_(b) {
   if (!passOk_(b.pass)) return json_({ ok: false, error: 'Wrong passcode' });
@@ -73,7 +55,6 @@ function delete_(b) {
     const [, slot, name, size] = sh.getRange(r, 1, 1, 4).getValues()[0];
     if (String(slot) !== b.slot || String(name) !== b.name || Number(size) !== Number(b.size)) return json_({ ok: false, error: 'The sheet changed, refresh the list' });
     sh.deleteRow(r);
-    CacheService.getScriptCache().remove('taken');
     return json_({ ok: true });
   } finally {
     lock.releaseLock();
@@ -81,7 +62,7 @@ function delete_(b) {
 }
 
 function doGet() {
-  return json_({ taken: taken_() });
+  return json_({ taken: sheetTaken_() });
 }
 
 function doPost(e) {
@@ -104,7 +85,6 @@ function doPost(e) {
     r.setNumberFormats([['yyyy-mm-dd hh:mm:ss', '@', '@', '0']]); // text format keeps names from becoming formulas
     r.setValues([[new Date(), slot, n, g]]);
     t[slot] = (t[slot] || 0) + g;
-    try { CacheService.getScriptCache().put('taken', JSON.stringify(t), 60); } catch (err) {} // best effort, the row is already saved
     return json_({ ok: true, left: left - g, taken: t }); // the page uses this instead of reloading
   } catch (err) {
     return json_({ ok: false, error: 'Request failed, try again' });

@@ -249,3 +249,7 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-23 (Admin delete)
 
 - The admin page has a Remove button per signup (two taps: arm, then confirm within 4s). The script's `delete` action checks the passcode, takes the lock, and deletes the sheet row only if its slot, name and size still match what the admin saw, so a shifted sheet cannot delete the wrong row. Deleting clears the cached totals. There is no undo; the sheet's version history (File > Version history) is the only way back.
+
+## 2026-10-23 (Signup: caches removed)
+
+- Removed the 60s `CacheService` totals cache and the `localStorage` counts seed from the Signup speedups entry above. The sheet read is small; the wait is Apps Script startup, which a cache does not shorten, and the caches added a lock, stale counts and a one-minute lag after sheet edits or admin deletes. Kept: the signup reply carries fresh counts (no second request), preconnect, and a loading spinner plus a "Signing up..." button state.
