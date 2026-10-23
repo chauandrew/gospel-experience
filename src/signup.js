@@ -3,9 +3,8 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { API, CAP, DAYS, hhmm, clock } from './signup-config.js'
+import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
-const TZ = 'America/Los_Angeles'
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
 const WINDOWS = [
   ['2026-11-06', '18:00', '19:30'],
@@ -23,16 +22,6 @@ const windows = WINDOWS.map(([date, s, e]) => {
   return { date, s: mins(s), e: mins(e), slots }
 })
 const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
-
-// "2026-11-06 18:05" in Pacific time, comparable with slot keys as plain strings
-const pacificNow = () => {
-  const p = Object.fromEntries(
-    new Intl.DateTimeFormat('en-US', { timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-      .formatToParts(new Date())
-      .map((x) => [x.type, x.value]),
-  )
-  return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`
-}
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
@@ -61,16 +50,29 @@ function render() {
   })
   $('list').innerHTML = days.join('')
     ? `<div class="cols">${days.join('')}</div>`
-    : '<p class="status">All sign-up times have passed.</p>'
+    : '<p class="status">All times have passed.</p>'
 }
 
+function setTaken(t) {
+  taken = t
+  render()
+  if ($('dlg').open) sync()
+}
+
+let gen = 0 // bumped when a signup reply brings fresh counts, so an older in-flight load cannot overwrite them
+let busy = false
 async function load() {
+  const g = gen
   try {
-    taken = (await (await fetch(API)).json()).taken
-    render()
-    if ($('dlg').open) sync()
+    const j = await (await fetch(API)).json()
+    if (!j.taken) throw new Error('bad reply')
+    if (g === gen) setTaken(j.taken)
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
+    else {
+      $('list').querySelector('.stale')?.remove()
+      $('list').insertAdjacentHTML('afterbegin', '<p class="status stale">Could not refresh. Counts may be out of date.</p>')
+    }
   }
 }
 
@@ -85,7 +87,7 @@ const setSize = (n) => {
 function sync() {
   const l = left(cur)
   $('cap').textContent = l ? `max ${l}` : 'full'
-  $('ok').disabled = l < 1
+  $('ok').disabled = busy || l < 1
   setSize(size)
 }
 function open(s) {
@@ -117,7 +119,10 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Please enter your name.'
     return $('name').focus()
   }
+  busy = true
   $('ok').disabled = true
+  $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Saving...'
+  $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
     // text/plain keeps this a simple request, so the browser skips a CORS preflight
@@ -129,10 +134,16 @@ $('form').addEventListener('submit', async (e) => {
     } else {
       $('msg').textContent = r.error
     }
-    await load()
+    if (r.taken && typeof r.taken === 'object') {
+      gen++ // fresh counts came back with the reply
+      setTaken(r.taken)
+    } else await load()
   } catch {
-    $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'
+    $('msg').textContent = 'Could not save. Check your connection and try again.'
   }
+  busy = false
+  $('ok').textContent = 'Save my spot'
+  $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
 })
 

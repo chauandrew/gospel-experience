@@ -240,3 +240,21 @@ Format: date, decision, why, alternatives rejected.
 
 - `/admin/` (`admin/index.html`, `src/admin.js`) lists signups grouped by day and slot, with a total per slot. Not linked from anywhere and `noindex`. It asks for a passcode and sends it in a POST body to the Apps Script (`action: 'list'`), which compares it with the `ADMIN_PASSCODE` script property (never in the repo). The passcode is kept in `sessionStorage` for the tab only. It is a light gate, not strong security: the script has no rate limit.
 - `src/signup-config.js` now holds the API URL, `CAP`, `DAYS` and the time helpers shared by the signup and admin pages. `admin/**` is excluded from the precache like `signup/**`.
+
+## 2026-10-23 (Signup speedups)
+
+- The signup reply now carries fresh `taken` counts, so the page no longer does a second GET after signing up. The page also saves the last counts in `localStorage` (`gx-taken`) and draws them at once on load (the server still enforces the cap), and preconnects to the Apps Script hosts.
+- The script caches the totals for 60s (`CacheService`) for page loads. Signups always check capacity against the sheet itself and refresh the cache, so overbooking is not possible; a manual sheet edit can take up to a minute to show on the page. Requires redeploying the script as a new version.
+
+## 2026-10-23 (Admin delete)
+
+- The admin page has a Remove button per signup (two taps: arm, then confirm within 4s). The script's `delete` action checks the passcode, takes the lock, and deletes the sheet row only if its slot, name and size still match what the admin saw, so a shifted sheet cannot delete the wrong row. Deleting clears the cached totals. There is no undo; the sheet's version history (File > Version history) is the only way back.
+
+## 2026-10-23 (Signup: caches removed)
+
+- Removed the 60s `CacheService` totals cache and the `localStorage` counts seed from the Signup speedups entry above. The sheet read is small; the wait is Apps Script startup, which a cache does not shorten, and the caches added a lock, stale counts and a one-minute lag after sheet edits or admin deletes. Kept: the signup reply carries fresh counts (no second request), preconnect, and a loading spinner plus a "Signing up..." button state.
+
+## 2026-10-23 (Wording and admin past toggle)
+
+- Lower-barrier wording: heading "Pick a time", description "Come on your own or bring your group", button "Save my spot" ("Saving..."), confirmation "You're in", home button "Pick a time". The admin page keeps "Signups".
+- `/admin/` hides signups whose slot has ended (Pacific time) with a "Show past slots" checkbox; the summary says how many are hidden. `pacificNow` moved into `src/signup-config.js` so both pages share it. Past rows are still in the sheet and removable once shown.
