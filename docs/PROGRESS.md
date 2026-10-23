@@ -13,6 +13,7 @@ See `docs/PLAN.md` for phase details and recommended model per phase.
 - [ ] Phase 8 (human, iPad): Device QA + polish
 - [ ] Phase 9 (human, see docs/KIOSK.md): Kiosk deploy (manual)
 - [ ] Phase 10 (optional): Particles (not built, see notes)
+- [x] Signup page `/signup/` (see DECISIONS 2026-10-23); human still needs to test a real signup on a phone
 
 ## Next agent start here
 Waiting on the human: merge the open PR, confirm the Vercel project is connected to the repo (no deployment was visible through the GitHub API), then Phase 8 device QA (checklist below) and Phase 9 (`docs/KIOSK.md`). When the human reports iPad findings, fix them in a small PR (Sonnet 5.5; Opus 5.5 only for hard audio or rendering bugs).

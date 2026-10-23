@@ -227,3 +227,16 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-17 (Mud Pies trailer: author's pass)
 
 - The author tightened the script by hand: the quote runs as one italic line per beat with the "C. S. Lewis" eyebrow on each, the finale is the single line "We are far too easily pleased." (the assistant's added question was dropped), and each quote beat holds 3.8s (`gap` commented out). Music is `Silent_Place.mp3` (a more pensive bed) on every beat, replacing the King's bed. A one-line closer before the CTA is still open.
+
+## 2026-10-23 (Signup page)
+
+- Sixth page, `/signup/` (`signup/index.html`, `src/signup.js`, `src/signup.css`), linked from the home page. People pick a 10 minute slot (8 spots per slot, group size counts against the 8), then enter group size and name in a modal. Windows: Fri Nov 6 6:00-7:30pm and 8:30-9:30pm; Sat Nov 7 9-10am, 3-5pm and 7-9pm (45 slots). Past slots are hidden (Pacific time). Layout: two days side by side as plain compact lists, one list under 760px.
+- Storage is a Google Sheet behind an Apps Script web app (`docs/signup-script.gs`), owned by a personal Google account because the church Workspace domain blocks "Anyone" web apps. The script checks the cap under a lock, so two people cannot take the last spots together, and rejects past or unknown slots. The page needs network, unlike the trailers.
+- The windows are duplicated in `src/signup.js` and the script (change both). `signup/**` is excluded from the PWA precache so schedule changes are never stale; the page is not part of the offline kiosk.
+- Signups cannot be cancelled by the visitor; the organizer deletes or edits the sheet row. The sheet can be mirrored into a church sheet with `IMPORTRANGE`.
+
+
+## 2026-10-23 (Admin page)
+
+- `/admin/` (`admin/index.html`, `src/admin.js`) lists signups grouped by day and slot, with a total per slot. Not linked from anywhere and `noindex`. It asks for a passcode and sends it in a POST body to the Apps Script (`action: 'list'`), which compares it with the `ADMIN_PASSCODE` script property (never in the repo). The passcode is kept in `sessionStorage` for the tab only. It is a light gate, not strong security: the script has no rate limit.
+- `src/signup-config.js` now holds the API URL, `CAP`, `DAYS` and the time helpers shared by the signup and admin pages. `admin/**` is excluded from the precache like `signup/**`.
