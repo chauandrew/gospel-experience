@@ -35,12 +35,13 @@ function sheetTaken_() {
 }
 
 // Every signup, for the admin page. Needs the ADMIN_PASSCODE script property.
+const passOk_ = p => { const want = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSCODE'); return !!want && p === want; };
+
 function list_(pass) {
-  const want = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSCODE');
-  if (!want || pass !== want) return json_({ ok: false, error: 'Wrong passcode' });
+  if (!passOk_(pass)) return json_({ ok: false, error: 'Wrong passcode' });
   const sh = sheet_();
   const rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [];
-  return json_({ ok: true, rows: rows.map(r => ({ ts: r[0], slot: r[1], name: r[2], size: Number(r[3]) || 0 })) });
+  return json_({ ok: true, rows: rows.map((r, i) => ({ row: i + 2, ts: r[0], slot: r[1], name: r[2], size: Number(r[3]) || 0 })) });
 }
 
 // Fast path for page loads: totals cached for 60s, refreshed on every signup.
@@ -61,6 +62,24 @@ function taken_() {
   }
 }
 
+// Delete one signup row for the admin page. The row must still match what the admin saw.
+function delete_(b) {
+  if (!passOk_(b.pass)) return json_({ ok: false, error: 'Wrong passcode' });
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sh = sheet_(), r = Number(b.row);
+    if (!(r >= 2 && r <= sh.getLastRow())) return json_({ ok: false, error: 'Row not found, refresh the list' });
+    const [, slot, name, size] = sh.getRange(r, 1, 1, 4).getValues()[0];
+    if (String(slot) !== b.slot || String(name) !== b.name || Number(size) !== Number(b.size)) return json_({ ok: false, error: 'The sheet changed, refresh the list' });
+    sh.deleteRow(r);
+    CacheService.getScriptCache().remove('taken');
+    return json_({ ok: true });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function doGet() {
   return json_({ taken: taken_() });
 }
@@ -70,6 +89,7 @@ function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     if (body.action === 'list') return list_(body.pass);
+    if (body.action === 'delete') return delete_(body);
     lock.waitLock(10000);
     const { slot, name, size } = body;
     const n = String(name || '').trim().slice(0, 80), g = Number(size);

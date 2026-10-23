@@ -88,6 +88,9 @@ input[type='password'] { width: 100%; padding: 14px; font: 400 18px var(--font-b
 .adm-btn { min-height: 48px; padding: 0 28px; font: 700 15px var(--font-body); text-transform: uppercase; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
 .adm-btn.go { color: #0b0b0d; background: var(--accent); border-color: var(--accent); }
 .people { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-.people li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 4px; border-bottom: 1px solid var(--line); }
-.people li span:last-child { color: var(--dim); font-variant-numeric: tabular-nums; }
+.people li { display: flex; align-items: center; gap: 12px; padding: 8px 4px; border-bottom: 1px solid var(--line); }
+.people li span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.people .grp { color: var(--dim); font-variant-numeric: tabular-nums; }
+.del { min-height: 36px; padding: 0 14px; font: 500 12px var(--font-body); text-transform: uppercase; color: var(--dim); background: transparent; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+.del.arm { color: #0b0b0d; background: var(--accent); border-color: var(--accent); }
 #days { max-width: 560px; }

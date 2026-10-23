@@ -245,3 +245,7 @@ Format: date, decision, why, alternatives rejected.
 
 - The signup reply now carries fresh `taken` counts, so the page no longer does a second GET after signing up. The page also saves the last counts in `localStorage` (`gx-taken`) and draws them at once on load (the server still enforces the cap), and preconnects to the Apps Script hosts.
 - The script caches the totals for 60s (`CacheService`) for page loads. Signups always check capacity against the sheet itself and refresh the cache, so overbooking is not possible; a manual sheet edit can take up to a minute to show on the page. Requires redeploying the script as a new version.
+
+## 2026-10-23 (Admin delete)
+
+- The admin page has a Remove button per signup (two taps: arm, then confirm within 4s). The script's `delete` action checks the passcode, takes the lock, and deletes the sheet row only if its slot, name and size still match what the admin saw, so a shifted sheet cannot delete the wrong row. Deleting clears the cached totals. There is no undo; the sheet's version history (File > Version history) is the only way back.

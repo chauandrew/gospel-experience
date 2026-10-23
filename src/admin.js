@@ -10,11 +10,13 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const slotMins = (k) => +k.slice(11, 13) * 60 + +k.slice(14, 16)
 
 let pass = ''
+let lastRows = []
 try { pass = sessionStorage.getItem('gx-admin') || '' } catch {}
 
 function render(rows) {
   const by = {}
-  rows.forEach((r) => (by[r.slot] ||= []).push(r))
+  lastRows = rows
+  rows.forEach((r, i) => ((r.i = i), (by[r.slot] ||= []).push(r)))
   const people = rows.reduce((a, r) => a + r.size, 0)
   $('summary').textContent = `${people} people in ${rows.length} groups across ${Object.keys(by).length} slots.`
   const dates = [...new Set(Object.keys(by).map((k) => k.slice(0, 10)))].sort()
@@ -25,7 +27,7 @@ function render(rows) {
             .filter((k) => k.startsWith(d))
             .sort()
             .map((k) => `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${by[k].reduce((a, r) => a + r.size, 0)} of ${CAP}</span></div>
-              <ul class="people">${by[k].map((r) => `<li><span>${esc(r.name)}</span><span>${r.size}</span></li>`).join('')}</ul>`)
+              <ul class="people">${by[k].map((r) => `<li><span>${esc(r.name)}</span><span class="grp">${r.size}</span><button type="button" class="del" data-i="${r.i}" aria-label="Remove ${esc(r.name)}">Remove</button></li>`).join('')}</ul>`)
             .join('')}`,
         )
         .join('')
@@ -54,4 +56,25 @@ $('login').addEventListener('submit', (e) => {
   load()
 })
 $('refresh').onclick = load
+// two taps to delete: the first arms the button, the second (within 4s) removes the signup
+$('days').addEventListener('click', async (e) => {
+  const b = e.target.closest('.del')
+  if (!b) return
+  if (!b.classList.contains('arm')) {
+    b.classList.add('arm')
+    b.textContent = 'Tap to confirm'
+    setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Remove' }, 4000)
+    return
+  }
+  const r = lastRows[b.dataset.i]
+  b.disabled = true
+  try {
+    const j = await (await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'delete', pass, row: r.row, slot: r.slot, name: r.name, size: r.size }) })).json()
+    if (!j.ok) throw new Error(j.error)
+    await load()
+  } catch (err) {
+    b.disabled = false
+    b.textContent = err.message === 'Failed to fetch' ? 'Could not reach the sheet' : err.message
+  }
+})
 if (pass) load()
