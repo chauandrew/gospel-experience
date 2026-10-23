@@ -24,6 +24,7 @@ body {
 
 #signup { max-width: 960px; margin: 0 auto; }
 
+.back { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: 8px; color: var(--dim); font: 500 12px var(--font-head); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
 .eyebrow { margin: 0; font: 500 12px var(--font-head); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
 h1 { margin: 6px 0 4px; font: 700 clamp(24px, 4vw, 34px)/1.15 var(--font-head); letter-spacing: 0.08em; text-transform: uppercase; text-wrap: balance; }
 .sub { margin: 0 0 8px; color: var(--dim); max-width: 60ch; }

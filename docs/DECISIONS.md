@@ -258,3 +258,9 @@ Format: date, decision, why, alternatives rejected.
 
 - Lower-barrier wording: heading "Pick a time", description "Come on your own or bring your group", button "Save my spot" ("Saving..."), confirmation "You're in", home button "Pick a time". The admin page keeps "Signups".
 - `/admin/` hides signups whose slot has ended (Pacific time) with a "Show past slots" checkbox; the summary says how many are hidden. `pacificNow` moved into `src/signup-config.js` so both pages share it. Past rows are still in the sheet and removable once shown.
+
+## 2026-10-23 (Finale leads to signup)
+
+- The King and Mud Pies finales now show the CTA line, a white "Pick a time" button (the finale's `signup` field in each trailer file) that links to `/signup/?kiosk=<trailer folder>`, and a quieter outlined Reset. The trailer's idle timer and Reset are unchanged. `fx.js` now reveals every `.btn` on a beat (two on these finales).
+- `/signup/?kiosk=king|mudpies|story` is kiosk mode: a "Back to the trailer" link, an idle timeout of 60s (15s once the confirmation shows) and the Done button all send the visitor back to the trailer they came from with `location.replace`. Each iPad shows one trailer permanently, so it never goes to the home page. Unknown `kiosk` values are ignored (no open redirect), and the public page has no kiosk behavior.
+- The signup page needs Wi-Fi at the booth; the human confirmed it will be there. The page is not in the offline cache, so offline it fails to load.

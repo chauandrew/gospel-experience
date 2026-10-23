@@ -3,6 +3,7 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
+import { createIdle } from './idle.js'
 import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
@@ -110,7 +111,19 @@ $('list').addEventListener('click', (e) => {
 })
 $('plus').onclick = () => setSize(size + 1)
 $('minus').onclick = () => setSize(size - 1)
-$('cancel').onclick = $('close').onclick = () => $('dlg').close()
+$('cancel').onclick = () => $('dlg').close()
+
+// On a booth iPad the trailer links here as /signup/?kiosk=<trailer>. Idle or Done sends the visitor back to that trailer.
+const TRAILERS = { king: '/king/', mudpies: '/mudpies/', story: '/story/' }
+const home = TRAILERS[new URLSearchParams(location.search).get('kiosk')]
+let idle
+if (home) {
+  $('back').href = home
+  $('back').hidden = false
+  idle = createIdle(() => location.replace(home), 60)
+  idle.start()
+}
+$('close').onclick = () => (home ? location.replace(home) : $('dlg').close())
 
 $('form').addEventListener('submit', async (e) => {
   e.preventDefault()
@@ -131,6 +144,7 @@ $('form').addEventListener('submit', async (e) => {
       $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
       $('form').hidden = true
       $('done').hidden = false
+      idle?.setSecs(15) // the next visitor should not find this confirmation
     } else {
       $('msg').textContent = r.error
     }

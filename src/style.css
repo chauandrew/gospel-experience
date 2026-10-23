@@ -64,7 +64,7 @@ html, body {
   overflow: hidden;
 }
 
-.beat > p, .beat > button { position: relative; z-index: 1; }
+.beat > p, .beat > button, .beat > a { position: relative; z-index: 1; }
 
 .bg, .frames { position: absolute; pointer-events: none; will-change: transform, opacity; } /* own GPU layers, so GSAP's per-frame scale/fade does not repaint the whole beat */
 
@@ -139,6 +139,9 @@ html, body {
   text-transform: uppercase;
   cursor: pointer;
 }
+
+a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.btn.quiet { background: transparent; color: var(--text-dim); border: 1px solid var(--text-dim); }
 
 #progress {
   position: fixed;

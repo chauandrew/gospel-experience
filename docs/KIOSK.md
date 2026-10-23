@@ -8,6 +8,9 @@
 5. Repeat on the second iPad.
 6. Do step 4 again the morning of the event. iOS can evict cached data on a device that is low on storage.
 
+## Wi-Fi for signup
+The finale's "Pick a time" button opens `/signup/?kiosk=...`, which needs a network connection (it is not cached for offline). Keep the iPads on Wi-Fi at the booth. After a signup, or 60 seconds idle, the page returns to the trailer on that iPad.
+
 ## iPad settings
 - Settings > Display & Brightness > Auto-Lock: Never.
 - Settings > Accessibility > Guided Access: On. Set a passcode. Enable Accessibility Shortcut (triple-click the side or home button).

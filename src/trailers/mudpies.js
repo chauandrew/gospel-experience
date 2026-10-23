@@ -64,6 +64,7 @@ export const slides = [
     cls: 'prose',
     text: ['We keep chasing small things, when something far bigger is available', 'Is that true for you?'],
     cta: 'Come and see',
+    signup: 'Pick a time', // link to /signup/?kiosk=mudpies, which comes back to this trailer when idle
     button: 'Reset',
     bg: '/img/eden-valley.jpg',
     gap: 2.4,
