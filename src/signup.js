@@ -125,7 +125,8 @@ $('form').addEventListener('submit', async (e) => {
     return $('name').focus()
   }
   $('ok').disabled = true
-  $('ok').textContent = 'Signing up...'
+  $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Signing up...'
+  $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
     // text/plain keeps this a simple request, so the browser skips a CORS preflight
@@ -143,6 +144,7 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'
   }
   $('ok').textContent = 'Sign up'
+  $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
 })
 
