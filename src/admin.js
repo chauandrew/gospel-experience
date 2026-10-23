@@ -51,6 +51,10 @@ async function load() {
     $('login').hidden = true
     $('out').hidden = false
   } catch (e) {
+    if (!$('out').hidden) {
+      $('summary').textContent = 'Could not refresh the list. Check your connection.' // keep the list on screen
+      return
+    }
     $('msg').textContent = e.message === 'Wrong passcode' ? e.message : 'Could not load signups. Check your connection and try again.'
     $('login').hidden = false
     $('out').hidden = true
@@ -87,7 +91,9 @@ $('days').addEventListener('click', async (e) => {
     await load()
   } catch (err) {
     b.disabled = false
-    b.textContent = err.message === 'Failed to fetch' ? 'Could not reach the sheet' : err.message
+    b.classList.remove('arm') // back to needing two taps
+    b.textContent = 'Remove'
+    $('summary').textContent = err.message === 'Failed to fetch' ? 'Could not reach the sheet. Try again.' : err.message
   }
 })
 if (pass) load()

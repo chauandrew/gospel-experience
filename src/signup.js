@@ -59,14 +59,20 @@ function setTaken(t) {
   if ($('dlg').open) sync()
 }
 
+let gen = 0 // bumped when a signup reply brings fresh counts, so an older in-flight load cannot overwrite them
+let busy = false
 async function load() {
+  const g = gen
   try {
     const j = await (await fetch(API)).json()
     if (!j.taken) throw new Error('bad reply')
-    setTaken(j.taken)
+    if (g === gen) setTaken(j.taken)
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
-    else $('list').insertAdjacentHTML('afterbegin', '<p class="status">Could not refresh. Counts may be out of date.</p>')
+    else {
+      $('list').querySelector('.stale')?.remove()
+      $('list').insertAdjacentHTML('afterbegin', '<p class="status stale">Could not refresh. Counts may be out of date.</p>')
+    }
   }
 }
 
@@ -81,7 +87,7 @@ const setSize = (n) => {
 function sync() {
   const l = left(cur)
   $('cap').textContent = l ? `max ${l}` : 'full'
-  $('ok').disabled = l < 1
+  $('ok').disabled = busy || l < 1
   setSize(size)
 }
 function open(s) {
@@ -113,6 +119,7 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Please enter your name.'
     return $('name').focus()
   }
+  busy = true
   $('ok').disabled = true
   $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Saving...'
   $('ok').setAttribute('aria-busy', 'true')
@@ -127,11 +134,14 @@ $('form').addEventListener('submit', async (e) => {
     } else {
       $('msg').textContent = r.error
     }
-    if (r.taken && typeof r.taken === 'object') setTaken(r.taken) // fresh counts came back with the reply
-    else await load()
+    if (r.taken && typeof r.taken === 'object') {
+      gen++ // fresh counts came back with the reply
+      setTaken(r.taken)
+    } else await load()
   } catch {
     $('msg').textContent = 'Could not save. Check your connection and try again.'
   }
+  busy = false
   $('ok').textContent = 'Save my spot'
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
