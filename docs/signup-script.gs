@@ -48,9 +48,17 @@ function list_(pass) {
 function taken_() {
   const cache = CacheService.getScriptCache(), hit = cache.get('taken');
   if (hit) return JSON.parse(hit);
-  const t = sheetTaken_();
-  cache.put('taken', JSON.stringify(t), 60);
-  return t;
+  const lock = LockService.getScriptLock(); // so a stale read cannot overwrite the cache a signup just refreshed
+  lock.waitLock(10000);
+  try {
+    const again = cache.get('taken');
+    if (again) return JSON.parse(again);
+    const t = sheetTaken_();
+    cache.put('taken', JSON.stringify(t), 60);
+    return t;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function doGet() {
@@ -76,7 +84,7 @@ function doPost(e) {
     r.setNumberFormats([['yyyy-mm-dd hh:mm:ss', '@', '@', '0']]); // text format keeps names from becoming formulas
     r.setValues([[new Date(), slot, n, g]]);
     t[slot] = (t[slot] || 0) + g;
-    CacheService.getScriptCache().put('taken', JSON.stringify(t), 60);
+    try { CacheService.getScriptCache().put('taken', JSON.stringify(t), 60); } catch (err) {} // best effort, the row is already saved
     return json_({ ok: true, left: left - g, taken: t }); // the page uses this instead of reloading
   } catch (err) {
     return json_({ ok: false, error: 'Request failed, try again' });

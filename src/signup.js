@@ -36,7 +36,8 @@ const pacificNow = () => {
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
-try { taken = JSON.parse(localStorage.getItem('gx-taken')) } catch {} // last known counts, shown instantly; the server still enforces the cap
+// last known counts (under 5 minutes old) shown instantly; the server still enforces the cap
+try { const c = JSON.parse(localStorage.getItem('gx-taken')); if (Date.now() - c.at < 300000) taken = c.t } catch {}
 const left = (s) => CAP - (taken[s.key] || 0)
 
 function render() {
@@ -67,16 +68,19 @@ function render() {
 
 function setTaken(t) {
   taken = t
-  try { localStorage.setItem('gx-taken', JSON.stringify(t)) } catch {}
+  try { localStorage.setItem('gx-taken', JSON.stringify({ t, at: Date.now() })) } catch {}
   render()
   if ($('dlg').open) sync()
 }
 
 async function load() {
   try {
-    setTaken((await (await fetch(API)).json()).taken)
+    const j = await (await fetch(API)).json()
+    if (!j.taken) throw new Error('bad reply')
+    setTaken(j.taken)
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
+    else $('list').insertAdjacentHTML('afterbegin', '<p class="status">Could not refresh. Counts may be out of date.</p>')
   }
 }
 
@@ -135,7 +139,7 @@ $('form').addEventListener('submit', async (e) => {
     } else {
       $('msg').textContent = r.error
     }
-    if (r.taken) setTaken(r.taken) // fresh counts came back with the reply
+    if (r.taken && typeof r.taken === 'object') setTaken(r.taken) // fresh counts came back with the reply
     else await load()
   } catch {
     $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'

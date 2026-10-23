@@ -13,6 +13,7 @@ See `docs/PLAN.md` for phase details and recommended model per phase.
 - [ ] Phase 8 (human, iPad): Device QA + polish
 - [ ] Phase 9 (human, see docs/KIOSK.md): Kiosk deploy (manual)
 - [ ] Phase 10 (optional): Particles (not built, see notes)
+- [x] Signup speedups (PR 21): the deployed Apps Script must match `docs/signup-script.gs` (redeploy as a new version of the same deployment, keep `ADMIN_PASSCODE`)
 - [x] Signup page `/signup/` (see DECISIONS 2026-10-23); human still needs to test a real signup on a phone
 
 ## Next agent start here
