@@ -36,6 +36,7 @@ const pacificNow = () => {
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
+try { taken = JSON.parse(localStorage.getItem('gx-taken')) } catch {} // last known counts, shown instantly; the server still enforces the cap
 const left = (s) => CAP - (taken[s.key] || 0)
 
 function render() {
@@ -64,11 +65,16 @@ function render() {
     : '<p class="status">All sign-up times have passed.</p>'
 }
 
+function setTaken(t) {
+  taken = t
+  try { localStorage.setItem('gx-taken', JSON.stringify(t)) } catch {}
+  render()
+  if ($('dlg').open) sync()
+}
+
 async function load() {
   try {
-    taken = (await (await fetch(API)).json()).taken
-    render()
-    if ($('dlg').open) sync()
+    setTaken((await (await fetch(API)).json()).taken)
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
   }
@@ -129,13 +135,15 @@ $('form').addEventListener('submit', async (e) => {
     } else {
       $('msg').textContent = r.error
     }
-    await load()
+    if (r.taken) setTaken(r.taken) // fresh counts came back with the reply
+    else await load()
   } catch {
     $('msg').textContent = 'Could not reach the sign-up sheet. Check your connection and try again.'
   }
   if ($('form').hidden === false) sync()
 })
 
+render()
 load()
 setInterval(() => document.hidden || load(), 60000)
 document.addEventListener('visibilitychange', () => document.hidden || load())

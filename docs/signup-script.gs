@@ -23,7 +23,8 @@ WINDOWS.forEach(([d, s, e]) => {
 const json_ = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 const sheet_ = () => SpreadsheetApp.getActive().getSheetByName(SHEET);
 
-function taken_() {
+// Truth: totals straight from the sheet. Used to check capacity when someone signs up.
+function sheetTaken_() {
   const sh = sheet_(), t = {};
   if (sh.getLastRow() > 1) {
     sh.getRange(2, 2, sh.getLastRow() - 1, 3).getValues().forEach(r => {
@@ -40,6 +41,16 @@ function list_(pass) {
   const sh = sheet_();
   const rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [];
   return json_({ ok: true, rows: rows.map(r => ({ ts: r[0], slot: r[1], name: r[2], size: Number(r[3]) || 0 })) });
+}
+
+// Fast path for page loads: totals cached for 60s, refreshed on every signup.
+// Manual sheet edits show up within a minute.
+function taken_() {
+  const cache = CacheService.getScriptCache(), hit = cache.get('taken');
+  if (hit) return JSON.parse(hit);
+  const t = sheetTaken_();
+  cache.put('taken', JSON.stringify(t), 60);
+  return t;
 }
 
 function doGet() {
@@ -59,12 +70,14 @@ function doPost(e) {
     if (SLOTS[slot] <= now) return json_({ ok: false, error: 'That slot has passed' });
     if (!n) return json_({ ok: false, error: 'Name is required' });
     if (!Number.isInteger(g) || g < 1 || g > CAP) return json_({ ok: false, error: 'Invalid group size' });
-    const left = CAP - (taken_()[slot] || 0);
-    if (g > left) return json_({ ok: false, error: 'Only ' + left + ' spots left', left });
+    const t = sheetTaken_(), left = CAP - (t[slot] || 0);
+    if (g > left) return json_({ ok: false, error: 'Only ' + left + ' spots left', left, taken: t });
     const sh = sheet_(), r = sh.getRange(sh.getLastRow() + 1, 1, 1, 4);
     r.setNumberFormats([['yyyy-mm-dd hh:mm:ss', '@', '@', '0']]); // text format keeps names from becoming formulas
     r.setValues([[new Date(), slot, n, g]]);
-    return json_({ ok: true, left: left - g });
+    t[slot] = (t[slot] || 0) + g;
+    CacheService.getScriptCache().put('taken', JSON.stringify(t), 60);
+    return json_({ ok: true, left: left - g, taken: t }); // the page uses this instead of reloading
   } catch (err) {
     return json_({ ok: false, error: 'Request failed, try again' });
   } finally {
