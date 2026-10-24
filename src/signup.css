@@ -11,6 +11,7 @@
 }
 
 * { box-sizing: border-box; }
+html { touch-action: manipulation; } /* no double-tap zoom on the stepper */
 [hidden] { display: none !important; }
 
 body {

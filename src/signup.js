@@ -107,6 +107,7 @@ function open(s) {
   $('name').value = ''
   $('msg').textContent = ''
   size = 1
+  idle?.start() // back to the full 60s after a confirmation shortened it
   sync()
   $('dlg').showModal()
 }
@@ -149,7 +150,7 @@ $('form').addEventListener('submit', async (e) => {
   $('msg').textContent = ''
   try {
     // text/plain keeps this a simple request, so the browser skips a CORS preflight
-    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ slot: cur.key, name, size }) })).json()
+    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ slot: cur.key, name, size }), signal: AbortSignal.timeout?.(20000) })).json()
     if (r.ok) {
       $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
       $('form').hidden = true

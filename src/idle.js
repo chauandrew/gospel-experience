@@ -1,4 +1,4 @@
-// Calls onIdle after `secs` with no touch or scroll. Only runs between start() and stop().
+// Calls onIdle after `secs` with no touch, scroll or key press. Only runs between start() and stop().
 export function createIdle(onIdle, defaultSecs = 20) {
   let timer
   let secs = defaultSecs

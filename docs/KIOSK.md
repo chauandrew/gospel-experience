@@ -21,7 +21,7 @@ The finale's "Pick a time" button opens `/signup/?kiosk=...`, which needs a netw
 ## Starting Guided Access
 1. Open the app from the Home Screen.
 2. Triple-click the side or home button, tap Guided Access, then Start.
-3. Tap Options. Keep Touch on (students tap Begin, the mute button and Reset; the run itself needs no touch). Optionally turn off Motion, and turn off the volume buttons if you want volume locked. Leave Keyboards on only if you use a keyboard (Space works as Begin on the first screen and Reset on the last).
+3. Tap Options. Keep Touch on (students tap Begin, the mute button and Reset; the run itself needs no touch). Optionally turn off Motion, and turn off the volume buttons if you want volume locked. Leave Keyboards ON: the signup page needs the on-screen keyboard for the name field (Space also works as Begin on the first screen and Reset on the last).
 4. To exit: triple-click again and enter the passcode.
 
 ## Updating the app

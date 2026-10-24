@@ -71,6 +71,6 @@ export const slides = [
     ctaGap: 1.5,
     dim: 1,
     music: 'pensive',
-    idle: 15,
+    idle: 25, // the buttons only land a few seconds into the beat, so give people time to choose
   },
 ]
