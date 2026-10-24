@@ -202,6 +202,7 @@ a.btn { box-sizing: border-box; display: inline-flex; align-items: center; justi
   text-align: center;
 }
 #home nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+#home .side-link { display: inline-flex; align-items: center; min-height: 64px; padding: 0 16px; color: var(--text-dim); font: 500 14px var(--font-head); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
 #home .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
 
 #gate .back {
