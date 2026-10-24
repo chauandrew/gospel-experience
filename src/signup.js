@@ -36,7 +36,7 @@ function render() {
   $('next').hidden = !nx
   if (nx) {
     $('next').dataset.key = nx.key
-    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${DAYS[nx.date]}, ${clock(nx.m)}</span><span class="next-n">${left(nx)} spots left</span>`
+    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${clock(nx.m).replace(':00', '')}</span><span class="next-n">${left(nx)} spots left</span>`
   }
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
