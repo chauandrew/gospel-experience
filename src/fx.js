@@ -42,14 +42,15 @@ function buildTimeline(sec, slide) {
   const words = heads.flat()
   const reveal = q(sec, '.reveal .word')
   const cta = sec.querySelector('.cta')
-  const btn = sec.querySelector('.btn')
+  const btns = q(sec, '.btn')
   const bg = sec.querySelector('.bg')
   const framesBox = sec.querySelector('.frames')
   const frames = q(sec, '.frames > *') // an img, or a .frame wrapper (sharp img over its blurred backdrop) on contain beats
 
-  gsap.set([eyebrow, ...words, ...reveal, cta, btn].filter(Boolean), { opacity: 0, y: 24 })
+  gsap.set([eyebrow, ...words, ...reveal, cta, ...btns].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
   gsap.set(frames, { opacity: 0 })
+  gsap.set(btns, { autoAlpha: 0 }) // visibility hidden: an unrevealed link or button cannot be tapped or tabbed to
 
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
   tl.timeScale(slide.speed ?? 1) // per-beat multiplier (timeScale is not a timeline config option, it must be called)
@@ -102,10 +103,10 @@ function buildTimeline(sec, slide) {
     tl.to(cta, { opacity: 1, y: 0, duration: 0.65 }, end + 0.13)
     textEnd = end + 0.8
   }
-  if (btn) {
+  if (btns.length) {
     const at = end + (cta ? 0.8 : 0.13)
-    tl.to(btn, { opacity: 1, y: 0, duration: 0.5 }, at)
-    textEnd = at + 0.5
+    tl.to(btns, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.15 }, at)
+    textEnd = at + 0.5 + 0.15 * (btns.length - 1)
   }
   return { tl, advanceAt: textEnd + (slide.auto ?? HOLD), headStarts }
 }

@@ -1,4 +1,4 @@
-// Calls onIdle after `secs` with no touch or scroll. Only runs between start() and stop().
+// Calls onIdle after `secs` with no touch, scroll or key press. Only runs between start() and stop().
 export function createIdle(onIdle, defaultSecs = 20) {
   let timer
   let secs = defaultSecs
@@ -9,7 +9,7 @@ export function createIdle(onIdle, defaultSecs = 20) {
     if (active) timer = setTimeout(onIdle, secs * 1000)
   }
   // Capture phase so scroll events (which don't bubble) on the scroller are seen too.
-  for (const ev of ['pointerdown', 'touchstart', 'touchmove', 'scroll'])
+  for (const ev of ['pointerdown', 'touchstart', 'touchmove', 'scroll', 'keydown', 'input'])
     addEventListener(ev, arm, { capture: true, passive: true })
 
   return {

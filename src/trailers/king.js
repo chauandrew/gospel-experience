@@ -55,13 +55,14 @@ export const slides = [
     id: 'finale',
     cls: 'prose',
     text: ['Likewise, the Bible says God became human', 'But what did it cost?'],
-    cta: 'Enter to discover the answer',
+    cta: 'Come and see',
+    signup: 'Pick a time', // link to /signup/?kiosk=king, which comes back to this trailer when idle
     button: 'Reset',
     // Bethlehem at night: the stable lit from inside under the star (ch5 panorama, glow added). Text is vertically centered over it.
     bg: '/img/stable-glow.jpg',
     ctaGap: 1.5,
     dim: 1.2,
     music: 'calm',
-    idle: 15,
+    idle: 25, // the buttons only land a few seconds into the beat, so give people time to choose
   },
 ]

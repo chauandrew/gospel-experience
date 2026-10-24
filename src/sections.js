@@ -54,8 +54,13 @@ export function renderSections(scroller, progress, slides, onDone) {
       sec.append(row)
     }
     if (s.cta) sec.append(el('p', 'cta', s.cta))
+    if (s.signup) {
+      const a = el('a', 'btn', s.signup)
+      a.href = `/signup/?kiosk=${location.pathname.split('/')[1]}` // the trailer's folder name
+      sec.append(a)
+    }
     if (s.button) {
-      const b = el('button', 'btn', s.button)
+      const b = el('button', s.signup ? 'btn quiet' : 'btn', s.button)
       b.addEventListener('click', onDone)
       sec.append(b)
     }

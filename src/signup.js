@@ -3,6 +3,7 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
+import { createIdle } from './idle.js'
 import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
@@ -30,6 +31,13 @@ const left = (s) => CAP - (taken[s.key] || 0)
 function render() {
   if (!taken) return
   const now = pacificNow()
+  // one-tap default for people who do not want to pick: the soonest slot that has not started and has room
+  const nx = Object.values(slotByKey).find((s) => s.key > now && left(s) > 0)
+  $('next').hidden = !nx
+  if (nx) {
+    $('next').dataset.key = nx.key
+    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${nx.date === now.slice(0, 10) ? '' : `${DAYS[nx.date]}, `}${clock(nx.m).replace(':00', '')}</span><span class="next-n">${left(nx)} ${left(nx) === 1 ? 'spot' : 'spots'} left</span>`
+  }
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
       .filter((w) => w.date === date)
@@ -99,10 +107,12 @@ function open(s) {
   $('name').value = ''
   $('msg').textContent = ''
   size = 1
+  idle?.start() // back to the full 60s after a confirmation shortened it
   sync()
   $('dlg').showModal()
 }
 
+$('next').addEventListener('click', () => open(slotByKey[$('next').dataset.key]))
 $('list').addEventListener('click', (e) => {
   if (e.target.closest('#retry')) return load()
   const b = e.target.closest('.slot')
@@ -110,7 +120,20 @@ $('list').addEventListener('click', (e) => {
 })
 $('plus').onclick = () => setSize(size + 1)
 $('minus').onclick = () => setSize(size - 1)
-$('cancel').onclick = $('close').onclick = () => $('dlg').close()
+$('cancel').onclick = () => $('dlg').close()
+
+// On a booth iPad the trailer links here as /signup/?kiosk=<trailer>. Idle or Done sends the visitor back to that trailer.
+const TRAILERS = { king: '/king/', mudpies: '/mudpies/', story: '/story/' }
+const k = new URLSearchParams(location.search).get('kiosk')
+const home = Object.hasOwn(TRAILERS, k) ? TRAILERS[k] : undefined // own keys only, so ?kiosk=constructor is ignored
+let idle
+if (home) {
+  $('back').href = home
+  $('back').hidden = false
+  idle = createIdle(() => location.replace(home), 60)
+  idle.start()
+}
+$('close').onclick = () => (home ? location.replace(home) : $('dlg').close())
 
 $('form').addEventListener('submit', async (e) => {
   e.preventDefault()
@@ -120,13 +143,14 @@ $('form').addEventListener('submit', async (e) => {
     return $('name').focus()
   }
   busy = true
+  idle?.stop() // no idle redirect while the request is in flight
   $('ok').disabled = true
   $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Saving...'
   $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
     // text/plain keeps this a simple request, so the browser skips a CORS preflight
-    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ slot: cur.key, name, size }) })).json()
+    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ slot: cur.key, name, size }), signal: AbortSignal.timeout?.(20000) })).json()
     if (r.ok) {
       $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
       $('form').hidden = true
@@ -142,6 +166,10 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Could not save. Check your connection and try again.'
   }
   busy = false
+  if (idle) {
+    idle.start()
+    if (!$('done').hidden) idle.setSecs(15) // the next visitor should not find this confirmation
+  }
   $('ok').textContent = 'Save my spot'
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()

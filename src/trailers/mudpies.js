@@ -64,12 +64,13 @@ export const slides = [
     cls: 'prose',
     text: ['We keep chasing small things, when something far bigger is available', 'Is that true for you?'],
     cta: 'Come and see',
+    signup: 'Pick a time', // link to /signup/?kiosk=mudpies, which comes back to this trailer when idle
     button: 'Reset',
     bg: '/img/eden-valley.jpg',
     gap: 2.4,
     ctaGap: 1.5,
     dim: 1,
     music: 'pensive',
-    idle: 15,
+    idle: 25, // the buttons only land a few seconds into the beat, so give people time to choose
   },
 ]
