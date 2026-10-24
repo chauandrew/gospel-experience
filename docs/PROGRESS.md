@@ -25,6 +25,7 @@ Waiting on the human: merge the open PR, confirm the Vercel project is connected
 - The finale shows "See it for yourself", the CTA and a Reset button. Reset, Space, or 15s idle returns to the gate and stops the audio. A mute button (top right) is shown during a run and clears on Reset.
 - Pace is real seconds in the constants at the top of `src/fx.js` (`WORD`, `STAGGER`, `STAGE_GAP`, `REVEAL_*`, `HOLD`) plus per-beat `speed`, `auto`, `lead` and `musicAt` in `slides.js`. Run from the Begin tap to the Reset button: about 34s by the simulated clock (beats leave at 4.7, 6.6, 10.0 and 6.4s, finale text 2.2s, plus the 1.4s gate fade and the flips).3, 7.0, 11.0 and 6.4s, finale text 2.2s, plus the 1.4s gate fade and the flips). Stopwatch history: 55s before the timing fix (the earlier `SPEED` setting never worked, see DECISIONS), 23s after halving the timings (too fast), then retuned in two steps toward 35s. Tension plays at `speed: 0.85`; man is back at 1.0. Holds after the last text are 2.0s on creation, man and tension (tension `auto` is 1.7 because it plays at 0.85x) and 2.5s on the light/Gospel beat.
 - Music: ambient on beats 1-2, switches to tense when "Then something happened" lands (`musicAt: 1`), on the light/Gospel beat the music drops to silence as the beat opens (`hush`), then the swell starts exactly on "But" (`musicAt: 0`). The track being left is low-passed as it fades.
+- King and Mud Pies finales: CTA "Come and see", a white "Pick a time" button to `/signup/?kiosk=<trailer>` and a quieter Reset. Kiosk signup returns to that trailer on Done or after 60s idle (15s after the confirmation). Needs Wi-Fi; see DECISIONS 2026-10-23 and KIOSK.md.
 - Quotes: wrap words in `_underscores_` in slide text for italics. Older lines dim to 45% when the next one lands.
 
 ## Phase 8 iPad checklist
@@ -34,7 +35,7 @@ Waiting on the human: merge the open PR, confirm the Vercel project is connected
 4. Mute button works and clears on Reset. Hardware volume buttons still control loudness.
 5. Airplane mode, fully close the app, reopen: must load and play audio.
 6. Reset button, Space (with a keyboard) and the 15s finale idle all return to the gate, audio fades out.
-7. Check reading time (about 17 words in 3.5s on the first two beats), image legibility under the text, and tune the `fx.js` timing constants / each beat's `auto`. Tune `MASTER` in `src/audio.js` after hearing it.
+7. On each iPad tap "Pick a time" on the finale: signup loads (Wi-Fi on), back link and Done return to that trailer, idle returns after 60s. Then check reading time (about 17 words in 3.5s on the first two beats), image legibility under the text, and tune the `fx.js` timing constants / each beat's `auto`. Tune `MASTER` in `src/audio.js` after hearing it.
 
 Phase 10 (particles) intentionally not built: it only makes sense after seeing real iPad frame rate, and the motion is already rich. Add only if the human asks.
 

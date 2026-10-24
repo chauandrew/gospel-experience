@@ -36,7 +36,7 @@ function render() {
   $('next').hidden = !nx
   if (nx) {
     $('next').dataset.key = nx.key
-    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${clock(nx.m).replace(':00', '')}</span><span class="next-n">${left(nx)} spots left</span>`
+    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${nx.date === now.slice(0, 10) ? '' : `${DAYS[nx.date]}, `}${clock(nx.m).replace(':00', '')}</span><span class="next-n">${left(nx)} ${left(nx) === 1 ? 'spot' : 'spots'} left</span>`
   }
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
@@ -123,7 +123,8 @@ $('cancel').onclick = () => $('dlg').close()
 
 // On a booth iPad the trailer links here as /signup/?kiosk=<trailer>. Idle or Done sends the visitor back to that trailer.
 const TRAILERS = { king: '/king/', mudpies: '/mudpies/', story: '/story/' }
-const home = TRAILERS[new URLSearchParams(location.search).get('kiosk')]
+const k = new URLSearchParams(location.search).get('kiosk')
+const home = Object.hasOwn(TRAILERS, k) ? TRAILERS[k] : undefined // own keys only, so ?kiosk=constructor is ignored
 let idle
 if (home) {
   $('back').href = home
@@ -141,6 +142,7 @@ $('form').addEventListener('submit', async (e) => {
     return $('name').focus()
   }
   busy = true
+  idle?.stop() // no idle redirect while the request is in flight
   $('ok').disabled = true
   $('ok').innerHTML = '<span class="spin" aria-hidden="true"></span>Saving...'
   $('ok').setAttribute('aria-busy', 'true')
@@ -152,7 +154,6 @@ $('form').addEventListener('submit', async (e) => {
       $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
       $('form').hidden = true
       $('done').hidden = false
-      idle?.setSecs(15) // the next visitor should not find this confirmation
     } else {
       $('msg').textContent = r.error
     }
@@ -164,6 +165,10 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Could not save. Check your connection and try again.'
   }
   busy = false
+  if (idle) {
+    idle.start()
+    if (!$('done').hidden) idle.setSecs(15) // the next visitor should not find this confirmation
+  }
   $('ok').textContent = 'Save my spot'
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()

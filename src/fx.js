@@ -50,6 +50,7 @@ function buildTimeline(sec, slide) {
   gsap.set([eyebrow, ...words, ...reveal, cta, ...btns].filter(Boolean), { opacity: 0, y: 24 })
   if (bg) gsap.set(bg, { opacity: 0, scale: 1 })
   gsap.set(frames, { opacity: 0 })
+  gsap.set(btns, { pointerEvents: 'none' }) // an unrevealed link or button must not catch a stray tap
 
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } })
   tl.timeScale(slide.speed ?? 1) // per-beat multiplier (timeScale is not a timeline config option, it must be called)
@@ -104,7 +105,7 @@ function buildTimeline(sec, slide) {
   }
   if (btns.length) {
     const at = end + (cta ? 0.8 : 0.13)
-    tl.to(btns, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 }, at)
+    tl.to(btns, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, stagger: 0.15 }, at)
     textEnd = at + 0.5 + 0.15 * (btns.length - 1)
   }
   return { tl, advanceAt: textEnd + (slide.auto ?? HOLD), headStarts }
