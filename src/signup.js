@@ -85,6 +85,19 @@ async function load() {
   }
 }
 
+// text size: scales the page behind the dialog, back to normal on reload (idle redirect)
+const ZOOMS = [0.8, 1, 1.25, 1.5]
+let zi = 1
+function zoom(d) {
+  zi = Math.max(0, Math.min(ZOOMS.length - 1, zi + d))
+  $('signup').style.setProperty('--z', ZOOMS[zi])
+  $('signup').classList.toggle('one-col', ZOOMS[zi] > 1.2) // two columns would be cramped
+  $('zout').disabled = zi === 0
+  $('zin').disabled = zi === ZOOMS.length - 1
+}
+$('zout').onclick = () => zoom(-1)
+$('zin').onclick = () => zoom(1)
+
 // signup dialog
 let cur = null
 let size = 1

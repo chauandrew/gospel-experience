@@ -23,7 +23,11 @@ body {
   padding-block: max(24px, env(safe-area-inset-top)) max(48px, env(safe-area-inset-bottom));
 }
 
-#signup { max-width: 960px; margin: 0 auto; }
+#signup { max-width: 960px; margin: 0 auto; zoom: var(--z, 1); }
+#signup.one-col .cols { grid-template-columns: 1fr; gap: 0; }
+.zoom { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 2; display: flex; gap: 8px; }
+.zoom button { display: grid; place-items: center; width: 56px; height: 56px; padding: 0; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 50%; cursor: pointer; }
+.zoom button:disabled { opacity: 0.35; cursor: default; }
 
 .next { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; max-width: 560px; min-height: 120px; margin: 16px 0 4px; padding: 18px 24px; text-align: left; color: #0b0b0d; background: var(--accent); border: 0; border-radius: 16px; cursor: pointer; }
 .next-k { font: 500 16px var(--font-head); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
