@@ -8,11 +8,11 @@ import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 // Same windows as docs/signup-script.gs (the server enforces them). Change both together.
 const WINDOWS = [
-  ['2026-11-06', '18:00', '19:30'],
-  ['2026-11-06', '20:30', '21:30'],
+  ['2026-11-06', '18:30', '19:10'],
+  ['2026-11-06', '20:30', '22:00'],
   ['2026-11-07', '09:00', '10:00'],
-  ['2026-11-07', '15:00', '17:00'],
-  ['2026-11-07', '19:00', '21:00'],
+  ['2026-11-07', '14:20', '16:00'],
+  ['2026-11-07', '18:00', '20:00'],
 ]
 
 const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3)
