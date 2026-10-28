@@ -268,3 +268,10 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-23 (Next available)
 
 - `/signup/` has a "Next available" button at the top: the soonest slot that has not started yet and still has room, shown with its spots left. One tap opens the same modal for that slot, so people who do not want to think about their schedule have a default. The King finale CTA is now "Come and see", same as Mud Pies.
+
+## 2026-10-27 (Signup backend moved to Supabase)
+
+- Apps Script cold starts were too slow, so signups now live in Supabase (an existing project, new `gxp_signups` and `gxp_config` tables only; no other tables are read). Server code is `docs/signup.sql` (replaces `docs/signup-script.gs`); paste it into the SQL editor.
+- RLS is on with no policies, so the publishable key in `src/signup-config.js` can only call the `gxp_*` functions (`security definer`). The cap, windows, past-slot check and the admin passcode check live in those functions; the last-spots race is closed with `pg_advisory_xact_lock`.
+- The admin passcode is the `admin_passcode` row in `gxp_config` (never in the repo). Replies keep the old shapes (`taken`, `ok`, `error`, `rows`), so the pages only swapped `fetch(API)` for `rpc(fn, args)`.
+- Windows are still duplicated in `src/signup.js` and `gxp_slots()` in the SQL. Change both together. Existing sheet signups are not migrated.

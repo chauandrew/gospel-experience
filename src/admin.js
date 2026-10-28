@@ -3,7 +3,7 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
+import { rpc, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -44,7 +44,7 @@ function render(rows) {
 async function load() {
   $('msg').textContent = ''
   try {
-    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'list', pass }) })).json()
+    const r = await rpc('gxp_list', { p_pass: pass })
     if (!r.ok) throw new Error(r.error)
     try { sessionStorage.setItem('gx-admin', pass) } catch {}
     render(r.rows)
@@ -86,14 +86,14 @@ $('days').addEventListener('click', async (e) => {
   b.disabled = true
   b.innerHTML = '<span class="spin" aria-hidden="true"></span>Removing...'
   try {
-    const j = await (await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'delete', pass, row: r.row, slot: r.slot, name: r.name, size: r.size }) })).json()
+    const j = await rpc('gxp_delete', { p_pass: pass, p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
     if (!j.ok) throw new Error(j.error)
     await load()
   } catch (err) {
     b.disabled = false
     b.classList.remove('arm') // back to needing two taps
     b.textContent = 'Remove'
-    $('summary').textContent = err.message === 'Failed to fetch' ? 'Could not reach the sheet. Try again.' : err.message
+    $('summary').textContent = err.message === 'Failed to fetch' ? 'Could not reach the server. Try again.' : err.message
   }
 })
 if (pass) load()

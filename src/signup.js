@@ -4,9 +4,9 @@ import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
 import { createIdle } from './idle.js'
-import { API, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
+import { rpc, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
-// Same windows as docs/signup-script.gs (the server enforces them). Change both together.
+// Same windows as docs/signup.sql (the server enforces them). Change both together.
 const WINDOWS = [
   ['2026-11-06', '18:30', '19:10'],
   ['2026-11-06', '20:30', '22:00'],
@@ -73,7 +73,7 @@ let busy = false
 async function load() {
   const g = gen
   try {
-    const j = await (await fetch(API)).json()
+    const j = await rpc('gxp_taken')
     if (!j.taken) throw new Error('bad reply')
     if (g === gen) setTaken(j.taken)
   } catch {
@@ -150,8 +150,7 @@ $('form').addEventListener('submit', async (e) => {
   $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
-    // text/plain keeps this a simple request, so the browser skips a CORS preflight
-    const r = await (await fetch(API, { method: 'POST', body: JSON.stringify({ slot: cur.key, name, size }), signal: AbortSignal.timeout?.(20000) })).json()
+    const r = await rpc('gxp_signup', { p_slot: cur.key, p_name: name, p_size: size })
     if (r.ok) {
       $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
       $('form').hidden = true

@@ -1,5 +1,11 @@
-// Shared by the signup page and the admin page.
-export const API = 'https://script.google.com/macros/s/AKfycbyuFB3sh-3NWMSlGzvpMYimUEdNJPsxWNdPPYSlZo18OJYs-aY7vS3AqEjKJdxwQC-A/exec'
+// Shared by the signup page and the admin page. Server code is docs/signup.sql.
+const RPC = 'https://ypakruerprnjptzwuhgd.supabase.co/rest/v1/rpc/'
+const KEY = 'sb_publishable_HYLPapCIgwYOo28zJ6fkYQ_apjmCix_' // public by design; RLS blocks the tables, only the gxp_ functions in docs/signup.sql are callable
+export const rpc = async (fn, args = {}, ms = 20000) => {
+  const r = await fetch(RPC + fn, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(args), signal: AbortSignal.timeout?.(ms) })
+  if (!r.ok) throw new Error(`HTTP ${r.status}`)
+  return r.json()
+}
 export const CAP = 8
 const TZ = 'America/Los_Angeles'
 export const DAYS = { '2026-11-06': 'Fri Nov 6', '2026-11-07': 'Sat Nov 7' }
