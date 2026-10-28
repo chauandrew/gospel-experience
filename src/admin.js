@@ -23,9 +23,8 @@ function render(rows) {
   const now = pacificNow()
   const shown = showPast ? rows : rows.filter((r) => slotEnd(r.slot) > now)
   shown.forEach((r) => (by[r.slot] ||= []).push(r))
-  const people = shown.reduce((a, r) => a + r.size, 0)
   const hidden = rows.length - shown.length
-  $('summary').textContent = `${people} people in ${shown.length} groups across ${Object.keys(by).length} slots.${hidden ? ` ${hidden} past hidden.` : ''}`
+  $('summary').textContent = hidden ? `${hidden} past hidden.` : ''
   const dates = [...new Set(Object.keys(by).map((k) => k.slice(0, 10)))].sort()
   $('days').innerHTML = dates.length
     ? dates
