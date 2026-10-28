@@ -9,10 +9,8 @@ const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const slotMins = (k) => +k.slice(11, 13) * 60 + +k.slice(14, 16)
 
-let pass = ''
 let lastRows = []
 let showPast = false
-try { pass = sessionStorage.getItem('gx-admin') || '' } catch {}
 
 const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + 10)}`
 
@@ -41,30 +39,15 @@ function render(rows) {
 }
 
 async function load() {
-  $('msg').textContent = ''
   try {
-    const r = await rpc('gxp_list', { p_pass: pass })
+    const r = await rpc('gxp_list')
     if (!r.ok) throw new Error(r.error)
-    try { sessionStorage.setItem('gx-admin', pass) } catch {}
     render(r.rows)
-    $('login').hidden = true
-    $('out').hidden = false
-  } catch (e) {
-    if (!$('out').hidden) {
-      $('summary').textContent = 'Could not refresh the list. Check your connection.' // keep the list on screen
-      return
-    }
-    $('msg').textContent = e.message === 'Wrong passcode' ? e.message : 'Could not load signups. Check your connection and try again.'
-    $('login').hidden = false
-    $('out').hidden = true
+  } catch {
+    $('summary').textContent = 'Could not load signups. Check your connection and try again.' // keeps any list already on screen
   }
 }
 
-$('login').addEventListener('submit', (e) => {
-  e.preventDefault()
-  pass = $('pass').value
-  load()
-})
 $('refresh').onclick = load
 $('showPast').onchange = (e) => {
   showPast = e.target.checked
@@ -85,7 +68,7 @@ $('days').addEventListener('click', async (e) => {
   b.disabled = true
   b.innerHTML = '<span class="spin" aria-hidden="true"></span>Removing...'
   try {
-    const j = await rpc('gxp_delete', { p_pass: pass, p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
+    const j = await rpc('gxp_delete', { p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
     if (!j.ok) throw new Error(j.error)
     await load()
   } catch (err) {
@@ -95,4 +78,4 @@ $('days').addEventListener('click', async (e) => {
     $('summary').textContent = err.message === 'Failed to fetch' ? 'Could not reach the server. Try again.' : err.message
   }
 })
-if (pass) load()
+load()
