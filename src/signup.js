@@ -86,7 +86,7 @@ async function load() {
 }
 
 // text size: scales the page behind the dialog, back to normal on reload (idle redirect)
-const ZOOMS = [0.8, 1, 1.25, 1.5]
+const ZOOMS = [0.7, 0.85, 1, 1.25, 1.5] // default is index 1
 let zi = 1
 function zoom(d) {
   zi = Math.max(0, Math.min(ZOOMS.length - 1, zi + d))
@@ -97,6 +97,7 @@ function zoom(d) {
 }
 $('zout').onclick = () => zoom(-1)
 $('zin').onclick = () => zoom(1)
+zoom(0)
 
 // signup dialog
 let cur = null
