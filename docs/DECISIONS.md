@@ -275,3 +275,7 @@ Format: date, decision, why, alternatives rejected.
 - RLS is on with no policies, so the publishable key in `src/signup-config.js` can only call the `gxp_*` functions (`security definer`). The cap, windows, past-slot check and the admin passcode check live in those functions; the last-spots race is closed with `pg_advisory_xact_lock`.
 - The admin passcode is the `admin_passcode` row in `gxp_config` (never in the repo). Replies keep the old shapes (`taken`, `ok`, `error`, `rows`), so the pages only swapped `fetch(API)` for `rpc(fn, args)`.
 - Windows are still duplicated in `src/signup.js` and `gxp_slots()` in the SQL. Change both together. Existing sheet signups are not migrated.
+
+## 2026-10-28 (Admin passcode removed)
+
+- `/admin/` no longer asks for a passcode, and `gxp_list` / `gxp_delete` no longer check one; `gxp_config` and `gxp_pass_ok` are dropped by `docs/signup.sql`. Anyone with the page URL (or the publishable key in the bundle) can list and remove signups. Accepted because the page is unlinked and `noindex`, signups are first names for a retreat booth, and delete still needs the exact row match. Supersedes the passcode bullet in 2026-10-27.
