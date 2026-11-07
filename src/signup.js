@@ -12,11 +12,11 @@ import { rpc, CAP, SLOT, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-co
 const WINDOWS = [
   ['2026-11-06', '18:30', '19:10'],
   ['2026-11-06', '20:30', '22:00'],
-  ['2026-11-07', '09:00', '10:00', 'Breakfast'],
+  ['2026-11-07', '09:00', '10:00', 'Registration'],
   ['2026-11-07', '12:00', '13:00', 'Lunch'],
-  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '15:00'],
-  ['2026-11-07', '15:15', '16:00', 'High School workshops', '15:15', '16:00'],
-  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:15', '16:15'],
+  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '14:45'],
+  ['2026-11-07', '15:00', '16:00', 'High School workshops', '15:00', '15:45'],
+  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:00', '16:15'],
   ['2026-11-07', '18:00', '20:00', 'Night market'],
 ]
 
@@ -105,20 +105,24 @@ zoom(0)
 let cur = null
 let size = 1
 const full = () => left(cur) < 1 // a full slot takes the waitlist instead
+const MAXG = 99 // sanity ceiling only; same number in docs/signup.sql
 const setSize = (n) => {
-  size = Math.max(1, Math.min(full() ? CAP : left(cur), n))
-  $('sizeOut').textContent = size
+  size = Math.max(1, Math.min(MAXG, n || 1))
+  $('sizeOut').value = size
 }
+$('sizeOut').oninput = (e) => {
+  const n = parseInt(e.target.value, 10)
+  if (n >= 1) size = Math.min(MAXG, n) // leave the field alone while typing
+}
+$('sizeOut').onchange = () => setSize(size) // tidy a blank or too big entry when leaving the field
 // keep the stepper and button in line with the latest counts
 function sync() {
   const l = left(cur)
   $('dSub').textContent = l
     ? `${l} of ${CAP} spots left in this slot.`
     : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'group' : 'groups'} waiting) and we will add you if a spot opens.`
-  $('cap').textContent = l ? `max ${l}` : ''
   if (!busy) $('ok').textContent = l ? 'Save my spot' : 'Join waitlist'
   $('ok').disabled = busy
-  setSize(size)
 }
 function open(s) {
   cur = s
@@ -127,7 +131,7 @@ function open(s) {
   $('dTitle').textContent = `${DAYS[s.date]}, ${clock(s.m)}`
   $('name').value = ''
   $('msg').textContent = ''
-  size = 1
+  setSize(1)
   idle?.start() // back to the full 60s after a confirmation shortened it
   sync()
   $('dlg').showModal()
@@ -162,6 +166,12 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Please enter your name.'
     return $('name').focus()
   }
+  const n = parseInt($('sizeOut').value, 10)
+  if (!(n >= 1)) {
+    $('msg').textContent = 'Please enter how many people.'
+    return $('sizeOut').focus()
+  }
+  setSize(n)
   busy = true
   idle?.stop() // no idle redirect while the request is in flight
   $('ok').disabled = true

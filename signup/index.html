@@ -33,9 +33,8 @@
         <label for="sizeOut">How many people are in your group?</label>
         <div class="step">
           <button type="button" id="minus" aria-label="Fewer people">&minus;</button>
-          <output id="sizeOut" for="minus plus">1</output>
+          <input type="number" id="sizeOut" min="1" max="99" inputmode="numeric" value="1" />
           <button type="button" id="plus" aria-label="More people">+</button>
-          <span id="cap" class="dim"></span>
         </div>
         <label for="name">What is your name?</label>
         <input type="text" id="name" maxlength="80" autocomplete="name" placeholder="First and last name" />

@@ -4,6 +4,7 @@
 -- Windows (gxp_slots) and the cap (8) must match src/signup.js. Change both together.
 -- Slots are 15 minute clock quarter-hours; the last one in a window starts 30 minutes before the window ends (a showing takes 30).
 -- Sat 2:15 to 4:30 is the exception: a slot at every quarter-hour from 2:15 to 4:15 (window end 4:45 here gives that).
+-- Any group size (1 to 99, a sanity ceiling). A slot with at least one spot left takes a group of any size, so it can pass 8.
 -- Full slots take a waitlist (waitlist = true rows). Removing a confirmed signup promotes the oldest waitlisted group, whatever its size.
 
 create table if not exists gxp_signups (
@@ -11,7 +12,7 @@ create table if not exists gxp_signups (
   created_at timestamptz not null default now(),
   slot text not null,
   name text not null,
-  size int not null check (size between 1 and 8)
+  size int not null
 );
 alter table gxp_signups enable row level security;
 
@@ -19,6 +20,9 @@ alter table gxp_signups enable row level security;
 create table if not exists gxp_signups_bak_10min as table gxp_signups;
 alter table gxp_signups_bak_10min enable row level security;
 
+alter table gxp_signups drop constraint if exists gxp_signups_size_check; -- the old 1 to 8 limit
+alter table gxp_signups drop constraint if exists gxp_signups_size_range;
+alter table gxp_signups add constraint gxp_signups_size_range check (size between 1 and 99);
 alter table gxp_signups add column if not exists waitlist boolean not null default false;
 
 -- every slot start key, e.g. '2026-11-06 18:30': clock quarter-hours from the window start, last one 30 minutes before the window end
@@ -103,7 +107,7 @@ begin
     return jsonb_build_object('ok', false, 'error', 'That slot has started');
   end if;
   if v_name = '' then return jsonb_build_object('ok', false, 'error', 'Name is required'); end if;
-  if p_size is null or p_size < 1 or p_size > 8 then return jsonb_build_object('ok', false, 'error', 'Invalid group size'); end if;
+  if p_size is null or p_size < 1 or p_size > 99 then return jsonb_build_object('ok', false, 'error', 'Invalid group size'); end if;
 
   perform pg_advisory_xact_lock(hashtext('gxp_signup')); -- one change at a time, so the last spots cannot be double booked
   perform gxp_promote(p_slot);
@@ -116,11 +120,8 @@ begin
     select count(*) into v_pos from gxp_signups where slot = p_slot and waitlist;
     return jsonb_build_object('ok', true, 'waitlisted', true, 'position', v_pos) || gxp_taken();
   end if;
-  if p_size > v_left then
-    return jsonb_build_object('ok', false, 'error', 'Only ' || v_left || ' spots left', 'left', v_left) || gxp_taken();
-  end if;
   insert into gxp_signups (slot, name, size) values (p_slot, v_name, p_size);
-  return jsonb_build_object('ok', true, 'waitlisted', false, 'left', v_left - p_size) || gxp_taken();
+  return jsonb_build_object('ok', true, 'waitlisted', false, 'left', greatest(v_left - p_size, 0)) || gxp_taken();
 end $$;
 
 -- leftovers from when /admin/ had a passcode
