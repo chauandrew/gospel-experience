@@ -6,42 +6,39 @@ import './signup.css'
 import { createIdle } from './idle.js'
 import { rpc, CAP, SLOT, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
-// Same windows as docs/signup.sql (the server enforces them). Change both together.
-// Slots are clock quarter-hours inside a window; the last starts SHOW minutes before the window ends.
+// Same slots as docs/signup.sql (the server enforces them). Change both together.
+// [date, start, end, heading?, firstSlot?, lastSlot?]. Slots are clock quarter-hours; by default the last starts SHOW minutes
+// before the end. Sat 2:15 to 4:30 is one run of quarter-hour slots (2:15 to 4:15) split under three headings; the SQL has it as one window.
 const WINDOWS = [
   ['2026-11-06', '18:30', '19:10'],
   ['2026-11-06', '20:30', '22:00'],
-  ['2026-11-07', '09:00', '10:00'],
-  ['2026-11-07', '12:00', '13:00'],
-  ['2026-11-07', '14:20', '16:00'],
-  ['2026-11-07', '18:00', '20:00'],
+  ['2026-11-07', '09:00', '10:00', 'Breakfast'],
+  ['2026-11-07', '12:00', '13:00', 'Lunch'],
+  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '15:00'],
+  ['2026-11-07', '15:15', '16:00', 'High School workshops', '15:15', '16:00'],
+  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:15', '16:15'],
+  ['2026-11-07', '18:00', '20:00', 'Night market'],
 ]
 
 const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3)
 
-const windows = WINDOWS.map(([date, s, e]) => {
+const windows = WINDOWS.map(([date, s, e, label, first = s, last]) => {
   const slots = []
-  for (let m = Math.ceil(mins(s) / SLOT) * SLOT; m <= mins(e) - SHOW; m += SLOT) slots.push({ date, m, key: `${date} ${hhmm(m)}` })
-  return { date, s: mins(s), e: mins(e), slots }
+  for (let m = Math.ceil(mins(first) / SLOT) * SLOT; m <= (last ? mins(last) : mins(e) - SHOW); m += SLOT) slots.push({ date, m, key: `${date} ${hhmm(m)}` })
+  return { date, s: mins(s), e: mins(e), label, slots }
 })
 const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
 let waiting = {} // { slotKey: groupsOnTheWaitlist }
-const left = (s) => CAP - (taken[s.key] || 0)
+let stale = false // the last refresh failed, so counts may be old
+const left = (s) => Math.max(0, CAP - (taken[s.key] || 0)) // promotions can take a slot past 8
 const wait = (s) => waiting[s.key] || 0
 
 function render() {
   if (!taken) return
   const now = pacificNow()
-  // one-tap default for people who do not want to pick: the soonest slot that has not started and has room
-  const nx = Object.values(slotByKey).find((s) => s.key > now && left(s) > 0)
-  $('next').hidden = !nx
-  if (nx) {
-    $('next').dataset.key = nx.key
-    $('next').innerHTML = `<span class="next-k">Next available</span><span class="next-t">${nx.date === now.slice(0, 10) ? '' : `${DAYS[nx.date]}, `}${clock(nx.m).replace(':00', '')}</span><span class="next-n">${left(nx)} ${left(nx) === 1 ? 'spot' : 'spots'} left</span>`
-  }
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
       .filter((w) => w.date === date)
@@ -50,7 +47,7 @@ function render() {
     if (!wins.length) return ''
     return `<section><h2 class="day-h">${DAYS[date]}</h2>${wins
       .map(
-        (w) => `<div class="win-h"><span>${clock(w.s)} to ${clock(w.e)}</span><span>${w.open.reduce((a, s) => a + left(s), 0)} spots open</span></div>
+        (w) => `<div class="win-h"><span>${w.label ? `<b class="lbl">${w.label}</b> ` : ''}${clock(w.s)} to ${clock(w.e)}</span><span>${w.open.reduce((a, s) => a + left(s), 0)} spots open</span></div>
         <div class="rows">${w.open
           .map((s) => {
             const n = left(s)
@@ -60,13 +57,14 @@ function render() {
       )
       .join('')}</section>`
   })
-  $('list').innerHTML = days.join('')
-    ? `<div class="cols">${days.join('')}</div>`
-    : '<p class="status">All times have passed.</p>'
+  $('list').innerHTML =
+    (stale ? '<p class="status stale">Could not refresh. Counts may be out of date.</p>' : '') +
+    (days.join('') ? `<div class="cols">${days.join('')}</div>` : '<p class="status">All times have passed.</p>')
 }
 
 function setTaken(t, w) {
   taken = t
+  stale = false
   waiting = w || {}
   render()
   if ($('dlg').open) sync()
@@ -83,8 +81,8 @@ async function load() {
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
     else {
-      $('list').querySelector('.stale')?.remove()
-      $('list').insertAdjacentHTML('afterbegin', '<p class="status stale">Could not refresh. Counts may be out of date.</p>')
+      stale = true
+      render()
     }
   }
 }
@@ -135,7 +133,6 @@ function open(s) {
   $('dlg').showModal()
 }
 
-$('next').addEventListener('click', () => open(slotByKey[$('next').dataset.key]))
 $('list').addEventListener('click', (e) => {
   if (e.target.closest('#retry')) return load()
   const b = e.target.closest('.slot')
@@ -196,6 +193,18 @@ $('form').addEventListener('submit', async (e) => {
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
 })
+
+// big Pacific clock; also redraws the list each minute so started slots drop off on time
+let shown = ''
+function tick() {
+  const now = pacificNow()
+  if (now === shown) return
+  shown = now
+  $('clock').textContent = clock(+now.slice(11, 13) * 60 + +now.slice(14, 16))
+  render()
+}
+tick()
+setInterval(tick, 5000)
 
 load()
 setInterval(() => document.hidden || load(), 60000)

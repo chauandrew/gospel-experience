@@ -3,6 +3,7 @@
 -- /admin/ has no passcode: anyone with the page URL can list and remove signups.
 -- Windows (gxp_slots) and the cap (8) must match src/signup.js. Change both together.
 -- Slots are 15 minute clock quarter-hours; the last one in a window starts 30 minutes before the window ends (a showing takes 30).
+-- Sat 2:15 to 4:30 is the exception: a slot at every quarter-hour from 2:15 to 4:15 (window end 4:45 here gives that).
 -- Full slots take a waitlist (waitlist = true rows). Removing a confirmed signup promotes the oldest waitlisted group, whatever its size.
 
 create table if not exists gxp_signups (
@@ -30,7 +31,7 @@ language sql immutable as $$
     ('2026-11-06', '20:30', '22:00'),
     ('2026-11-07', '09:00', '10:00'),
     ('2026-11-07', '12:00', '13:00'),
-    ('2026-11-07', '14:20', '16:00'),
+    ('2026-11-07', '14:15', '16:45'),
     ('2026-11-07', '18:00', '20:00')
   ) w (d, s, e),
   lateral generate_series(
@@ -40,7 +41,7 @@ language sql immutable as $$
 $$;
 
 -- Move signups still on an old slot to the nearest new slot that day (ties go earlier). If that leaves a slot over 8 people,
--- the later signups (by arrival) become waitlisted. Nothing is deleted. Re-running is a no-op once every row is on a new slot.
+-- the later signups (by arrival, once the slot has 8 confirmed) become waitlisted. Nothing is deleted. Re-running is a no-op once every row is on a new slot.
 do $$
 declare v_moved text[];
 begin
@@ -58,8 +59,8 @@ begin
   select array_agg(distinct new_slot) into v_moved from u;
 
   update gxp_signups g set waitlist = true
-  from (select id, sum(size) over (partition by slot order by id) cum from gxp_signups where slot = any(v_moved) and not waitlist) x
-  where g.id = x.id and x.cum > 8;
+  from (select id, sum(size) over (partition by slot order by id) - size as prior from gxp_signups where slot = any(v_moved) and not waitlist) x
+  where g.id = x.id and x.prior >= 8; -- same rule as gxp_promote: a group goes in while the slot is under 8, whatever its size
 end $$;
 
 -- taken: people confirmed per slot; waiting: groups waitlisted per slot
@@ -69,6 +70,24 @@ language sql security definer set search_path = public as $$
     'taken', coalesce((select jsonb_object_agg(slot, n) from (select slot, sum(size)::int n from gxp_signups where not waitlist group by slot) a), '{}'::jsonb),
     'waiting', coalesce((select jsonb_object_agg(slot, n) from (select slot, count(*)::int n from gxp_signups where waitlist group by slot) b), '{}'::jsonb))
 $$;
+
+-- Moves the oldest waitlisted groups into a slot while it has under 8 confirmed (any size, so a slot can pass 8). Returns who moved.
+-- Called after every removal and before every signup, so a waitlist never sits next to open spots.
+create or replace function gxp_promote(p_slot text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+  v_promoted jsonb := '[]'::jsonb;
+  r record;
+begin
+  while (select coalesce(sum(size), 0) from gxp_signups where slot = p_slot and not waitlist) < 8 loop
+    update gxp_signups set waitlist = false
+    where id = (select id from gxp_signups where slot = p_slot and waitlist order by id limit 1)
+    returning name, size into r;
+    exit when not found;
+    v_promoted := v_promoted || jsonb_build_object('name', r.name, 'size', r.size);
+  end loop;
+  return v_promoted;
+end $$;
 
 -- p_waitlist is what the page showed (slot full). A full slot without it is refused; a slot with room confirms either way.
 drop function if exists gxp_signup(text, text, int);
@@ -87,9 +106,10 @@ begin
   if p_size is null or p_size < 1 or p_size > 8 then return jsonb_build_object('ok', false, 'error', 'Invalid group size'); end if;
 
   perform pg_advisory_xact_lock(hashtext('gxp_signup')); -- one change at a time, so the last spots cannot be double booked
+  perform gxp_promote(p_slot);
   select 8 - coalesce(sum(size), 0) into v_left from gxp_signups where slot = p_slot and not waitlist;
   if v_left < 1 then
-    if not p_waitlist then
+    if not coalesce(p_waitlist, false) then
       return jsonb_build_object('ok', false, 'error', 'That time just filled up. You can join the waitlist.', 'left', 0) || gxp_taken();
     end if;
     insert into gxp_signups (slot, name, size, waitlist) values (p_slot, v_name, p_size, true);
@@ -116,24 +136,12 @@ language sql security definer set search_path = public as $$
     '[]'::jsonb))
 $$;
 
--- the row must still match what the admin saw. Removing a confirmed signup promotes the oldest waitlisted
--- group (any size, so a slot can end up over 8) while the slot is under 8. 'promoted' lists who moved in.
+-- the row must still match what the admin saw. Removing a signup promotes the waitlist (gxp_promote); 'promoted' lists who moved in.
 create or replace function gxp_delete(p_row bigint, p_slot text, p_name text, p_size int) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare
-  v_was_waiting boolean;
-  v_promoted jsonb := '[]'::jsonb;
-  r record;
 begin
   perform pg_advisory_xact_lock(hashtext('gxp_signup'));
-  delete from gxp_signups where id = p_row and slot = p_slot and name = p_name and size = p_size returning waitlist into v_was_waiting;
+  delete from gxp_signups where id = p_row and slot = p_slot and name = p_name and size = p_size;
   if not found then return jsonb_build_object('ok', false, 'error', 'Row not found, refresh the list'); end if;
-  while not v_was_waiting and (select coalesce(sum(size), 0) from gxp_signups where slot = p_slot and not waitlist) < 8 loop
-    update gxp_signups set waitlist = false
-    where id = (select id from gxp_signups where slot = p_slot and waitlist order by id limit 1)
-    returning name, size into r;
-    exit when not found;
-    v_promoted := v_promoted || jsonb_build_object('name', r.name, 'size', r.size);
-  end loop;
-  return jsonb_build_object('ok', true, 'promoted', v_promoted);
+  return jsonb_build_object('ok', true, 'promoted', gxp_promote(p_slot));
 end $$;
