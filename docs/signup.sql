@@ -67,12 +67,12 @@ begin
   where g.id = x.id and x.prior >= 8; -- same rule as gxp_promote: a group goes in while the slot is under 8, whatever its size
 end $$;
 
--- taken: people confirmed per slot; waiting: groups waitlisted per slot
+-- taken: people confirmed per slot; waiting: people waitlisted per slot
 create or replace function gxp_taken() returns jsonb
 language sql security definer set search_path = public as $$
   select jsonb_build_object(
     'taken', coalesce((select jsonb_object_agg(slot, n) from (select slot, sum(size)::int n from gxp_signups where not waitlist group by slot) a), '{}'::jsonb),
-    'waiting', coalesce((select jsonb_object_agg(slot, n) from (select slot, count(*)::int n from gxp_signups where waitlist group by slot) b), '{}'::jsonb))
+    'waiting', coalesce((select jsonb_object_agg(slot, n) from (select slot, sum(size)::int n from gxp_signups where waitlist group by slot) b), '{}'::jsonb))
 $$;
 
 -- Moves the oldest waitlisted groups into a slot while it has under 8 confirmed (any size, so a slot can pass 8). Returns who moved.

@@ -31,7 +31,7 @@ const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => 
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
-let waiting = {} // { slotKey: groupsOnTheWaitlist }
+let waiting = {} // { slotKey: peopleOnTheWaitlist }
 let stale = false // the last refresh failed, so counts may be old
 const left = (s) => Math.max(0, CAP - (taken[s.key] || 0)) // promotions can take a slot past 8
 const wait = (s) => waiting[s.key] || 0
@@ -51,7 +51,7 @@ function render() {
         <div class="rows">${w.open
           .map((s) => {
             const n = left(s)
-            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
+            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} people on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
           })
           .join('')}</div>`,
       )
@@ -127,7 +127,7 @@ function sync() {
   const l = left(cur)
   $('dSub').textContent = l
     ? `${l} of ${CAP} spots left in this slot.`
-    : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'group' : 'groups'} waiting) and we will add you if a spot opens.`
+    : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'person' : 'people'} waiting) and we will add you if a spot opens.`
   if (!busy) $('ok').textContent = l ? 'Save my spot' : 'Join waitlist'
   $('ok').disabled = busy
 }
