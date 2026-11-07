@@ -12,11 +12,11 @@ import { rpc, CAP, SLOT, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-co
 const WINDOWS = [
   ['2026-11-06', '18:30', '19:10'],
   ['2026-11-06', '20:30', '22:00'],
-  ['2026-11-07', '09:00', '10:00', 'Breakfast'],
+  ['2026-11-07', '09:00', '10:00', 'Registration'],
   ['2026-11-07', '12:00', '13:00', 'Lunch'],
-  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '15:00'],
-  ['2026-11-07', '15:15', '16:00', 'High School workshops', '15:15', '16:00'],
-  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:15', '16:15'],
+  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '14:45'],
+  ['2026-11-07', '15:00', '16:00', 'High School workshops', '15:00', '15:45'],
+  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:00', '16:15'],
   ['2026-11-07', '18:00', '20:00', 'Night market'],
 ]
 
@@ -31,7 +31,7 @@ const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => 
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
-let waiting = {} // { slotKey: groupsOnTheWaitlist }
+let waiting = {} // { slotKey: peopleOnTheWaitlist }
 let stale = false // the last refresh failed, so counts may be old
 const left = (s) => Math.max(0, CAP - (taken[s.key] || 0)) // promotions can take a slot past 8
 const wait = (s) => waiting[s.key] || 0
@@ -51,7 +51,7 @@ function render() {
         <div class="rows">${w.open
           .map((s) => {
             const n = left(s)
-            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
+            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} people on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
           })
           .join('')}</div>`,
       )
@@ -105,20 +105,31 @@ zoom(0)
 let cur = null
 let size = 1
 const full = () => left(cur) < 1 // a full slot takes the waitlist instead
+const MAXG = 99 // sanity ceiling only; same number in docs/signup.sql
 const setSize = (n) => {
-  size = Math.max(1, Math.min(full() ? CAP : left(cur), n))
-  $('sizeOut').textContent = size
+  size = Math.max(1, Math.min(MAXG, n || 1))
+  $('sizeOut').value = size
+}
+$('sizeOut').oninput = (e) => {
+  const n = Number(e.target.value)
+  if (Number.isInteger(n) && n >= 1) size = n // leave the field alone while typing; the submit checks it
+}
+// blank the field while it is being edited so typing 12 does not make 112 (select() is unreliable on iOS); restore if left empty
+$('sizeOut').onfocus = (e) => {
+  e.target.dataset.prev = e.target.value
+  e.target.value = ''
+}
+$('sizeOut').onblur = (e) => {
+  if (e.target.value === '') e.target.value = e.target.dataset.prev
 }
 // keep the stepper and button in line with the latest counts
 function sync() {
   const l = left(cur)
   $('dSub').textContent = l
     ? `${l} of ${CAP} spots left in this slot.`
-    : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'group' : 'groups'} waiting) and we will add you if a spot opens.`
-  $('cap').textContent = l ? `max ${l}` : ''
+    : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'person' : 'people'} waiting) and we will add you if a spot opens.`
   if (!busy) $('ok').textContent = l ? 'Save my spot' : 'Join waitlist'
   $('ok').disabled = busy
-  setSize(size)
 }
 function open(s) {
   cur = s
@@ -127,7 +138,7 @@ function open(s) {
   $('dTitle').textContent = `${DAYS[s.date]}, ${clock(s.m)}`
   $('name').value = ''
   $('msg').textContent = ''
-  size = 1
+  setSize(1)
   idle?.start() // back to the full 60s after a confirmation shortened it
   sync()
   $('dlg').showModal()
@@ -162,6 +173,12 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Please enter your name.'
     return $('name').focus()
   }
+  const n = Number($('sizeOut').value)
+  if (!Number.isInteger(n) || n < 1 || n > MAXG) {
+    $('msg').textContent = n > MAXG ? `The biggest group is ${MAXG}.` : 'Please enter how many people.'
+    return $('sizeOut').focus()
+  }
+  size = n
   busy = true
   idle?.stop() // no idle redirect while the request is in flight
   $('ok').disabled = true

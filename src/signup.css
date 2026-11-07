@@ -30,7 +30,7 @@ body {
 .zoom button:disabled { opacity: 0.35; cursor: default; }
 
 .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: 8px; }
-.clock { font: 700 clamp(48px, 9vw, 88px)/1 var(--font-head); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; }
+.clock { font: 700 clamp(32px, 5vw, 52px)/1 var(--font-head); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; }
 .back { display: inline-flex; align-items: center; min-height: 52px; margin-bottom: 8px; color: var(--dim); font: 500 16px var(--font-head); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
 .eyebrow { margin: 0; font: 500 16px var(--font-head); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
 h1 { margin: 6px 0 4px; font: 700 clamp(32px, 5vw, 48px)/1.15 var(--font-head); letter-spacing: 0.08em; text-transform: uppercase; text-wrap: balance; }
@@ -81,7 +81,8 @@ dialog label { display: block; margin: 14px 0 6px; font: 500 16px var(--font-hea
 input[type='text'] { width: 100%; padding: 16px; font: 400 26px var(--font-body); color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
 .step { display: flex; align-items: center; gap: 16px; }
 .step button { width: 72px; height: 72px; font: 700 32px var(--font-body); color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 50%; cursor: pointer; }
-.step output { min-width: 2ch; text-align: center; font: 700 44px var(--font-head); }
+.step input { width: 3ch; padding: 0; text-align: center; font: 700 44px var(--font-head); color: var(--text); background: transparent; border: 0; border-bottom: 2px solid var(--line); border-radius: 0; appearance: textfield; -moz-appearance: textfield; }
+.step input::-webkit-inner-spin-button, .step input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .msg { min-height: 1.45em; margin: 12px 0 0; color: var(--accent); }
 .actions { display: flex; gap: 10px; margin-top: 10px; }
 .actions button, .status button { flex: 1; min-height: 68px; font: 700 20px var(--font-body); text-transform: uppercase; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }

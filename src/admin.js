@@ -34,7 +34,7 @@ function render(rows) {
               const ok = by[k].filter((r) => !r.waitlist) // rows arrive in signup order
               const wl = by[k].filter((r) => r.waitlist)
               const li = (r, tag) => `<li><span>${esc(r.name)}</span>${tag ? `<span class="grp">${tag}</span>` : ''}<span class="grp">${r.size}</span><button type="button" class="del" data-i="${r.i}" aria-label="Remove ${esc(r.name)}">Remove</button></li>`
-              return `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${ok.reduce((a, r) => a + r.size, 0)} of ${CAP}${wl.length ? `, ${wl.length} waiting` : ''}</span></div>
+              return `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${ok.reduce((a, r) => a + r.size, 0)} of ${CAP}${wl.length ? `, ${wl.reduce((a, r) => a + r.size, 0)} waiting` : ''}</span></div>
               <ul class="people">${ok.map((r) => li(r)).join('')}${wl.map((r, n) => li(r, `Waitlist ${n + 1}`)).join('')}</ul>`
             })
             .join('')}`,
