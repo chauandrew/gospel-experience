@@ -279,3 +279,10 @@ Format: date, decision, why, alternatives rejected.
 ## 2026-10-28 (Admin passcode removed)
 
 - `/admin/` no longer asks for a passcode, and `gxp_list` / `gxp_delete` no longer check one; `gxp_config` and `gxp_pass_ok` are dropped by `docs/signup.sql`. Anyone with the page URL (or the publishable key in the bundle) can list and remove signups. Accepted because the page is unlinked and `noindex`, signups are first names for a retreat booth, and delete still needs the exact row match. Supersedes the passcode bullet in 2026-10-27.
+
+## 2026-11-06 (15 minute slots and waitlist)
+
+- Slots are 15 minute clock quarter-hours inside each window (`SLOT` in `src/signup-config.js`, `gxp_slots()` in `docs/signup.sql`). A showing takes about 30 minutes, so the last slot starts 30 minutes before the window ends (`SHOW`). Resulting slots: Fri 6:30; Fri 8:30 to 9:30; Sat 9:00 to 9:30, 12:00 to 12:30, 2:30 to 3:30, 6:00 to 7:30. The Sat 2:20 window loses its 2:20 start (first quarter-hour is 2:30).
+- A slot is hidden (and refused by the server) as soon as it starts, not when it ends.
+- Existing signups: `docs/signup.sql` copies the table to `gxp_signups_bak_10min` first, then moves each row on an old slot to the nearest new slot that day (ties go earlier). If a slot ends up over 8 people, the later signups (by arrival) become waitlisted. Nothing is deleted; re-running is a no-op. Run the SQL right before the new page deploys, since the old page cannot use the new slots.
+- Waitlist: a full slot (0 spots left) stays tappable on `/signup/` ("Full, N waiting") and the dialog says "Join waitlist" (group of 1 to 8). A group bigger than the spots left on a not-full slot still gets the "Only N spots left" error. Waitlisted rows are `gxp_signups.waitlist = true`, ordered by arrival (`id`). Removing a confirmed signup in `/admin/` promotes the oldest waitlisted group regardless of size (a slot can pass 8), repeating while the slot is under 8; the admin page says who moved in, since there is no contact info. `/admin/` lists each slot's confirmed signups in signup order, then the waitlist. Admin "past" is now 30 minutes after a slot starts (the showing is over).

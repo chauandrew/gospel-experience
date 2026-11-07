@@ -3,7 +3,7 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { rpc, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
+import { rpc, CAP, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -12,7 +12,7 @@ const slotMins = (k) => +k.slice(11, 13) * 60 + +k.slice(14, 16)
 let lastRows = []
 let showPast = false
 
-const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + 10)}`
+const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + SHOW)}` // a showing is over SHOW minutes after its slot starts
 
 function render(rows) {
   const by = {}
@@ -30,8 +30,13 @@ function render(rows) {
           (d) => `<h2 class="day-h">${esc(DAYS[d] || d)}</h2>${Object.keys(by)
             .filter((k) => k.startsWith(d))
             .sort()
-            .map((k) => `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${by[k].reduce((a, r) => a + r.size, 0)} of ${CAP}</span></div>
-              <ul class="people">${by[k].map((r) => `<li><span>${esc(r.name)}</span><span class="grp">${r.size}</span><button type="button" class="del" data-i="${r.i}" aria-label="Remove ${esc(r.name)}">Remove</button></li>`).join('')}</ul>`)
+            .map((k) => {
+              const ok = by[k].filter((r) => !r.waitlist) // rows arrive in signup order
+              const wl = by[k].filter((r) => r.waitlist)
+              const li = (r, tag) => `<li><span>${esc(r.name)}</span>${tag ? `<span class="grp">${tag}</span>` : ''}<span class="grp">${r.size}</span><button type="button" class="del" data-i="${r.i}" aria-label="Remove ${esc(r.name)}">Remove</button></li>`
+              return `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${ok.reduce((a, r) => a + r.size, 0)} of ${CAP}${wl.length ? `, ${wl.length} waiting` : ''}</span></div>
+              <ul class="people">${ok.map((r) => li(r)).join('')}${wl.map((r, n) => li(r, `Waitlist ${n + 1}`)).join('')}</ul>`
+            })
             .join('')}`,
         )
         .join('')
@@ -71,6 +76,7 @@ $('days').addEventListener('click', async (e) => {
     const j = await rpc('gxp_delete', { p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
     if (!j.ok) throw new Error(j.error)
     await load()
+    if (j.promoted?.length) $('summary').textContent = `Moved off the waitlist: ${j.promoted.map((p) => `${p.name} (${p.size})`).join(', ')}.`
   } catch (err) {
     b.disabled = false
     b.classList.remove('arm') // back to needing two taps

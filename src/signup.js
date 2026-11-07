@@ -4,9 +4,10 @@ import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
 import { createIdle } from './idle.js'
-import { rpc, CAP, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
+import { rpc, CAP, SLOT, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
 
 // Same windows as docs/signup.sql (the server enforces them). Change both together.
+// Slots are clock quarter-hours inside a window; the last starts SHOW minutes before the window ends.
 const WINDOWS = [
   ['2026-11-06', '18:30', '19:10'],
   ['2026-11-06', '20:30', '22:00'],
@@ -20,14 +21,16 @@ const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3)
 
 const windows = WINDOWS.map(([date, s, e]) => {
   const slots = []
-  for (let m = mins(s); m < mins(e); m += 10) slots.push({ date, m, key: `${date} ${hhmm(m)}`, end: `${date} ${hhmm(m + 10)}` })
+  for (let m = Math.ceil(mins(s) / SLOT) * SLOT; m <= mins(e) - SHOW; m += SLOT) slots.push({ date, m, key: `${date} ${hhmm(m)}` })
   return { date, s: mins(s), e: mins(e), slots }
 })
 const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
+let waiting = {} // { slotKey: groupsOnTheWaitlist }
 const left = (s) => CAP - (taken[s.key] || 0)
+const wait = (s) => waiting[s.key] || 0
 
 function render() {
   if (!taken) return
@@ -42,7 +45,7 @@ function render() {
   const days = Object.keys(DAYS).map((date) => {
     const wins = windows
       .filter((w) => w.date === date)
-      .map((w) => ({ ...w, open: w.slots.filter((s) => s.end > now) })) // past slots are hidden
+      .map((w) => ({ ...w, open: w.slots.filter((s) => s.key > now) })) // slots that have started are hidden
       .filter((w) => w.open.length)
     if (!wins.length) return ''
     return `<section><h2 class="day-h">${DAYS[date]}</h2>${wins
@@ -51,7 +54,7 @@ function render() {
         <div class="rows">${w.open
           .map((s) => {
             const n = left(s)
-            return `<button class="slot" data-key="${s.key}" ${n ? '' : 'disabled'} aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : 'full'}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : 'Full'}</span></button>`
+            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
           })
           .join('')}</div>`,
       )
@@ -62,8 +65,9 @@ function render() {
     : '<p class="status">All times have passed.</p>'
 }
 
-function setTaken(t) {
+function setTaken(t, w) {
   taken = t
+  waiting = w || {}
   render()
   if ($('dlg').open) sync()
 }
@@ -75,7 +79,7 @@ async function load() {
   try {
     const j = await rpc('gxp_taken')
     if (!j.taken) throw new Error('bad reply')
-    if (g === gen) setTaken(j.taken)
+    if (g === gen) setTaken(j.taken, j.waiting)
   } catch {
     if (!taken) $('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>'
     else {
@@ -102,15 +106,20 @@ zoom(0)
 // signup dialog
 let cur = null
 let size = 1
+const full = () => left(cur) < 1 // a full slot takes the waitlist instead
 const setSize = (n) => {
-  size = Math.max(1, Math.min(left(cur), n))
+  size = Math.max(1, Math.min(full() ? CAP : left(cur), n))
   $('sizeOut').textContent = size
 }
 // keep the stepper and button in line with the latest counts
 function sync() {
   const l = left(cur)
-  $('cap').textContent = l ? `max ${l}` : 'full'
-  $('ok').disabled = busy || l < 1
+  $('dSub').textContent = l
+    ? `${l} of ${CAP} spots left in this slot.`
+    : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'group' : 'groups'} waiting) and we will add you if a spot opens.`
+  $('cap').textContent = l ? `max ${l}` : ''
+  if (!busy) $('ok').textContent = l ? 'Save my spot' : 'Join waitlist'
+  $('ok').disabled = busy
   setSize(size)
 }
 function open(s) {
@@ -118,7 +127,6 @@ function open(s) {
   $('form').hidden = false
   $('done').hidden = true
   $('dTitle').textContent = `${DAYS[s.date]}, ${clock(s.m)}`
-  $('dSub').textContent = `${left(s)} of ${CAP} spots left in this slot.`
   $('name').value = ''
   $('msg').textContent = ''
   size = 1
@@ -164,9 +172,10 @@ $('form').addEventListener('submit', async (e) => {
   $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
-    const r = await rpc('gxp_signup', { p_slot: cur.key, p_name: name, p_size: size })
+    const r = await rpc('gxp_signup', { p_slot: cur.key, p_name: name, p_size: size, p_waitlist: full() })
     if (r.ok) {
-      $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.`
+      $('doneH').textContent = r.waitlisted ? "You're on the waitlist" : "You're in"
+      $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.${r.waitlisted ? ` Number ${r.position} in line. Check back at the booth.` : ''}`
       $('form').hidden = true
       $('done').hidden = false
     } else {
@@ -174,7 +183,7 @@ $('form').addEventListener('submit', async (e) => {
     }
     if (r.taken && typeof r.taken === 'object') {
       gen++ // fresh counts came back with the reply
-      setTaken(r.taken)
+      setTaken(r.taken, r.waiting)
     } else await load()
   } catch {
     $('msg').textContent = 'Could not save. Check your connection and try again.'
@@ -184,7 +193,6 @@ $('form').addEventListener('submit', async (e) => {
     idle.start()
     if (!$('done').hidden) idle.setSecs(15) // the next visitor should not find this confirmation
   }
-  $('ok').textContent = 'Save my spot'
   $('ok').removeAttribute('aria-busy')
   if ($('form').hidden === false) sync()
 })

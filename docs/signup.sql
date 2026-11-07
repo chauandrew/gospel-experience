@@ -2,6 +2,8 @@
 -- New tables only (gxp_ prefix). RLS is on with no policies, so the publishable key can only call the functions below.
 -- /admin/ has no passcode: anyone with the page URL can list and remove signups.
 -- Windows (gxp_slots) and the cap (8) must match src/signup.js. Change both together.
+-- Slots are 15 minute clock quarter-hours; the last one in a window starts 30 minutes before the window ends (a showing takes 30).
+-- Full slots take a waitlist (waitlist = true rows). Removing a confirmed signup promotes the oldest waitlisted group, whatever its size.
 
 create table if not exists gxp_signups (
   id bigint generated always as identity primary key,
@@ -12,10 +14,17 @@ create table if not exists gxp_signups (
 );
 alter table gxp_signups enable row level security;
 
--- every 10 minute slot: start key, end key, e.g. '2026-11-06 18:30', '2026-11-06 18:40'
-create or replace function gxp_slots() returns table (start_key text, end_key text)
+-- one-time copy of the signups as they were before the 15 minute move (never overwritten on re-run)
+create table if not exists gxp_signups_bak_10min as table gxp_signups;
+alter table gxp_signups_bak_10min enable row level security;
+
+alter table gxp_signups add column if not exists waitlist boolean not null default false;
+
+-- every slot start key, e.g. '2026-11-06 18:30': clock quarter-hours from the window start, last one 30 minutes before the window end
+drop function if exists gxp_slots();
+create or replace function gxp_slots() returns table (start_key text)
 language sql immutable as $$
-  select to_char(t, 'YYYY-MM-DD HH24:MI'), to_char(t + interval '10 minutes', 'YYYY-MM-DD HH24:MI')
+  select to_char(t, 'YYYY-MM-DD HH24:MI')
   from (values
     ('2026-11-06', '18:30', '19:10'),
     ('2026-11-06', '20:30', '22:00'),
@@ -24,37 +33,74 @@ language sql immutable as $$
     ('2026-11-07', '14:20', '16:00'),
     ('2026-11-07', '18:00', '20:00')
   ) w (d, s, e),
-  lateral generate_series((w.d || ' ' || w.s)::timestamp, (w.d || ' ' || w.e)::timestamp - interval '10 minutes', interval '10 minutes') t
+  lateral generate_series(
+    date_trunc('hour', (w.d || ' ' || w.s)::timestamp) + ceil(extract(minute from (w.d || ' ' || w.s)::timestamp) / 15)::int * interval '15 minutes',
+    (w.d || ' ' || w.e)::timestamp - interval '30 minutes',
+    interval '15 minutes') t
 $$;
 
+-- Move signups still on an old slot to the nearest new slot that day (ties go earlier). If that leaves a slot over 8 people,
+-- the later signups (by arrival) become waitlisted. Nothing is deleted. Re-running is a no-op once every row is on a new slot.
+do $$
+declare v_moved text[];
+begin
+  with m as (
+    select s.id, (
+      select n.start_key from gxp_slots() n
+      where left(n.start_key, 10) = left(s.slot, 10)
+      order by abs((substr(n.start_key, 12, 2)::int * 60 + substr(n.start_key, 15, 2)::int) - (substr(s.slot, 12, 2)::int * 60 + substr(s.slot, 15, 2)::int)), n.start_key
+      limit 1) new_slot
+    from gxp_signups s
+    where s.slot not in (select start_key from gxp_slots())
+  ), u as (
+    update gxp_signups g set slot = m.new_slot from m where g.id = m.id and m.new_slot is not null returning m.new_slot
+  )
+  select array_agg(distinct new_slot) into v_moved from u;
+
+  update gxp_signups g set waitlist = true
+  from (select id, sum(size) over (partition by slot order by id) cum from gxp_signups where slot = any(v_moved) and not waitlist) x
+  where g.id = x.id and x.cum > 8;
+end $$;
+
+-- taken: people confirmed per slot; waiting: groups waitlisted per slot
 create or replace function gxp_taken() returns jsonb
 language sql security definer set search_path = public as $$
-  select jsonb_build_object('taken', coalesce(jsonb_object_agg(slot, n), '{}'::jsonb))
-  from (select slot, sum(size)::int n from gxp_signups group by slot) s
+  select jsonb_build_object(
+    'taken', coalesce((select jsonb_object_agg(slot, n) from (select slot, sum(size)::int n from gxp_signups where not waitlist group by slot) a), '{}'::jsonb),
+    'waiting', coalesce((select jsonb_object_agg(slot, n) from (select slot, count(*)::int n from gxp_signups where waitlist group by slot) b), '{}'::jsonb))
 $$;
 
-create or replace function gxp_signup(p_slot text, p_name text, p_size int) returns jsonb
+-- p_waitlist is what the page showed (slot full). A full slot without it is refused; a slot with room confirms either way.
+drop function if exists gxp_signup(text, text, int);
+create or replace function gxp_signup(p_slot text, p_name text, p_size int, p_waitlist boolean default false) returns jsonb
 language plpgsql security definer set search_path = public as $$
 declare
   v_name text := left(btrim(coalesce(p_name, '')), 80);
-  v_end text;
   v_left int;
+  v_pos int;
 begin
-  select end_key into v_end from gxp_slots() where start_key = p_slot;
-  if v_end is null then return jsonb_build_object('ok', false, 'error', 'Unknown slot'); end if;
-  if v_end <= to_char(now() at time zone 'America/Los_Angeles', 'YYYY-MM-DD HH24:MI') then
-    return jsonb_build_object('ok', false, 'error', 'That slot has passed');
+  if not exists (select 1 from gxp_slots() where start_key = p_slot) then return jsonb_build_object('ok', false, 'error', 'Unknown slot'); end if;
+  if p_slot <= to_char(now() at time zone 'America/Los_Angeles', 'YYYY-MM-DD HH24:MI') then
+    return jsonb_build_object('ok', false, 'error', 'That slot has started');
   end if;
   if v_name = '' then return jsonb_build_object('ok', false, 'error', 'Name is required'); end if;
   if p_size is null or p_size < 1 or p_size > 8 then return jsonb_build_object('ok', false, 'error', 'Invalid group size'); end if;
 
-  perform pg_advisory_xact_lock(hashtext('gxp_signup')); -- one signup at a time, so the last spots cannot be double booked
-  select 8 - coalesce(sum(size), 0) into v_left from gxp_signups where slot = p_slot;
+  perform pg_advisory_xact_lock(hashtext('gxp_signup')); -- one change at a time, so the last spots cannot be double booked
+  select 8 - coalesce(sum(size), 0) into v_left from gxp_signups where slot = p_slot and not waitlist;
+  if v_left < 1 then
+    if not p_waitlist then
+      return jsonb_build_object('ok', false, 'error', 'That time just filled up. You can join the waitlist.', 'left', 0) || gxp_taken();
+    end if;
+    insert into gxp_signups (slot, name, size, waitlist) values (p_slot, v_name, p_size, true);
+    select count(*) into v_pos from gxp_signups where slot = p_slot and waitlist;
+    return jsonb_build_object('ok', true, 'waitlisted', true, 'position', v_pos) || gxp_taken();
+  end if;
   if p_size > v_left then
-    return jsonb_build_object('ok', false, 'error', 'Only ' || v_left || ' spots left', 'left', v_left, 'taken', gxp_taken() -> 'taken');
+    return jsonb_build_object('ok', false, 'error', 'Only ' || v_left || ' spots left', 'left', v_left) || gxp_taken();
   end if;
   insert into gxp_signups (slot, name, size) values (p_slot, v_name, p_size);
-  return jsonb_build_object('ok', true, 'left', v_left - p_size, 'taken', gxp_taken() -> 'taken');
+  return jsonb_build_object('ok', true, 'waitlisted', false, 'left', v_left - p_size) || gxp_taken();
 end $$;
 
 -- leftovers from when /admin/ had a passcode
@@ -66,15 +112,28 @@ drop table if exists gxp_config;
 create or replace function gxp_list() returns jsonb
 language sql security definer set search_path = public as $$
   select jsonb_build_object('ok', true, 'rows', coalesce(
-    (select jsonb_agg(jsonb_build_object('row', id, 'ts', created_at, 'slot', slot, 'name', name, 'size', size) order by id) from gxp_signups),
+    (select jsonb_agg(jsonb_build_object('row', id, 'ts', created_at, 'slot', slot, 'name', name, 'size', size, 'waitlist', waitlist) order by id) from gxp_signups),
     '[]'::jsonb))
 $$;
 
--- the row must still match what the admin saw
+-- the row must still match what the admin saw. Removing a confirmed signup promotes the oldest waitlisted
+-- group (any size, so a slot can end up over 8) while the slot is under 8. 'promoted' lists who moved in.
 create or replace function gxp_delete(p_row bigint, p_slot text, p_name text, p_size int) returns jsonb
 language plpgsql security definer set search_path = public as $$
+declare
+  v_was_waiting boolean;
+  v_promoted jsonb := '[]'::jsonb;
+  r record;
 begin
-  delete from gxp_signups where id = p_row and slot = p_slot and name = p_name and size = p_size;
+  perform pg_advisory_xact_lock(hashtext('gxp_signup'));
+  delete from gxp_signups where id = p_row and slot = p_slot and name = p_name and size = p_size returning waitlist into v_was_waiting;
   if not found then return jsonb_build_object('ok', false, 'error', 'Row not found, refresh the list'); end if;
-  return jsonb_build_object('ok', true);
+  while not v_was_waiting and (select coalesce(sum(size), 0) from gxp_signups where slot = p_slot and not waitlist) < 8 loop
+    update gxp_signups set waitlist = false
+    where id = (select id from gxp_signups where slot = p_slot and waitlist order by id limit 1)
+    returning name, size into r;
+    exit when not found;
+    v_promoted := v_promoted || jsonb_build_object('name', r.name, 'size', r.size);
+  end loop;
+  return jsonb_build_object('ok', true, 'promoted', v_promoted);
 end $$;
