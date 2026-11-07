@@ -114,7 +114,14 @@ $('sizeOut').oninput = (e) => {
   const n = Number(e.target.value)
   if (Number.isInteger(n) && n >= 1) size = n // leave the field alone while typing; the submit checks it
 }
-$('sizeOut').onfocus = (e) => e.target.select() // so typing replaces the 1 instead of making 12 into 112
+// blank the field while it is being edited so typing 12 does not make 112 (select() is unreliable on iOS); restore if left empty
+$('sizeOut').onfocus = (e) => {
+  e.target.dataset.prev = e.target.value
+  e.target.value = ''
+}
+$('sizeOut').onblur = (e) => {
+  if (e.target.value === '') e.target.value = e.target.dataset.prev
+}
 // keep the stepper and button in line with the latest counts
 function sync() {
   const l = left(cur)

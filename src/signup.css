@@ -30,7 +30,7 @@ body {
 .zoom button:disabled { opacity: 0.35; cursor: default; }
 
 .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: 8px; }
-.clock { font: 700 clamp(48px, 9vw, 88px)/1 var(--font-head); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; }
+.clock { font: 700 clamp(32px, 5vw, 52px)/1 var(--font-head); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; }
 .back { display: inline-flex; align-items: center; min-height: 52px; margin-bottom: 8px; color: var(--dim); font: 500 16px var(--font-head); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
 .eyebrow { margin: 0; font: 500 16px var(--font-head); letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
 h1 { margin: 6px 0 4px; font: 700 clamp(32px, 5vw, 48px)/1.15 var(--font-head); letter-spacing: 0.08em; text-transform: uppercase; text-wrap: balance; }
