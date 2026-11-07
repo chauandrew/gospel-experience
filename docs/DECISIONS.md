@@ -297,3 +297,4 @@ Format: date, decision, why, alternatives rejected.
 
 - Group size has no real limit: the stepper is now a typeable number field with +/- (`sizeOut`), and a slot with at least one spot left takes a group of any size, so it can pass 8 (like waitlist promotion). A full slot still waitlists. The only ceiling is a sanity 99 in `gxp_signup` and the `gxp_signups_size_range` check (replaces the old 1 to 8 `gxp_signups_size_check`); the "Only N spots left" error is gone. Re-run `docs/signup.sql`.
 - Sat headings now: Registration (was Breakfast) 9-10; Middle School workshops 2:15, 2:30, 2:45; High School workshops 3:00 to 3:45 (heading reads 3:00 to 4:00); Passing period 4:00 and 4:15. Same quarter-hour slots as before, only the grouping moved.
+- The group size field selects its text on focus (typing 12 replaces the 1), and a bad or over-99 entry is refused with a message instead of being clamped, so the count saved is always what was typed.

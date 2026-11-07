@@ -111,10 +111,10 @@ const setSize = (n) => {
   $('sizeOut').value = size
 }
 $('sizeOut').oninput = (e) => {
-  const n = parseInt(e.target.value, 10)
-  if (n >= 1) size = Math.min(MAXG, n) // leave the field alone while typing
+  const n = Number(e.target.value)
+  if (Number.isInteger(n) && n >= 1) size = n // leave the field alone while typing; the submit checks it
 }
-$('sizeOut').onchange = () => setSize(size) // tidy a blank or too big entry when leaving the field
+$('sizeOut').onfocus = (e) => e.target.select() // so typing replaces the 1 instead of making 12 into 112
 // keep the stepper and button in line with the latest counts
 function sync() {
   const l = left(cur)
@@ -166,12 +166,12 @@ $('form').addEventListener('submit', async (e) => {
     $('msg').textContent = 'Please enter your name.'
     return $('name').focus()
   }
-  const n = parseInt($('sizeOut').value, 10)
-  if (!(n >= 1)) {
-    $('msg').textContent = 'Please enter how many people.'
+  const n = Number($('sizeOut').value)
+  if (!Number.isInteger(n) || n < 1 || n > MAXG) {
+    $('msg').textContent = n > MAXG ? `The biggest group is ${MAXG}.` : 'Please enter how many people.'
     return $('sizeOut').focus()
   }
-  setSize(n)
+  size = n
   busy = true
   idle?.stop() // no idle redirect while the request is in flight
   $('ok').disabled = true
