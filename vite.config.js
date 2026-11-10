@@ -3,8 +3,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   build: {
-    // one page per trailer, plus the home page that lists them
-    rollupOptions: { input: { home: 'index.html', story: 'story/index.html', king: 'king/index.html', mudpies: 'mudpies/index.html', signup: 'signup/index.html', admin: 'admin/index.html' } },
+    rollupOptions: { input: { home: 'index.html', signup: 'signup/index.html', admin: 'admin/index.html' } },
   },
   plugins: [
     VitePWA({
@@ -26,9 +25,8 @@ export default defineConfig({
         ],
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,woff2,mp3,svg,png,webmanifest}'],
-        // Borrowed assets not used yet stay out of the offline cache.
-        globIgnores: ['signup/**', 'admin/**', 'lottie/**', 'img/shooting-star.png', 'img/leaves.png'],
+        globPatterns: ['**/*.{js,css,html,woff2,svg,png,webmanifest}'],
+        globIgnores: ['signup/**', 'admin/**'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         rollupFormat: 'iife', // classic SW: widest iOS support
       },

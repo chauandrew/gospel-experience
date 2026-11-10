@@ -4,54 +4,45 @@ import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
 import { createIdle } from './idle.js'
-import { rpc, CAP, SLOT, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
-
-// Same slots as docs/signup.sql (the server enforces them). Change both together.
-// [date, start, end, heading?, firstSlot?, lastSlot?]. Slots are clock quarter-hours; by default the last starts SHOW minutes
-// before the end. Sat 2:15 to 4:30 is one run of quarter-hour slots (2:15 to 4:15) split under three headings; the SQL has it as one window.
-const WINDOWS = [
-  ['2026-11-06', '18:30', '19:10'],
-  ['2026-11-06', '20:30', '22:00'],
-  ['2026-11-07', '09:00', '10:00', 'Registration'],
-  ['2026-11-07', '12:00', '13:00', 'Lunch'],
-  ['2026-11-07', '14:15', '15:00', 'Middle School workshops', '14:15', '14:45'],
-  ['2026-11-07', '15:00', '16:00', 'High School workshops', '15:00', '15:45'],
-  ['2026-11-07', '16:00', '16:30', 'Passing period', '16:00', '16:15'],
-  ['2026-11-07', '18:00', '20:00', 'Night market'],
-]
+import { rpc, slug, dayLabel, clock, pacificNow } from './signup-config.js'
 
 const mins = (t) => +t.slice(0, 2) * 60 + +t.slice(3)
 
-const windows = WINDOWS.map(([date, s, e, label, first = s, last]) => {
-  const slots = []
-  for (let m = Math.ceil(mins(first) / SLOT) * SLOT; m <= (last ? mins(last) : mins(e) - SHOW); m += SLOT) slots.push({ date, m, key: `${date} ${hhmm(m)}` })
-  return { date, s: mins(s), e: mins(e), label, slots }
-})
-const slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
+// the event and its windows come from the server (gxp_event in docs/signup.sql), which also enforces the slots
+let ev
+let windows = []
+let slotByKey = {}
+const setEvent = (e) => {
+  ev = e
+  windows = e.windows.map((w) => ({ date: w.date, s: mins(w.start), e: mins(w.end), label: w.label, slots: w.slots.map((t) => ({ date: w.date, m: mins(t), key: `${w.date} ${t}` })) }))
+  slotByKey = Object.fromEntries(windows.flatMap((w) => w.slots).map((s) => [s.key, s]))
+  document.title = `Pick a time | ${e.title}`
+  $('event').textContent = e.title
+}
 
 const $ = (id) => document.getElementById(id)
 let taken = null // { slotKey: peopleSignedUp }, null until the first load
 let waiting = {} // { slotKey: peopleOnTheWaitlist }
 let stale = false // the last refresh failed, so counts may be old
-const left = (s) => Math.max(0, CAP - (taken[s.key] || 0)) // promotions can take a slot past 8
+const left = (s) => Math.max(0, ev.cap - (taken[s.key] || 0)) // promotions can take a slot past the cap
 const wait = (s) => waiting[s.key] || 0
 
 function render() {
   if (!taken) return
   const now = pacificNow()
-  const days = Object.keys(DAYS).map((date) => {
+  const days = [...new Set(windows.map((w) => w.date))].map((date) => {
     const wins = windows
       .filter((w) => w.date === date)
       .map((w) => ({ ...w, open: w.slots.filter((s) => s.key > now) })) // slots that have started are hidden
       .filter((w) => w.open.length)
     if (!wins.length) return ''
-    return `<section><h2 class="day-h">${DAYS[date]}</h2>${wins
+    return `<section><h2 class="day-h">${dayLabel(date)}</h2>${wins
       .map(
         (w) => `<div class="win-h"><span>${w.label ? `<b class="lbl">${w.label}</b> ` : ''}${clock(w.s)} to ${clock(w.e)}</span><span>${w.open.reduce((a, s) => a + left(s), 0)} spots open</span></div>
         <div class="rows">${w.open
           .map((s) => {
             const n = left(s)
-            return `<button class="slot" data-key="${s.key}" aria-label="${DAYS[date]} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} people on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
+            return `<button class="slot" data-key="${s.key}" aria-label="${dayLabel(date)} ${clock(s.m)}, ${n ? `${n} spots left` : `full, ${wait(s)} people on the waitlist`}"><span class="t">${clock(s.m)}</span><span class="n${n && n <= 3 ? ' few' : ''}">${n ? `${n} left` : `Full${wait(s) ? `, ${wait(s)} waiting` : ''}`}</span></button>`
           })
           .join('')}</div>`,
       )
@@ -75,7 +66,7 @@ let busy = false
 async function load() {
   const g = gen
   try {
-    const j = await rpc('gxp_taken')
+    const j = await rpc('gxp_taken', { p_event: slug })
     if (!j.taken) throw new Error('bad reply')
     if (g === gen) setTaken(j.taken, j.waiting)
   } catch {
@@ -126,7 +117,7 @@ $('sizeOut').onblur = (e) => {
 function sync() {
   const l = left(cur)
   $('dSub').textContent = l
-    ? `${l} of ${CAP} spots left in this slot.`
+    ? `${l} of ${ev.cap} spots left in this slot.`
     : `This time is full. Join the waitlist (${wait(cur)} ${wait(cur) === 1 ? 'person' : 'people'} waiting) and we will add you if a spot opens.`
   if (!busy) $('ok').textContent = l ? 'Save my spot' : 'Join waitlist'
   $('ok').disabled = busy
@@ -135,7 +126,7 @@ function open(s) {
   cur = s
   $('form').hidden = false
   $('done').hidden = true
-  $('dTitle').textContent = `${DAYS[s.date]}, ${clock(s.m)}`
+  $('dTitle').textContent = `${dayLabel(s.date)}, ${clock(s.m)}`
   $('name').value = ''
   $('msg').textContent = ''
   setSize(1)
@@ -145,7 +136,7 @@ function open(s) {
 }
 
 $('list').addEventListener('click', (e) => {
-  if (e.target.closest('#retry')) return load()
+  if (e.target.closest('#retry')) return ev ? load() : start()
   const b = e.target.closest('.slot')
   if (b && !b.disabled) open(slotByKey[b.dataset.key])
 })
@@ -153,18 +144,13 @@ $('plus').onclick = () => setSize(size + 1)
 $('minus').onclick = () => setSize(size - 1)
 $('cancel').onclick = () => $('dlg').close()
 
-// On a booth iPad the trailer links here as /signup/?kiosk=<trailer>. Idle or Done sends the visitor back to that trailer.
-const TRAILERS = { king: '/king/', mudpies: '/mudpies/', story: '/story/' }
-const k = new URLSearchParams(location.search).get('kiosk')
-const home = Object.hasOwn(TRAILERS, k) ? TRAILERS[k] : undefined // own keys only, so ?kiosk=constructor is ignored
+// ?kiosk on a shared booth iPad: back to a blank page after 60s idle (15s once a confirmation shows) so the next visitor starts fresh
 let idle
-if (home) {
-  $('back').href = home
-  $('back').hidden = false
-  idle = createIdle(() => location.replace(home), 60)
+if (new URLSearchParams(location.search).has('kiosk')) {
+  idle = createIdle(() => location.reload(), 60)
   idle.start()
 }
-$('close').onclick = () => (home ? location.replace(home) : $('dlg').close())
+$('close').onclick = () => (idle ? location.reload() : $('dlg').close())
 
 $('form').addEventListener('submit', async (e) => {
   e.preventDefault()
@@ -186,10 +172,10 @@ $('form').addEventListener('submit', async (e) => {
   $('ok').setAttribute('aria-busy', 'true')
   $('msg').textContent = ''
   try {
-    const r = await rpc('gxp_signup', { p_slot: cur.key, p_name: name, p_size: size, p_waitlist: full() })
+    const r = await rpc('gxp_signup', { p_event: slug, p_slot: cur.key, p_name: name, p_size: size, p_waitlist: full() })
     if (r.ok) {
       $('doneH').textContent = r.waitlisted ? "You're on the waitlist" : "You're in"
-      $('doneInfo').textContent = `${DAYS[cur.date]}, ${clock(cur.m)}. Group of ${size}, under ${name}.${r.waitlisted ? ` Number ${r.position} in line. Check back at the booth.` : ''}`
+      $('doneInfo').textContent = `${dayLabel(cur.date)}, ${clock(cur.m)}. Group of ${size}, under ${name}.${r.waitlisted ? ` Number ${r.position} in line. Check back at the booth.` : ''}`
       $('form').hidden = true
       $('done').hidden = false
     } else {
@@ -218,11 +204,22 @@ function tick() {
   if (now === shown) return
   shown = now
   $('clock').textContent = clock(+now.slice(11, 13) * 60 + +now.slice(14, 16))
-  render()
+  if (ev) render()
 }
 tick()
 setInterval(tick, 5000)
 
-load()
-setInterval(() => document.hidden || load(), 60000)
-document.addEventListener('visibilitychange', () => document.hidden || load())
+async function start() {
+  if (!slug) return location.replace('/')
+  try {
+    const e = await rpc('gxp_event', { p_slug: slug })
+    if (!e) return ($('list').innerHTML = '<p class="status">Event not found.</p>')
+    setEvent(e)
+  } catch {
+    return ($('list').innerHTML = '<p class="status">Could not load times. Check your connection. <button id="retry">Try again</button></p>')
+  }
+  load()
+  setInterval(() => document.hidden || load(), 60000)
+  document.addEventListener('visibilitychange', () => document.hidden || load())
+}
+start()
