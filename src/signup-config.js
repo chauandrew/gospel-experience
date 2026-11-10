@@ -6,11 +6,10 @@ export const rpc = async (fn, args = {}, ms = 20000) => {
   if (!r.ok) throw new Error(`HTTP ${r.status}`)
   return r.json()
 }
-export const CAP = 8
-export const SLOT = 15 // minutes between slot starts
-export const SHOW = 30 // a showing takes about this long, so the last slot starts SHOW minutes before a window ends
 const TZ = 'America/Los_Angeles'
-export const DAYS = { '2026-11-06': 'Fri Nov 6', '2026-11-07': 'Sat Nov 7' }
+export const slug = new URLSearchParams(location.search).get('e') // which event, from the page URL
+export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+export const dayLabel = (date) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '') // "Fri Nov 6"
 
 const pad = (n) => String(n).padStart(2, '0')
 export const hhmm = (m) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`

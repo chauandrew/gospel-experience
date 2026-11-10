@@ -299,3 +299,10 @@ Format: date, decision, why, alternatives rejected.
 - Sat headings now: Registration (was Breakfast) 9-10; Middle School workshops 2:15, 2:30, 2:45; High School workshops 3:00 to 3:45 (heading reads 3:00 to 4:00); Passing period 4:00 and 4:15. Same quarter-hour slots as before, only the grouping moved.
 - The group size field blanks while it is edited (typing 12 does not make 112; restored if left empty), and a bad or over-99 entry is refused with a message instead of being clamped, so the count saved is always what was typed.
 - "Waiting" counts on `/signup/` and `/admin/` are now people, not groups (`gxp_taken().waiting` is `sum(size)`). The "Number N in line" shown after joining is still the group's place in line. Re-run `docs/signup.sql`.
+
+## 2026-11-10 (Trailers removed, multiple events)
+
+- The site is signup only now. `king`, `mudpies`, `story`, the trailer engine (`trailer.js`, `fx.js`, `audio.js`, `sections.js`, `counter.js`, `style.css`), `public/{audio,img,lottie}` and the trailer docs (PLAN, STYLE, ASSETS, KIOSK) are deleted; git history has them. GSAP, trirong, `@vercel/analytics` and the mp3 range handler in `sw.js` went with them. The PWA shell stays.
+- An event is a row in `gxp_events` (slug, title, cap, slot_minutes, show_minutes, windows jsonb) at the end of `docs/signup.sql`. The server generates the slots (`gxp_slots`) and the pages read them from `gxp_event(slug)`, so the slot rules live in one place (the "change both together" duplication in `src/signup.js` is gone). Slot length, showing length, cap and windows (with optional heading, first and last slot) are per event. Times are Pacific for all events.
+- Every `gxp_*` function takes the event slug; `gxp_signups.event` scopes signups. Existing signups were tagged `socal-ignition-2026`. Pages: `/` lists events that still have an upcoming slot, `/signup/?e=<slug>`, `/admin/?e=<slug>` (`/admin/` alone lists every event, past ones included). Query strings, not path segments, so no rewrite rules are needed.
+- `?kiosk` on `/signup/` still resets to a blank page after 60s idle (15s after a confirmation) via a reload; there is no trailer to return to.

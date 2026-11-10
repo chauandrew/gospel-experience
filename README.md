@@ -1,15 +1,14 @@
-# The Gospel Experience (teaser)
+# The Gospel Experience (signups)
 
-Offline iPad kiosk web app: a dark, self-advancing (no scrolling) 25-second preview with music. Tap Begin, it plays through five beats, then Reset. Vanilla JS + Vite, GSAP, PWA.
+Signup and admin pages for Gospel Experience events. Vanilla JS + Vite, Supabase backend, PWA shell.
 
 ```
 npm install
 npm run dev        # http://localhost:5173
-npm run dev -- --host   # same, reachable from an iPad on the same Wi-Fi
-npm run build && npm run preview   # production build with service worker (http://localhost:4173)
+npm run build && npm run preview
 ```
 
-- Each trailer is one file in `src/trailers/` (all its wording and per-beat settings) plus one page, `<name>/index.html`. The home page (`index.html`) lists them. To add a trailer: copy `king/index.html` and `src/trailers/king.js`, change the module name, add the page to `vite.config.js` `rollupOptions.input`, and add a button to `index.html`.
+- Pages: `/` lists upcoming events, `/signup/?e=<slug>` is the signup form, `/admin/?e=<slug>` lists and removes signups (`/admin/` alone lists every event). Add `&kiosk` to `/signup/` on a shared iPad to reset to a blank page after 60s idle.
+- Events live in the database, not the code: add an `insert into gxp_events` block at the bottom of `docs/signup.sql` (title, people per slot, minutes between slots, minutes per showing, windows) and run the file in the Supabase SQL editor. The pages pick it up with no deploy.
 - Docs for contributors and agents: `docs/` (start with `docs/PROGRESS.md`).
-- Event setup (install, Guided Access, offline check): `docs/KIOSK.md`.
 - Deploys: Vercel from GitHub. PR branches get preview URLs; merging to `main` ships.

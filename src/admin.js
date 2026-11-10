@@ -3,16 +3,17 @@ import '@fontsource/poppins/latin-700.css'
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-700.css'
 import './signup.css'
-import { rpc, CAP, SHOW, DAYS, hhmm, clock, pacificNow } from './signup-config.js'
+import { rpc, slug, esc, dayLabel, hhmm, clock, pacificNow } from './signup-config.js'
+import { showEvents } from './events.js'
 
 const $ = (id) => document.getElementById(id)
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const slotMins = (k) => +k.slice(11, 13) * 60 + +k.slice(14, 16)
 
+let ev // { cap, show, title } from gxp_event
 let lastRows = []
 let showPast = false
 
-const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + SHOW)}` // a showing is over SHOW minutes after its slot starts
+const slotEnd = (k) => `${k.slice(0, 11)}${hhmm(slotMins(k) + ev.show)}` // a showing is over show minutes after its slot starts
 
 function render(rows) {
   const by = {}
@@ -27,14 +28,14 @@ function render(rows) {
   $('days').innerHTML = dates.length
     ? dates
         .map(
-          (d) => `<h2 class="day-h">${esc(DAYS[d] || d)}</h2>${Object.keys(by)
+          (d) => `<h2 class="day-h">${esc(dayLabel(d))}</h2>${Object.keys(by)
             .filter((k) => k.startsWith(d))
             .sort()
             .map((k) => {
               const ok = by[k].filter((r) => !r.waitlist) // rows arrive in signup order
               const wl = by[k].filter((r) => r.waitlist)
               const li = (r, tag) => `<li><span>${esc(r.name)}</span>${tag ? `<span class="grp">${tag}</span>` : ''}<span class="grp">${r.size}</span><button type="button" class="del" data-i="${r.i}" aria-label="Remove ${esc(r.name)}">Remove</button></li>`
-              return `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${ok.reduce((a, r) => a + r.size, 0)} of ${CAP}${wl.length ? `, ${wl.reduce((a, r) => a + r.size, 0)} waiting` : ''}</span></div>
+              return `<div class="win-h"><span>${clock(slotMins(k))}</span><span>${ok.reduce((a, r) => a + r.size, 0)} of ${ev.cap}${wl.length ? `, ${wl.reduce((a, r) => a + r.size, 0)} waiting` : ''}</span></div>
               <ul class="people">${ok.map((r) => li(r)).join('')}${wl.map((r, n) => li(r, `Waitlist ${n + 1}`)).join('')}</ul>`
             })
             .join('')}`,
@@ -45,7 +46,7 @@ function render(rows) {
 
 async function load() {
   try {
-    const r = await rpc('gxp_list')
+    const r = await rpc('gxp_list', { p_event: slug })
     if (!r.ok) throw new Error(r.error)
     render(r.rows)
   } catch {
@@ -73,7 +74,7 @@ $('days').addEventListener('click', async (e) => {
   b.disabled = true
   b.innerHTML = '<span class="spin" aria-hidden="true"></span>Removing...'
   try {
-    const j = await rpc('gxp_delete', { p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
+    const j = await rpc('gxp_delete', { p_event: slug, p_row: r.row, p_slot: r.slot, p_name: r.name, p_size: r.size })
     if (!j.ok) throw new Error(j.error)
     await load()
     if (j.promoted?.length) $('summary').textContent = `Moved off the waitlist: ${j.promoted.map((p) => `${p.name} (${p.size})`).join(', ')}.`
@@ -84,4 +85,15 @@ $('days').addEventListener('click', async (e) => {
     $('summary').textContent = err.message === 'Failed to fetch' ? 'Could not reach the server. Try again.' : err.message
   }
 })
-load()
+if (!slug) {
+  showEvents($('events'), '/admin/', true)
+} else {
+  rpc('gxp_event', { p_slug: slug }).then((e) => {
+    if (!e) return ($('events').innerHTML = '<p class="status">Event not found.</p>')
+    ev = e
+    document.title = `Signups | ${e.title}`
+    $('event').textContent = e.title
+    $('out').hidden = false
+    load()
+  }, () => ($('events').innerHTML = '<p class="status">Could not load the event. Check your connection and reload.</p>'))
+}
